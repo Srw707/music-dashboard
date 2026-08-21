@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sawt · Your Sound, Your World</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800&family=Noto+Sans+JP:wght@500;700&family=Noto+Sans+KR:wght@500;700&family=Noto+Sans+SC:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* ============ THEME TOKENS ============ */
+:root{
+  --accent:#D4A853;
+  --accent2:#8B5E34;
+  --bg:#0B0D12;
+  --surface:#14171F;
+  --elevated:#1C2029;
+  --elevated-2:#242833;
+  --text:#F2EFEA;
+  --text-muted:#8B8F9C;
+  --border:rgba(242,239,234,0.08);
+  --radius-lg:20px;
+  --radius-md:14px;
+  --radius-sm:9px;
+  --font-display:'Fraunces', serif;
+  --font-ui:'Inter', sans-serif;
+}
+html[lang="ar"]{ --font-display:'Tajawal', sans-serif; --font-ui:'Tajawal', sans-serif; }
+html[lang="ja"]{ --font-ui:'Noto Sans JP','Inter', sans-serif; --font-display:'Noto Sans JP', sans-serif; }
+html[lang="ko"]{ --font-ui:'Noto Sans KR','Inter', sans-serif; --font-display:'Noto Sans KR', sans-serif; }
+html[lang="zh"]{ --font-ui:'Noto Sans SC','Inter', sans-serif; --font-display:'Noto Sans SC', sans-serif; }
+
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-ui);
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+  position:relative;
+}
+::selection{ background:var(--accent); color:#0B0D12; }
+::-webkit-scrollbar{width:8px; height:8px;}
+::-webkit-scrollbar-thumb{background:var(--elevated-2); border-radius:8px;}
+::-webkit-scrollbar-track{background:transparent;}
+a{color:inherit; text-decoration:none;}
+button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+input,select{font-family:inherit;}
+
+.lattice-bg{
+  position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.05;
+  background-image:
+    radial-gradient(circle at 12px 12px, var(--accent) 1.4px, transparent 1.6px),
+    radial-gradient(circle at 32px 32px, var(--accent) 1.4px, transparent 1.6px);
+  background-size:44px 44px;
+}
+.grain-fade{position:fixed; inset:0; pointer-events:none; z-index:0; background:radial-gradient(ellipse at 20% -10%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 55%);}
+
+/* ============ APP SHELL (fixed viewport, independent scroll) ============ */
+.app{ position:relative; z-index:1; height:100vh; display:flex; flex-direction:column; }
+
+/* Top bar */
+.topbar{
+  position:relative; z-index:20; flex-shrink:0; display:flex; align-items:center; gap:14px;
+  padding:16px 26px; background:color-mix(in srgb, var(--bg) 78%, transparent);
+  border-bottom:1px solid var(--border); backdrop-filter:blur(16px);
+}
+.burger-btn{ width:40px; height:40px; border-radius:12px; background:var(--elevated); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:.18s;}
+.burger-btn:hover{ background:var(--elevated-2); }
+.burger-btn svg{ width:19px; height:19px; }
+.brand{ display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.brand-mark{ width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,var(--accent),var(--accent2)); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:700; font-style:italic; color:#0B0D12; font-size:17px; flex-shrink:0;}
+html[lang="ar"] .brand-mark, html[lang="ja"] .brand-mark, html[lang="ko"] .brand-mark, html[lang="zh"] .brand-mark{font-style:normal;}
+.brand-name{ font-family:var(--font-display); font-style:italic; font-weight:600; font-size:20px; letter-spacing:.3px; display:none;}
+html[lang="ar"] .brand-name{font-style:normal;}
+@media(min-width:640px){ .brand-name{display:block;} }
+.topbar h1{ font-family:var(--font-display); font-weight:600; font-style:italic; font-size:20px; display:none; flex-shrink:0;}
+html[lang="ar"] .topbar h1{font-style:normal;}
+@media(min-width:900px){ .topbar h1{display:block;} }
+.top-search{
+  flex:1; max-width:420px; display:flex; align-items:center; gap:10px; background:var(--elevated);
+  padding:10px 14px; border-radius:999px; border:1px solid transparent; transition:border-color .2s;
+}
+.top-search:focus-within{ border-color:color-mix(in srgb, var(--accent) 50%, transparent); }
+.top-search input{ background:none; border:none; outline:none; color:var(--text); width:100%; font-size:13.5px; }
+.top-search svg{ width:16px; height:16px; color:var(--text-muted); flex-shrink:0; }
+.icon-btn{ width:38px; height:38px; border-radius:50%; background:var(--elevated); display:flex; align-items:center; justify-content:center; transition:.18s; flex-shrink:0; position:relative;}
+.icon-btn:hover{ background:var(--elevated-2); }
+.icon-btn svg{ width:17px; height:17px; }
+.topbar-spacer{ flex:1; }
+
+/* Language quick dropdown in topbar */
+.lang-quick{ position:relative; flex-shrink:0; }
+.lang-quick-btn{ display:flex; align-items:center; gap:6px; background:var(--elevated); padding:8px 12px; border-radius:999px; font-size:12px; font-weight:700; }
+.lang-quick-btn svg{ width:14px; height:14px; color:var(--text-muted); }
+.lang-dropdown{
+  position:absolute; top:calc(100% + 8px); inset-inline-end:0; width:220px; background:var(--surface); border:1px solid var(--border);
+  border-radius:14px; padding:8px; box-shadow:0 20px 50px rgba(0,0,0,.4); opacity:0; pointer-events:none; transform:translateY(-6px);
+  transition:.18s; z-index:100; max-height:340px; overflow-y:auto;
+}
+.lang-dropdown.open{ opacity:1; pointer-events:auto; transform:translateY(0); }
+.lang-opt{ display:flex; align-items:center; justify-content:space-between; padding:9px 11px; border-radius:9px; font-size:13px; font-weight:600; transition:.15s;}
+.lang-opt:hover{ background:var(--elevated); }
+.lang-opt.selected{ color:var(--accent); }
+.lang-opt .native{ color:var(--text-muted); font-weight:500; font-size:11.5px; }
+
+/* ============ DRAWER ============ */
+.drawer-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.55); backdrop-filter:blur(2px); z-index:59; opacity:0; pointer-events:none; transition:.25s; }
+.drawer-backdrop.open{ opacity:1; pointer-events:auto; }
+.drawer{
+  position:fixed; top:0; inset-inline-start:0; height:100vh; width:270px; z-index:60;
+  background:linear-gradient(180deg, var(--surface), var(--bg)); border-inline-end:1px solid var(--border);
+  padding:24px 16px; display:flex; flex-direction:column; gap:26px; transform:translateX(-102%);
+  transition:transform .32s cubic-bezier(.2,.9,.3,1);
+}
+html[dir="rtl"] .drawer{ transform:translateX(102%); }
+.drawer.open{ transform:translateX(0); }
+.drawer-head{ display:flex; align-items:center; justify-content:space-between; padding:0 4px; }
+.drawer-close{ width:32px; height:32px; border-radius:50%; background:var(--elevated); display:flex; align-items:center; justify-content:center; }
+.drawer-close svg{ width:14px; height:14px; }
+.nav-group{ display:flex; flex-direction:column; gap:2px; }
+.nav-label{ font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted); padding:0 12px 8px; }
+.nav-item{
+  display:flex; align-items:center; gap:12px; padding:11px 12px; border-radius:var(--radius-sm);
+  color:var(--text-muted); font-size:14.5px; font-weight:500; transition:all .18s ease;
+}
+.nav-item svg{ width:19px; height:19px; flex-shrink:0; }
+.nav-item:hover{ background:var(--elevated); color:var(--text); }
+.nav-item.active{ background:color-mix(in srgb, var(--accent) 14%, var(--elevated)); color:var(--text); }
+.nav-item.active svg{ color:var(--accent); }
+.sidebar-foot{ margin-top:auto; padding:14px; border-radius:var(--radius-md); background:var(--elevated); display:flex; flex-direction:column; gap:8px;}
+.sidebar-foot .t{font-size:12.5px; font-weight:600;}
+.sidebar-foot .s{font-size:11.5px; color:var(--text-muted); line-height:1.5;}
+
+/* ============ MAIN / INDEPENDENT SCROLL ============ */
+.main{ flex:1; min-height:0; display:flex; flex-direction:column; }
+.content{ flex:1; min-height:0; overflow-y:auto; padding:26px 30px 150px; }
+.view{ display:none; animation:fadein .35s ease; }
+.view.active{ display:block; }
+@keyframes fadein{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+/* ============ HOME ============ */
+.section-head{ display:flex; align-items:baseline; justify-content:space-between; margin:34px 0 16px; }
+.section-head:first-child{margin-top:0;}
+.section-head h2{ font-family:var(--font-display); font-size:21px; font-weight:600; font-style:italic; }
+html[lang="ar"] .section-head h2{font-style:normal;}
+.section-head .see-all{ font-size:12.5px; color:var(--text-muted); font-weight:600; }
+.section-head .see-all:hover{ color:var(--accent); }
+
+.hero-card{
+  border-radius:24px; padding:36px; position:relative; overflow:hidden; min-height:200px;
+  background:linear-gradient(120deg, color-mix(in srgb, var(--accent) 30%, var(--surface)), var(--surface) 70%);
+  border:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
+}
+.hero-card::after{
+  content:''; position:absolute; inset:0; opacity:.16; pointer-events:none;
+  background-image:radial-gradient(circle at 8px 8px, var(--accent) 1.6px, transparent 1.8px);
+  background-size:34px 34px;
+}
+.hero-eyebrow{ font-size:11.5px; letter-spacing:2px; text-transform:uppercase; color:var(--accent); font-weight:700; margin-bottom:10px;}
+.hero-title{ font-family:var(--font-display); font-size:32px; font-weight:600; font-style:italic; max-width:520px; line-height:1.15;}
+html[lang="ar"] .hero-title{font-style:normal;}
+.hero-sub{ color:var(--text-muted); font-size:14px; margin-top:10px; max-width:440px;}
+.hero-play{
+  position:relative; z-index:2; width:64px; height:64px; border-radius:50%; background:var(--accent); color:#0B0D12;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:.2s;
+}
+.hero-play:hover{ transform:scale(1.07); }
+.hero-play svg{width:24px; height:24px;}
+
+.row-scroll{ display:flex; gap:16px; overflow-x:auto; padding-bottom:6px; scroll-snap-type:x proximity; }
+.row-scroll::-webkit-scrollbar{height:0;}
+
+.track-card{ width:168px; flex-shrink:0; scroll-snap-align:start; cursor:pointer; }
+.track-card .art-wrap{ position:relative; border-radius:var(--radius-md); overflow:hidden; aspect-ratio:1; margin-bottom:10px; background:var(--elevated); }
+.track-card img{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .35s ease; }
+.track-card:hover img{ transform:scale(1.06); }
+.play-overlay{
+  position:absolute; inset:0; background:linear-gradient(180deg, transparent 45%, rgba(0,0,0,.65)); opacity:0; transition:.2s;
+  display:flex; align-items:flex-end; justify-content:flex-end; padding:9px;
+}
+.track-card:hover .play-overlay{ opacity:1; }
+.mini-play{ width:36px; height:36px; border-radius:50%; background:var(--accent); color:#0B0D12; display:flex; align-items:center; justify-content:center; }
+.mini-play svg{width:14px; height:14px;}
+.track-card .tt{ font-size:13.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.track-card .ta{ font-size:12px; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;}
+
+.mood-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(190px,1fr)); gap:14px; }
+.mood-card{
+  border-radius:var(--radius-lg); padding:20px; height:110px; position:relative; overflow:hidden;
+  display:flex; align-items:flex-end; font-family:var(--font-display); font-weight:600; font-style:italic; font-size:17px;
+  border:1px solid var(--border); transition:transform .2s;
+}
+html[lang="ar"] .mood-card{font-style:normal;}
+.mood-card:hover{ transform:translateY(-3px); }
+.mood-card span{ position:relative; z-index:1; }
+
+/* ============ SEARCH ============ */
+.search-bar-row{ display:flex; align-items:center; gap:10px; margin-bottom:22px; }
+.search-hero{ flex:1; display:flex; align-items:center; gap:12px; background:var(--elevated); border-radius:999px; padding:14px 20px; border:1px solid var(--border);}
+.search-hero input{ flex:1; background:none; border:none; outline:none; color:var(--text); font-size:16px; }
+.search-hero svg{ width:19px; height:19px; color:var(--text-muted); flex-shrink:0; }
+.filter-btn{
+  display:flex; align-items:center; gap:8px; background:var(--elevated); padding:14px 20px; border-radius:999px;
+  font-size:13.5px; font-weight:700; flex-shrink:0; transition:.18s; border:1px solid var(--border); position:relative;
+}
+.filter-btn:hover{ border-color:color-mix(in srgb, var(--accent) 45%, transparent); }
+.filter-btn svg{ width:16px; height:16px; }
+.filter-btn .badge{ position:absolute; top:-5px; inset-inline-end:-5px; background:var(--accent); color:#0B0D12; font-size:10px; font-weight:800; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+
+.ads-notice{ font-size:11.5px; color:var(--text-muted); line-height:1.6; margin-bottom:18px; max-width:640px; }
+.form-field{ display:flex; flex-direction:column; gap:7px; margin-bottom:16px; }
+.form-field label{ font-size:11.5px; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:.5px; }
+.form-field input[type="text"], .form-field textarea, .form-field select{
+  background:var(--elevated); border:1px solid var(--border); border-radius:10px; padding:11px 13px; color:var(--text);
+  font-size:13.5px; outline:none; transition:border-color .15s; font-family:inherit; width:100%;
+}
+.form-field input[type="text"]:focus, .form-field textarea:focus, .form-field select:focus{ border-color:color-mix(in srgb, var(--accent) 55%, transparent); }
+.form-field textarea{ resize:vertical; min-height:70px; }
+.form-row2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.form-hint{ font-size:11px; color:var(--text-muted); margin-top:-10px; margin-bottom:16px; line-height:1.5; }
+.add-preview{ display:flex; gap:12px; align-items:center; background:var(--elevated); border-radius:12px; padding:10px; margin-bottom:16px; display:none; }
+.add-preview.show{ display:flex; }
+.add-preview img{ width:52px; height:52px; border-radius:8px; object-fit:cover; flex-shrink:0; }
+.add-preview .t{ font-size:13px; font-weight:700; }
+.add-preview .s{ font-size:11.5px; color:var(--text-muted); margin-top:2px;}
+.active-filter-pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
+.pill{ display:flex; align-items:center; gap:6px; padding:6px 12px 6px 14px; border-radius:999px; background:color-mix(in srgb, var(--accent) 18%, var(--elevated)); color:var(--accent); font-size:11.5px; font-weight:700;}
+html[dir="rtl"] .pill{ padding:6px 14px 6px 12px; }
+.pill button svg{ width:11px; height:11px; }
+
+.result-list{ display:flex; flex-direction:column; gap:2px; }
+.result-row{ display:flex; align-items:center; gap:14px; padding:10px 12px; border-radius:var(--radius-sm); transition:.15s; cursor:pointer; }
+.result-row:hover{ background:var(--elevated); }
+.result-row img{ width:48px; height:48px; border-radius:9px; object-fit:cover; flex-shrink:0;}
+.result-row .info{ flex:1; min-width:0; }
+.result-row .info .tt{ font-size:14px; font-weight:600; }
+.result-row .info .ta{ font-size:12.5px; color:var(--text-muted); margin-top:2px;}
+.result-row .meta{ font-size:12px; color:var(--text-muted); flex-shrink:0; }
+.result-row .genre-tag{ font-size:10.5px; padding:3px 9px; border-radius:999px; background:var(--elevated-2); color:var(--text-muted); flex-shrink:0;}
+.row-actions{ display:flex; align-items:center; gap:6px; flex-shrink:0; }
+
+/* ============ LIBRARY ============ */
+.tab-row{ display:flex; gap:6px; background:var(--elevated); padding:4px; border-radius:12px; width:fit-content; margin-bottom:22px; }
+.tab-btn{ padding:9px 18px; border-radius:9px; font-size:13px; font-weight:600; color:var(--text-muted); transition:.18s; }
+.tab-btn.active{ background:var(--accent); color:#0B0D12; }
+.lib-panel{ display:none; }
+.lib-panel.active{ display:block; }
+.empty-state{ text-align:center; padding:60px 20px; color:var(--text-muted); }
+.empty-state svg{ width:38px; height:38px; margin-bottom:12px; color:var(--text-muted); opacity:.5;}
+.empty-state .e-t{ font-weight:600; color:var(--text); margin-bottom:5px; font-size:14.5px;}
+.empty-state .e-s{ font-size:12.5px; }
+
+.playlist-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(170px,1fr)); gap:18px; }
+.playlist-card{ cursor:pointer; }
+.playlist-card .art-wrap{ border-radius:var(--radius-md); overflow:hidden; aspect-ratio:1; margin-bottom:10px; position:relative; }
+.playlist-collage{ display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; height:100%; }
+.playlist-collage img{ width:100%; height:100%; object-fit:cover; }
+.new-playlist-card .art-wrap{ background:var(--elevated); display:flex; align-items:center; justify-content:center; border:1.5px dashed var(--border); }
+.new-playlist-card svg{ width:26px; height:26px; color:var(--text-muted); }
+
+/* ============ SETTINGS ============ */
+.settings-block{ max-width:680px; margin-bottom:38px; }
+.settings-block h3{ font-family:var(--font-display); font-style:italic; font-weight:600; font-size:18px; margin-bottom:4px;}
+html[lang="ar"] .settings-block h3{font-style:normal;}
+.settings-block .desc{ font-size:12.5px; color:var(--text-muted); margin-bottom:18px; }
+.theme-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:12px; }
+.theme-swatch{ border-radius:var(--radius-md); padding:14px 12px; cursor:pointer; border:1.5px solid var(--border); transition:.18s; background:var(--surface);}
+.theme-swatch:hover{ border-color:color-mix(in srgb, var(--accent) 50%, transparent); }
+.theme-swatch.selected{ border-color:var(--accent); }
+.theme-swatch .dot-row{ display:flex; gap:5px; margin-bottom:10px; }
+.theme-swatch .dot{ width:16px; height:16px; border-radius:50%; }
+.theme-swatch .tname{ font-size:12px; font-weight:600; }
+
+.builder-row{ display:flex; gap:22px; flex-wrap:wrap; align-items:flex-end; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:20px; }
+.builder-field{ display:flex; flex-direction:column; gap:8px; }
+.builder-field label{ font-size:11.5px; color:var(--text-muted); font-weight:600; }
+.color-input{ width:56px; height:36px; border-radius:9px; border:1px solid var(--border); background:none; padding:2px; cursor:pointer;}
+.btn-primary{ background:var(--accent); color:#0B0D12; padding:11px 22px; border-radius:999px; font-weight:700; font-size:13px; transition:.18s;}
+.btn-primary:hover{ filter:brightness(1.08); transform:translateY(-1px);}
+.btn-ghost{ padding:10px 18px; border-radius:999px; font-weight:600; font-size:13px; background:var(--elevated); color:var(--text-muted);}
+.btn-ghost:hover{ color:var(--text); }
+
+.lang-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:10px; }
+.lang-card{ border-radius:var(--radius-md); padding:13px 14px; cursor:pointer; border:1.5px solid var(--border); background:var(--surface); transition:.18s;}
+.lang-card:hover{ border-color:color-mix(in srgb, var(--accent) 50%, transparent); }
+.lang-card.selected{ border-color:var(--accent); background:color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+.lang-card .lname{ font-size:13.5px; font-weight:700; }
+.lang-card .lnative{ font-size:11.5px; color:var(--text-muted); margin-top:2px;}
+
+.settings-toggle-row{ display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--border); }
+.settings-toggle-row:last-child{border-bottom:none;}
+.toggle-label .tt{ font-size:13.5px; font-weight:600; }
+.toggle-label .ss{ font-size:12px; color:var(--text-muted); margin-top:2px;}
+.switch{ width:42px; height:24px; border-radius:999px; background:var(--elevated-2); position:relative; transition:.2s; flex-shrink:0;}
+.switch::after{ content:''; position:absolute; top:3px; inset-inline-start:3px; width:18px; height:18px; border-radius:50%; background:var(--text-muted); transition:.2s; }
+.switch.on{ background:color-mix(in srgb, var(--accent) 55%, var(--elevated-2)); }
+.switch.on::after{ background:var(--accent); inset-inline-start:21px; }
+
+/* ============ PLAYER BAR ============ */
+.player-bar{
+  position:fixed; bottom:0; inset-inline-start:0; inset-inline-end:0; z-index:40; height:92px;
+  background:color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter:blur(20px);
+  border-top:1px solid var(--border); display:flex; align-items:center; padding:0 18px; gap:16px;
+  transition:transform .3s ease, opacity .3s ease;
+}
+.player-bar.hidden{ transform:translateY(110%); opacity:0; pointer-events:none; }
+.player-track{ display:flex; align-items:center; gap:12px; width:230px; flex-shrink:0; min-width:0; }
+.player-track img{ width:56px; height:56px; border-radius:10px; object-fit:cover; flex-shrink:0; }
+.player-track .info{ min-width:0; }
+.player-track .tt{ font-size:13.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.player-track .ta{ font-size:12px; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;}
+.heart-btn svg{ width:17px; height:17px; transition:.15s; color:var(--text-muted); }
+.heart-btn.active svg{ color:var(--accent); fill:var(--accent); }
+
+.player-center{ flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; max-width:560px; margin:0 auto; min-width:0; }
+.transport{ display:flex; align-items:center; gap:18px; }
+.transport button svg{ width:17px; height:17px; color:var(--text-muted); transition:.15s; }
+.transport button:hover svg{ color:var(--text); }
+.transport .play-main{ width:36px; height:36px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; }
+.transport .play-main svg{ width:15px; height:15px; color:#0B0D12; }
+.transport .shuffle.active svg, .transport .repeat.active svg{ color:var(--accent); }
+.progress-row{ display:flex; align-items:center; gap:9px; width:100%; }
+.progress-row .time{ font-size:10.5px; color:var(--text-muted); width:34px; text-align:center; flex-shrink:0;}
+.progress-track{ flex:1; height:4px; border-radius:4px; background:var(--elevated-2); position:relative; cursor:pointer; }
+.progress-fill{ position:absolute; inset-inline-start:0; top:0; height:100%; border-radius:4px; background:var(--accent); width:0%; }
+.progress-fill::after{ content:''; position:absolute; inset-inline-end:-5px; top:50%; transform:translateY(-50%); width:10px; height:10px; border-radius:50%; background:var(--text); opacity:0; transition:.15s;}
+.progress-track:hover .progress-fill::after{ opacity:1; }
+
+.player-right{ display:flex; align-items:center; gap:10px; width:230px; justify-content:flex-end; flex-shrink:0; }
+.vol-row{ display:flex; align-items:center; gap:8px; width:100px; }
+.vol-track{ flex:1; height:4px; border-radius:4px; background:var(--elevated-2); position:relative; cursor:pointer; }
+.vol-fill{ position:absolute; inset-inline-start:0; top:0; height:100%; border-radius:4px; background:var(--text-muted); width:70%; }
+.player-close{ width:30px; height:30px; border-radius:50%; background:var(--elevated); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:.18s;}
+.player-close:hover{ background:#C4365B; }
+.player-close svg{ width:13px; height:13px; }
+
+/* Reopen pill when player bar closed */
+.reopen-pill{
+  position:fixed; bottom:20px; inset-inline-end:24px; z-index:39; display:flex; align-items:center; gap:8px;
+  background:var(--elevated); border:1px solid var(--border); padding:10px 16px; border-radius:999px; font-size:12px; font-weight:700;
+  opacity:0; pointer-events:none; transform:translateY(10px); transition:.25s;
+}
+.reopen-pill.show{ opacity:1; pointer-events:auto; transform:translateY(0); }
+.reopen-pill svg{ width:14px; height:14px; color:var(--accent); }
+
+/* Dynamic Island simulation */
+.dyn-island{
+  position:fixed; top:14px; left:50%; transform:translateX(-50%) scale(.9); z-index:60;
+  background:#000; border-radius:999px; padding:8px 18px 8px 8px; display:flex; align-items:center; gap:10px;
+  opacity:0; pointer-events:none; transition:all .4s cubic-bezier(.34,1.56,.64,1); box-shadow:0 10px 30px rgba(0,0,0,.5);
+}
+.dyn-island.show{ opacity:1; transform:translateX(-50%) scale(1); pointer-events:auto; }
+.dyn-island img{ width:26px; height:26px; border-radius:50%; object-fit:cover; }
+.dyn-island .txt{ font-size:11px; color:#fff; font-weight:600; max-width:140px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.dyn-island .eq{ display:flex; align-items:flex-end; gap:2px; height:12px; }
+.dyn-island .eq span{ width:2.5px; background:var(--accent); border-radius:2px; animation:eq 0.9s ease-in-out infinite; }
+.dyn-island .eq span:nth-child(2){animation-delay:.2s;}
+.dyn-island .eq span:nth-child(3){animation-delay:.4s;}
+@keyframes eq{ 0%,100%{height:3px;} 50%{height:12px;} }
+
+/* ============ MODALS ============ */
+.modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.6); backdrop-filter:blur(4px); z-index:80; opacity:0; pointer-events:none; transition:.25s; }
+.modal-backdrop.show{ opacity:1; pointer-events:auto; }
+.modal{
+  position:fixed; z-index:90; top:50%; left:50%; transform:translate(-50%,-46%); width:min(560px,92vw);
+  max-height:84vh; overflow-y:auto; background:var(--surface); border:1px solid var(--border); border-radius:24px;
+  padding:30px; opacity:0; pointer-events:none; transition:.28s cubic-bezier(.2,.9,.3,1);
+}
+.modal.show{ opacity:1; transform:translate(-50%,-50%); pointer-events:auto; }
+.modal-close{ position:absolute; top:18px; inset-inline-end:18px; width:32px; height:32px; border-radius:50%; background:var(--elevated); display:flex; align-items:center; justify-content:center;}
+.modal-close svg{width:14px; height:14px;}
+.modal h2.modal-title{ font-family:var(--font-display); font-style:italic; font-size:21px; font-weight:600; margin-bottom:4px; padding-inline-end:36px;}
+html[lang="ar"] .modal h2.modal-title{font-style:normal;}
+.modal .modal-desc{ font-size:12.5px; color:var(--text-muted); margin-bottom:22px; }
+
+/* Song profile modal */
+.sp-head{ display:flex; gap:16px; align-items:center; margin-bottom:22px; padding-inline-end:36px;}
+.sp-head img{ width:88px; height:88px; border-radius:16px; object-fit:cover; }
+.sp-head h2{ font-family:var(--font-display); font-style:italic; font-size:22px; font-weight:600;}
+html[lang="ar"] .sp-head h2{font-style:normal;}
+.sp-head .art{ color:var(--text-muted); font-size:13.5px; margin-top:4px;}
+.sp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px;}
+.sp-stat{ background:var(--elevated); border-radius:var(--radius-sm); padding:13px 15px;}
+.sp-stat .l{ font-size:10.5px; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); margin-bottom:4px;}
+.sp-stat .v{ font-size:15px; font-weight:700;}
+.sp-actions{ display:flex; gap:10px; }
+
+/* Lyrics modal */
+.lyr-modal{ width:min(620px,92vw); }
+.lyr-toolbar{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:20px; padding-inline-end:36px;}
+.lyr-select{ background:var(--elevated); border:1px solid var(--border); color:var(--text); font-size:12.5px; padding:8px 12px; border-radius:9px; outline:none;}
+.dual-toggle{ display:flex; align-items:center; gap:8px; margin-inline-start:auto; font-size:12.5px; color:var(--text-muted);}
+.lyr-body{ display:flex; flex-direction:column; gap:16px; max-height:52vh; overflow-y:auto; padding-inline-end:6px;}
+.lyr-line{ font-size:16px; line-height:1.6; color:var(--text-muted); transition:.2s; padding:2px 0;}
+.lyr-line.orig{ color:var(--text); font-weight:600; }
+.lyr-line.trans{ font-size:14px; color:var(--accent); font-style:italic; }
+.lyr-pair{ padding-bottom:10px; border-bottom:1px solid var(--border); }
+.lyr-pair:last-child{border-bottom:none;}
+
+/* Filter modal */
+.filter-section{ margin-bottom:22px; }
+.filter-section .fs-label{ font-size:11.5px; letter-spacing:1px; text-transform:uppercase; color:var(--text-muted); font-weight:700; margin-bottom:12px; }
+.filter-chip-row{ display:flex; flex-wrap:wrap; gap:9px; }
+.filter-chip{ padding:9px 15px; border-radius:999px; background:var(--elevated); font-size:12.5px; font-weight:600; color:var(--text-muted); border:1.5px solid transparent; transition:.16s; }
+.filter-chip:hover{ color:var(--text); }
+.filter-chip.active{ background:color-mix(in srgb, var(--accent) 22%, var(--elevated)); color:var(--accent); border-color:color-mix(in srgb, var(--accent) 45%, transparent); }
+.filter-actions{ display:flex; gap:10px; padding-top:8px; border-top:1px solid var(--border); margin-top:6px; }
+.filter-actions .btn-primary, .filter-actions .btn-ghost{ flex:1; text-align:center; }
+
+/* toast */
+.toast{ position:fixed; bottom:112px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--elevated-2); color:var(--text); padding:12px 22px; border-radius:999px; font-size:13px; font-weight:600; opacity:0; transition:.3s; z-index:100; border:1px solid var(--border); pointer-events:none; white-space:nowrap;}
+.toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:900px){
+  .content{ padding:18px 16px 150px; }
+  .topbar{ padding:12px 14px; }
+  .player-bar{ height:auto; padding:10px 12px 8px; flex-wrap:wrap; }
+  .player-track{ width:auto; flex:1; }
+  .player-center{ order:3; width:100%; max-width:none; }
+  .player-right{ width:auto; }
+  .vol-row{ display:none; }
+  .dyn-island{ top:10px; }
+  .filter-btn span.f-label{ display:none; }
+  .filter-btn{ padding:14px; }
+}
+</style>
+</head>
+<body>
+<div class="lattice-bg"></div>
+<div class="grain-fade"></div>
+<!-- Hidden YouTube IFrame Player (audio engine). Kept tiny + off-canvas rather than display:none so playback isn't throttled by the browser. -->
+<div style="position:fixed; bottom:0; inset-inline-start:0; width:1px; height:1px; overflow:hidden; opacity:0; pointer-events:none; z-index:-1;">
+  <div id="ytPlayerMount"></div>
+</div>
+
+<!-- Dynamic Island -->
+<div class="dyn-island" id="dynIsland">
+  <img id="diImg" src="" alt="">
+  <div class="txt" id="diText">—</div>
+  <div class="eq"><span></span><span></span><span></span></div>
+</div>
+
+<!-- DRAWER (independent overlay nav) -->
+<div class="drawer-backdrop" id="drawerBackdrop" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div class="brand-name" style="display:block;">Sawt</div>
+    </div>
+    <button class="drawer-close" onclick="closeDrawer()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  </div>
+  <nav class="nav-group">
+    <div class="nav-label" data-i18n="nav_menu">Menu</div>
+    <a class="nav-item active" data-view="home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      <span data-i18n="nav_home">Home</span>
+    </a>
+    <a class="nav-item" data-view="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <span data-i18n="nav_search">Search & Filters</span>
+    </a>
+    <a class="nav-item" data-view="library">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h4v16H4zM10 8h4v12h-4zM16 6h4v14h-4z"/></svg>
+      <span data-i18n="nav_library">Library</span>
+    </a>
+    <a class="nav-item" data-view="playlists">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      <span data-i18n="nav_playlists">Playlists</span>
+    </a>
+    <a class="nav-item" data-view="settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09A1.65 1.65 0 0015.4 4.6a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      <span data-i18n="nav_settings">Settings</span>
+    </a>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="t" data-i18n="foot_title">On Repeat</div>
+    <div class="s" data-i18n="foot_sub">Your top 5 tracks this week are shaping tomorrow's Discover mix.</div>
+  </div>
+</aside>
+
+<div class="app">
+  <div class="topbar">
+    <button class="burger-btn" onclick="openDrawer()" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div class="brand-name">Sawt</div>
+    </div>
+    <h1 data-i18n="topbar_title">Discover</h1>
+    <div class="topbar-spacer"></div>
+    <div class="top-search" style="max-width:320px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="text" data-i18n-ph="topbar_search_ph" placeholder="Search tracks, artists, moods...">
+    </div>
+    <div class="lang-quick">
+      <button class="lang-quick-btn" onclick="toggleLangDropdown(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></svg>
+        <span id="langQuickLabel">EN</span>
+      </button>
+      <div class="lang-dropdown" id="langDropdown"></div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="content">
+      <!-- HOME VIEW -->
+      <section class="view active" id="view-home">
+        <div class="hero-card">
+          <div>
+            <div class="hero-eyebrow" data-i18n="hero_eyebrow">Based on Your Vibe</div>
+            <div class="hero-title" data-i18n="hero_title">Midnight Oud & Synth Sessions</div>
+            <p class="hero-sub" data-i18n="hero_sub">A moody blend built from your last 30 days of listening — heavy on strings, low on noise.</p>
+          </div>
+          <button class="hero-play" onclick="playTrackById('t1')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+        </div>
+
+        <div class="section-head"><h2 data-i18n="sec_vibe">Based on Your Vibe</h2><span class="see-all" data-i18n="see_all">See all</span></div>
+        <div class="row-scroll" id="rowVibe"></div>
+
+        <div class="section-head"><h2 data-i18n="sec_new">Try Something New</h2><span class="see-all" data-i18n="see_all">See all</span></div>
+        <div class="row-scroll" id="rowNew"></div>
+
+        <div class="section-head"><h2 data-i18n="sec_moods">Moods & Genres</h2></div>
+        <div class="mood-grid" id="moodGrid"></div>
+
+        <div class="section-head"><h2 data-i18n="sec_onrepeat">On Repeat</h2><span class="see-all" data-i18n="see_all">See all</span></div>
+        <div class="row-scroll" id="rowRepeat"></div>
+
+        <div class="section-head"><h2 data-i18n="sec_mostplayed">Most Played</h2><span class="see-all" data-i18n="see_all">See all</span></div>
+        <div class="row-scroll" id="rowMost"></div>
+      </section>
+
+      <!-- SEARCH VIEW -->
+      <section class="view" id="view-search">
+        <div class="search-bar-row">
+          <div class="search-hero">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="text" id="searchInput" data-i18n-ph="search_ph" placeholder="Search YouTube & Spotify index...">
+          </div>
+          <button class="filter-btn" onclick="openAddModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            <span class="f-label" data-i18n="add_link_btn">Add Link</span>
+          </button>
+          <button class="filter-btn" onclick="openFilterModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+            <span class="f-label" data-i18n="filter_btn">Filter</span>
+            <span class="badge" id="filterBadge" style="display:none;">0</span>
+          </button>
+        </div>
+        <p class="ads-notice" data-i18n="ads_notice">Playback streams live from YouTube via the official Player API — no files are downloaded. YouTube ads controlled by the video owner may still appear; this app cannot remove them.</p>
+        <div class="active-filter-pills" id="activePills"></div>
+        <div class="result-list" id="resultList"></div>
+      </section>
+
+      <!-- LIBRARY VIEW -->
+      <section class="view" id="view-library">
+        <div class="tab-row" id="libTabs">
+          <button class="tab-btn active" data-tab="fav" data-i18n="tab_fav">Favorites</button>
+          <button class="tab-btn" data-tab="playlists" data-i18n="tab_playlists">Playlists</button>
+          <button class="tab-btn" data-tab="history" data-i18n="tab_history">History</button>
+        </div>
+        <div class="lib-panel active" id="lib-fav"></div>
+        <div class="lib-panel" id="lib-playlists"></div>
+        <div class="lib-panel" id="lib-history"></div>
+      </section>
+
+      <!-- PLAYLISTS VIEW -->
+      <section class="view" id="view-playlists">
+        <div class="section-head"><h2 data-i18n="sec_yourplaylists">Your Playlists</h2></div>
+        <div class="playlist-grid" id="playlistGrid"></div>
+      </section>
+
+      <!-- SETTINGS VIEW -->
+      <section class="view" id="view-settings">
+        <div class="settings-block">
+          <h3 data-i18n="set_theme_title">Theme Customizer</h3>
+          <p class="desc" data-i18n="set_theme_desc">Choose a luxury preset, or design your own from scratch.</p>
+          <div class="theme-grid" id="themeGrid"></div>
+        </div>
+
+        <div class="settings-block">
+          <h3 data-i18n="set_custom_title">Custom Theme Builder</h3>
+          <p class="desc" data-i18n="set_custom_desc">Pick a primary accent, background, and gradient mix.</p>
+          <div class="builder-row">
+            <div class="builder-field">
+              <label data-i18n="set_primary">Primary Accent</label>
+              <input type="color" class="color-input" id="cPrimary" value="#D4A853">
+            </div>
+            <div class="builder-field">
+              <label data-i18n="set_bg">Background</label>
+              <input type="color" class="color-input" id="cBg" value="#0B0D12">
+            </div>
+            <div class="builder-field">
+              <label data-i18n="set_gradient">Gradient Mix</label>
+              <input type="color" class="color-input" id="cGrad" value="#8B5E34">
+            </div>
+            <button class="btn-primary" onclick="applyCustomTheme()" data-i18n="set_apply">Apply Theme</button>
+          </div>
+        </div>
+
+        <div class="settings-block">
+          <h3 data-i18n="set_lang_title">Language</h3>
+          <p class="desc" data-i18n="set_lang_desc">Switch the entire interface between global languages.</p>
+          <div class="lang-grid" id="langGrid"></div>
+        </div>
+
+        <div class="settings-block">
+          <h3 data-i18n="set_playback_title">Playback</h3>
+          <div class="settings-toggle-row">
+            <div class="toggle-label"><div class="tt" data-i18n="set_autoplay">Autoplay similar tracks</div><div class="ss" data-i18n="set_autoplay_sub">Keep the vibe going when a playlist ends</div></div>
+            <div class="switch on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="settings-toggle-row">
+            <div class="toggle-label"><div class="tt" data-i18n="set_dual">Dual lyrics by default</div><div class="ss" data-i18n="set_dual_sub">Always show original + translation together</div></div>
+            <div class="switch" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="settings-toggle-row">
+            <div class="toggle-label"><div class="tt" data-i18n="set_island">Dynamic Island simulation</div><div class="ss" data-i18n="set_island_sub">Show a lock-screen style now-playing pill</div></div>
+            <div class="switch on" id="islandSwitch" onclick="toggleIslandSetting(this)"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- PLAYER BAR -->
+<div class="player-bar" id="playerBar">
+  <div class="player-track">
+    <img id="pImg" src="" alt="">
+    <div class="info">
+      <div class="tt" id="pTitle">—</div>
+      <div class="ta" id="pArtist">—</div>
+    </div>
+    <button class="heart-btn" id="pHeart" onclick="toggleFavorite(currentTrackId)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z"/></svg>
+    </button>
+  </div>
+
+  <div class="player-center">
+    <div class="transport">
+      <button class="shuffle" id="btnShuffle" onclick="toggleShuffle()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg>
+      </button>
+      <button onclick="prevTrack()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zM20 6l-9 6 9 6z"/></svg>
+      </button>
+      <button class="play-main" id="btnPlay" onclick="togglePlay()">
+        <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <button onclick="nextTrack()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 6h-2v12h2zM4 6l9 6-9 6z"/></svg>
+      </button>
+      <button class="repeat" id="btnRepeat" onclick="toggleRepeat()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+      </button>
+    </div>
+    <div class="progress-row">
+      <span class="time" id="tCurrent">0:00</span>
+      <div class="progress-track" id="progressTrack" onclick="seek(event)"><div class="progress-fill" id="progressFill"></div></div>
+      <span class="time" id="tTotal">0:00</span>
+    </div>
+  </div>
+
+  <div class="player-right">
+    <button class="icon-btn" onclick="openLyrics()" title="Lyrics">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V6a2 2 0 012-2h10l4 4v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 10h8M8 14h5"/></svg>
+    </button>
+    <div class="vol-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="color:var(--text-muted); flex-shrink:0;"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19 7a7 7 0 010 10"/></svg>
+      <div class="vol-track" id="volTrack" onclick="setVolume(event)"><div class="vol-fill" id="volFill"></div></div>
+    </div>
+    <button class="player-close" onclick="closePlayerBar()" title="Close player">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- Reopen pill -->
+<div class="reopen-pill" id="reopenPill" onclick="reopenPlayer()">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+  <span data-i18n="reopen_player">Now Playing</span>
+</div>
+
+<!-- SONG PROFILE MODAL -->
+<div class="modal-backdrop" id="spBackdrop" onclick="closeModal('sp')"></div>
+<div class="modal" id="spModal">
+  <button class="modal-close" onclick="closeModal('sp')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <div class="sp-head">
+    <img id="spImg" src="" alt="">
+    <div>
+      <h2 id="spTitle">—</h2>
+      <div class="art" id="spArtist">—</div>
+    </div>
+  </div>
+  <div class="sp-grid">
+    <div class="sp-stat"><div class="l" data-i18n="sp_subgenre">Genre</div><div class="v" id="spGenre">—</div></div>
+    <div class="sp-stat"><div class="l" data-i18n="field_mood">Mood</div><div class="v" id="spBpm">—</div></div>
+    <div class="sp-stat"><div class="l" data-i18n="field_lang">Language / Region</div><div class="v" id="spYear">—</div></div>
+    <div class="sp-stat"><div class="l" data-i18n="sp_duration">Duration</div><div class="v" id="spDuration">—</div></div>
+  </div>
+  <div class="sp-actions">
+    <a class="btn-primary" id="spYoutubeLink" href="#" target="_blank" rel="noopener" style="display:inline-block; text-decoration:none;" data-i18n="sp_open_yt">Open on YouTube</a>
+    <button class="btn-ghost" onclick="openLyrics(); closeModal('sp')" data-i18n="sp_lyrics">View Lyrics</button>
+  </div>
+</div>
+
+<!-- LYRICS MODAL -->
+<div class="modal-backdrop" id="lyrBackdrop" onclick="closeModal('lyr')"></div>
+<div class="modal lyr-modal" id="lyrModal">
+  <button class="modal-close" onclick="closeModal('lyr')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <div class="sp-head" style="margin-bottom:14px;">
+    <img id="lyrImg" src="" alt="" style="width:56px;height:56px;">
+    <div>
+      <h2 id="lyrTitle" style="font-size:18px;">—</h2>
+      <div class="art" id="lyrArtist">—</div>
+    </div>
+  </div>
+  <div class="lyr-toolbar">
+    <select class="lyr-select" id="lyrLangSelect" onchange="renderLyrics()">
+      <option value="none" data-i18n="lyr_no_translate">No translation</option>
+      <option value="en">English</option>
+      <option value="ar">العربية (Arabic)</option>
+      <option value="es">Español</option>
+      <option value="fr">Français</option>
+      <option value="ja">日本語</option>
+      <option value="zh">中文</option>
+    </select>
+    <label class="dual-toggle">
+      <input type="checkbox" id="dualCheck" onchange="renderLyrics()">
+      <span data-i18n="lyr_dual">Dual Lyrics</span>
+    </label>
+  </div>
+  <div class="lyr-body" id="lyrBody"></div>
+</div>
+
+<!-- FILTER MODAL -->
+<div class="modal-backdrop" id="filterBackdrop" onclick="closeModal('filter')"></div>
+<div class="modal" id="filterModal">
+  <button class="modal-close" onclick="closeModal('filter')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <h2 class="modal-title" data-i18n="filter_title">Advanced Filters</h2>
+  <p class="modal-desc" data-i18n="filter_desc">Narrow results by genre, mood, and language or region.</p>
+
+  <div class="filter-section">
+    <div class="fs-label" data-i18n="filter_genres">Genres</div>
+    <div class="filter-chip-row" id="filterGenreRow"></div>
+  </div>
+  <div class="filter-section">
+    <div class="fs-label" data-i18n="filter_moods">Moods</div>
+    <div class="filter-chip-row" id="filterMoodRow"></div>
+  </div>
+  <div class="filter-section">
+    <div class="fs-label" data-i18n="filter_lang_region">Language / Region</div>
+    <div class="filter-chip-row" id="filterLangRow"></div>
+  </div>
+
+  <div class="filter-actions">
+    <button class="btn-ghost" onclick="resetFilters()" data-i18n="filter_reset">Reset Filters</button>
+    <button class="btn-primary" onclick="applyFilters()" data-i18n="filter_apply">Apply Filters</button>
+  </div>
+</div>
+
+<!-- ADD TRACK MODAL -->
+<div class="modal-backdrop" id="addBackdrop" onclick="closeModal('add')"></div>
+<div class="modal" id="addModal">
+  <button class="modal-close" onclick="closeModal('add')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <h2 class="modal-title" data-i18n="add_track_title">Add a YouTube Track</h2>
+  <p class="modal-desc" data-i18n="add_track_desc">Paste a YouTube link or video ID — the title, channel, and cover art are fetched automatically.</p>
+
+  <div class="form-field">
+    <label data-i18n="field_url">YouTube URL or Video ID</label>
+    <input type="text" id="addUrlInput" placeholder="https://youtube.com/watch?v=... or dQw4w9WgXcQ" oninput="previewAddTrack()">
+  </div>
+  <div class="add-preview" id="addPreview">
+    <img id="addPreviewImg" src="" alt="">
+    <div>
+      <div class="t" id="addPreviewTitle">—</div>
+      <div class="s" id="addPreviewArtist">—</div>
+    </div>
+  </div>
+
+  <div class="form-row2">
+    <div class="form-field">
+      <label data-i18n="field_title_optional">Title (optional override)</label>
+      <input type="text" id="addTitleInput" placeholder="Auto-detected">
+    </div>
+    <div class="form-field">
+      <label data-i18n="field_artist_optional">Artist / Channel (optional)</label>
+      <input type="text" id="addArtistInput" placeholder="Auto-detected">
+    </div>
+  </div>
+  <div class="form-row2">
+    <div class="form-field">
+      <label data-i18n="field_genre">Genre</label>
+      <select id="addGenreSelect"></select>
+    </div>
+    <div class="form-field">
+      <label data-i18n="field_mood">Mood</label>
+      <select id="addMoodSelect"></select>
+    </div>
+  </div>
+  <div class="form-field">
+    <label data-i18n="field_lang">Language / Region</label>
+    <select id="addLangSelect"></select>
+  </div>
+  <div class="form-field">
+    <label data-i18n="field_lyrics_optional">Lyrics (optional, original language only — no auto-translate for custom tracks)</label>
+    <textarea id="addLyricsInput" placeholder="Paste lyrics here if you have them..."></textarea>
+  </div>
+
+  <div class="filter-actions">
+    <button class="btn-ghost" onclick="closeModal('add')" data-i18n="cancel">Cancel</button>
+    <button class="btn-primary" onclick="submitAddTrack()" data-i18n="add_track_submit">Add & Play</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= SVG COVER GENERATOR (fixes broken images) ================= */
+const coverGradients = [
+  ['#D4A853','#8B5E34'], ['#4C8DD9','#1E3A6B'], ['#E0708C','#7A2C42'], ['#2FA37C','#0B4F3D'],
+  ['#9B6BD9','#4B2E83'], ['#D97A3D','#7A3A16'], ['#4FBFA0','#1F5F4C'], ['#C4365B','#5C0F2C'],
+  ['#5B7FD9','#12213F'], ['#B8BEC9','#54606E']
+];
+function svgCover(letter, idx){
+  const g = coverGradients[idx % coverGradients.length];
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'>
+    <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+      <stop offset='0' stop-color='${g[0]}'/><stop offset='1' stop-color='${g[1]}'/>
+    </linearGradient></defs>
+    <rect width='200' height='200' fill='url(#g)'/>
+    <circle cx='158' cy='150' r='46' fill='rgba(255,255,255,0.10)'/>
+    <circle cx='36' cy='40' r='30' fill='rgba(255,255,255,0.08)'/>
+    <path d='M70 130 V70 l50 -14 v56' stroke='rgba(255,255,255,0.55)' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/>
+    <circle cx='66' cy='134' r='14' fill='rgba(255,255,255,0.85)'/>
+    <circle cx='116' cy='120' r='14' fill='rgba(255,255,255,0.85)'/>
+    <text x='100' y='190' font-family='Arial' font-size='16' fill='rgba(255,255,255,0.55)' text-anchor='middle' font-weight='700'>${letter}</text>
+  </svg>`;
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+
+/* ================= LANGUAGES ================= */
+const languages = [
+  {code:'en', name:'English', native:'English', dir:'ltr'},
+  {code:'ar', name:'Arabic', native:'العربية', dir:'rtl'},
+  {code:'ja', name:'Japanese', native:'日本語', dir:'ltr'},
+  {code:'zh', name:'Chinese', native:'中文', dir:'ltr'},
+  {code:'es', name:'Spanish', native:'Español', dir:'ltr'},
+  {code:'fr', name:'French', native:'Français', dir:'ltr'},
+  {code:'de', name:'German', native:'Deutsch', dir:'ltr'},
+  {code:'ko', name:'Korean', native:'한국어', dir:'ltr'},
+  {code:'ru', name:'Russian', native:'Русский', dir:'ltr'},
+  {code:'tr', name:'Turkish', native:'Türkçe', dir:'ltr'},
+];
+
+/* ================= I18N ================= */
+const i18n = {
+  en:{ nav_menu:"Menu", nav_home:"Home", nav_search:"Search & Filters", nav_search_short:"Search", nav_library:"Library", nav_playlists:"Playlists", nav_settings:"Settings",
+    foot_title:"On Repeat", foot_sub:"Your top 5 tracks this week are shaping tomorrow's Discover mix.",
+    topbar_title:"Discover", topbar_search_ph:"Search tracks, artists, moods...",
+    hero_eyebrow:"Based on Your Vibe", hero_title:"Midnight Oud & Synth Sessions", hero_sub:"A moody blend built from your last 30 days of listening — heavy on strings, low on noise.",
+    sec_vibe:"Based on Your Vibe", sec_new:"Try Something New", sec_moods:"Moods & Genres", sec_onrepeat:"On Repeat", sec_mostplayed:"Most Played", sec_yourplaylists:"Your Playlists", see_all:"See all",
+    search_ph:"Search YouTube & Spotify index...",
+    tab_fav:"Favorites", tab_playlists:"Playlists", tab_history:"History", tab_offline:"Offline Cache",
+    set_theme_title:"Theme Customizer", set_theme_desc:"Choose a luxury preset, or design your own from scratch.",
+    set_custom_title:"Custom Theme Builder", set_custom_desc:"Pick a primary accent, background, and gradient mix.",
+    set_primary:"Primary Accent", set_bg:"Background", set_gradient:"Gradient Mix", set_apply:"Apply Theme",
+    set_lang_title:"Language", set_lang_desc:"Switch the entire interface between global languages.",
+    set_playback_title:"Playback", set_autoplay:"Autoplay similar tracks", set_autoplay_sub:"Keep the vibe going when a playlist ends",
+    set_dual:"Dual lyrics by default", set_dual_sub:"Always show original + translation together",
+    set_island:"Dynamic Island simulation", set_island_sub:"Show a lock-screen style now-playing pill",
+    sp_subgenre:"Genre", sp_bpm:"BPM", sp_year:"Release Year", sp_duration:"Duration", sp_download:"Download Song", sp_lyrics:"View Lyrics",
+    lyr_no_translate:"No translation", lyr_dual:"Dual Lyrics",
+    empty_fav_t:"No favorites yet", empty_fav_s:"Tap the heart on any track to save it here.",
+    empty_hist_t:"No listening history", empty_hist_s:"Tracks you play will show up here.",
+    empty_off_t:"Nothing downloaded", empty_off_s:"Download a song to make it available offline.",
+    new_playlist:"New Playlist", toast_download:"Download started (demo)", toast_fav_add:"Added to Favorites", toast_fav_rm:"Removed from Favorites",
+    filter_btn:"Filter", filter_title:"Advanced Filters", filter_desc:"Narrow results by genre, mood, and language or region.",
+    filter_genres:"Genres", filter_moods:"Moods", filter_lang_region:"Language / Region", filter_reset:"Reset Filters", filter_apply:"Apply Filters",
+    reopen_player:"Now Playing", toast_filters_applied:"Filters applied", toast_filters_reset:"Filters reset", toast_player_closed:"Playback stopped",
+    add_link_btn:"Add Link", ads_notice:"Playback streams live from YouTube via the official Player API — no files are downloaded. YouTube ads controlled by the video owner may still appear; this app cannot remove them.",
+    add_track_title:"Add a YouTube Track", add_track_desc:"Paste a YouTube link or video ID — the title, channel, and cover art are fetched automatically.",
+    field_url:"YouTube URL or Video ID", field_title_optional:"Title (optional override)", field_artist_optional:"Artist / Channel (optional)",
+    field_genre:"Genre", field_mood:"Mood", field_lang:"Language / Region", field_lyrics_optional:"Lyrics (optional, original language only — no auto-translate for custom tracks)",
+    add_track_submit:"Add & Play", cancel:"Cancel", sp_open_yt:"Open on YouTube",
+    toast_track_added:"Added to your queue", toast_invalid_link:"Couldn't read a video ID from that link", toast_meta_failed:"Added, but couldn't fetch title/channel — edit them manually",
+  },
+  ar:{ nav_menu:"القائمة", nav_home:"الرئيسية", nav_search:"البحث والتصفية", nav_search_short:"بحث", nav_library:"مكتبتي", nav_playlists:"قوائم التشغيل", nav_settings:"الإعدادات",
+    foot_title:"الأكثر تكراراً", foot_sub:"أفضل 5 مقاطع استمعت إليها هذا الأسبوع تُشكّل توصيات الغد.",
+    topbar_title:"اكتشف", topbar_search_ph:"ابحث عن أغاني، فنانين، أو أمزجة...",
+    hero_eyebrow:"مبني على ذوقك", hero_title:"جلسات عود وسينث في منتصف الليل", hero_sub:"مزيج حزين مبني على استماعك خلال آخر 30 يوماً — أوتار كثيرة وضجيج أقل.",
+    sec_vibe:"مبني على ذوقك", sec_new:"جرّب شيئاً جديداً", sec_moods:"الأمزجة والأنواع", sec_onrepeat:"الأكثر تكراراً", sec_mostplayed:"الأكثر استماعاً", sec_yourplaylists:"قوائمك", see_all:"عرض الكل",
+    search_ph:"ابحث في فهرس يوتيوب وسبوتيفاي...",
+    tab_fav:"المفضلة", tab_playlists:"القوائم", tab_history:"السجل", tab_offline:"المخزّن دون اتصال",
+    set_theme_title:"تخصيص المظهر", set_theme_desc:"اختر مظهراً فاخراً جاهزاً، أو صمّم مظهرك الخاص.",
+    set_custom_title:"منشئ المظهر المخصص", set_custom_desc:"اختر اللون الأساسي، الخلفية، ومزيج التدرّج.",
+    set_primary:"اللون الأساسي", set_bg:"الخلفية", set_gradient:"مزيج التدرّج", set_apply:"تطبيق المظهر",
+    set_lang_title:"اللغة", set_lang_desc:"بدّل الواجهة بالكامل بين لغات العالم.",
+    set_playback_title:"التشغيل", set_autoplay:"تشغيل تلقائي لمقاطع مشابهة", set_autoplay_sub:"استمرار الأجواء عند انتهاء القائمة",
+    set_dual:"كلمات مزدوجة افتراضياً", set_dual_sub:"عرض الأصل والترجمة معاً دائماً",
+    set_island:"محاكاة الجزيرة الديناميكية", set_island_sub:"عرض شريط تشغيل يشبه شاشة القفل",
+    sp_subgenre:"النوع", sp_bpm:"سرعة الإيقاع", sp_year:"سنة الإصدار", sp_duration:"المدة", sp_download:"تحميل الأغنية", sp_lyrics:"عرض الكلمات",
+    lyr_no_translate:"بدون ترجمة", lyr_dual:"كلمات مزدوجة",
+    empty_fav_t:"لا توجد مفضلات بعد", empty_fav_s:"اضغط على القلب في أي أغنية لحفظها هنا.",
+    empty_hist_t:"لا يوجد سجل استماع", empty_hist_s:"الأغاني التي تشغّلها ستظهر هنا.",
+    empty_off_t:"لا يوجد شيء محمّل", empty_off_s:"حمّل أغنية لتكون متاحة دون اتصال.",
+    new_playlist:"قائمة جديدة", toast_download:"بدأ التحميل (تجريبي)", toast_fav_add:"أُضيفت إلى المفضلة", toast_fav_rm:"أُزيلت من المفضلة",
+    filter_btn:"الفلاتر", filter_title:"فلاتر متقدمة", filter_desc:"صفّي النتائج حسب النوع والمزاج واللغة أو المنطقة.",
+    filter_genres:"الأنواع", filter_moods:"الأمزجة", filter_lang_region:"اللغة / المنطقة", filter_reset:"إعادة تعيين", filter_apply:"تطبيق الفلاتر",
+    reopen_player:"قيد التشغيل الآن", toast_filters_applied:"تم تطبيق الفلاتر", toast_filters_reset:"تمت إعادة التعيين", toast_player_closed:"تم إيقاف التشغيل",
+    add_link_btn:"إضافة رابط", ads_notice:"يتم بث التشغيل مباشرة من يوتيوب عبر واجهة المشغل الرسمية — لا يتم تحميل أي ملفات. قد تظهر إعلانات يوتيوب التي يتحكم بها صاحب الفيديو، ولا يمكن لهذا التطبيق إزالتها.",
+    add_track_title:"إضافة مقطع من يوتيوب", add_track_desc:"الصق رابط يوتيوب أو معرّف الفيديو — سيتم جلب العنوان والقناة وصورة الغلاف تلقائياً.",
+    field_url:"رابط يوتيوب أو معرّف الفيديو", field_title_optional:"العنوان (اختياري)", field_artist_optional:"الفنان / القناة (اختياري)",
+    field_genre:"النوع", field_mood:"المزاج", field_lang:"اللغة / المنطقة", field_lyrics_optional:"الكلمات (اختياري، باللغة الأصلية فقط — بدون ترجمة تلقائية للمقاطع المخصصة)",
+    add_track_submit:"إضافة وتشغيل", cancel:"إلغاء", sp_open_yt:"فتح على يوتيوب",
+    toast_track_added:"أُضيفت إلى قائمتك", toast_invalid_link:"تعذّر استخراج معرّف الفيديو من هذا الرابط", toast_meta_failed:"تمت الإضافة، لكن تعذّر جلب العنوان/القناة — عدّلهما يدوياً",
+  },
+  ja:{ nav_menu:"メニュー", nav_home:"ホーム", nav_search:"検索とフィルター", nav_search_short:"検索", nav_library:"ライブラリ", nav_playlists:"プレイリスト", nav_settings:"設定",
+    foot_title:"リピート中", foot_sub:"今週よく聴いたトップ5が明日のおすすめを形作ります。",
+    topbar_title:"見つける", topbar_search_ph:"曲、アーティスト、ムードを検索...",
+    hero_eyebrow:"あなたの好みに基づく", hero_title:"真夜中のウードとシンセ", hero_sub:"過去30日間の再生履歴から生まれた、弦楽器多めで静かなミックス。",
+    sec_vibe:"あなたの好みに基づく", sec_new:"新しい発見", sec_moods:"ムード＆ジャンル", sec_onrepeat:"リピート中", sec_mostplayed:"再生回数の多い曲", sec_yourplaylists:"あなたのプレイリスト", see_all:"すべて見る",
+    search_ph:"YouTubeとSpotifyのインデックスを検索...",
+    tab_fav:"お気に入り", tab_playlists:"プレイリスト", tab_history:"履歴", tab_offline:"オフラインキャッシュ",
+    set_theme_title:"テーマカスタマイザー", set_theme_desc:"高級プリセットを選ぶか、自分だけのテーマを作成。",
+    set_custom_title:"カスタムテーマビルダー", set_custom_desc:"アクセントカラー、背景、グラデーションを選択。",
+    set_primary:"アクセントカラー", set_bg:"背景色", set_gradient:"グラデーション", set_apply:"テーマを適用",
+    set_lang_title:"言語", set_lang_desc:"インターフェース全体の言語を切り替えます。",
+    set_playback_title:"再生設定", set_autoplay:"類似曲を自動再生", set_autoplay_sub:"プレイリスト終了後も雰囲気を継続",
+    set_dual:"デフォルトでデュアル歌詞", set_dual_sub:"原文と翻訳を常に一緒に表示",
+    set_island:"ダイナミックアイランドの再現", set_island_sub:"ロック画面風の再生中ピルを表示",
+    sp_subgenre:"ジャンル", sp_bpm:"BPM", sp_year:"リリース年", sp_duration:"再生時間", sp_download:"曲をダウンロード", sp_lyrics:"歌詞を見る",
+    lyr_no_translate:"翻訳なし", lyr_dual:"デュアル歌詞",
+    empty_fav_t:"お気に入りはまだありません", empty_fav_s:"ハートをタップして保存しましょう。",
+    empty_hist_t:"再生履歴がありません", empty_hist_s:"再生した曲がここに表示されます。",
+    empty_off_t:"ダウンロード済みの曲がありません", empty_off_s:"曲をダウンロードするとオフラインで利用できます。",
+    new_playlist:"新しいプレイリスト", toast_download:"ダウンロードを開始しました（デモ）", toast_fav_add:"お気に入りに追加しました", toast_fav_rm:"お気に入りから削除しました",
+    filter_btn:"フィルター", filter_title:"詳細フィルター", filter_desc:"ジャンル、ムード、言語・地域で絞り込みます。",
+    filter_genres:"ジャンル", filter_moods:"ムード", filter_lang_region:"言語 / 地域", filter_reset:"リセット", filter_apply:"フィルターを適用",
+    reopen_player:"再生中", toast_filters_applied:"フィルターを適用しました", toast_filters_reset:"フィルターをリセットしました", toast_player_closed:"再生を停止しました",
+    add_link_btn:"リンクを追加", ads_notice:"再生は公式Player APIを通じてYouTubeから直接ストリーミングされます — ファイルはダウンロードされません。動画の所有者が設定したYouTube広告が表示される場合がありますが、このアプリでは削除できません。",
+    add_track_title:"YouTubeの曲を追加", add_track_desc:"YouTubeのリンクまたは動画IDを貼り付けると、タイトル・チャンネル・カバーアートが自動取得されます。",
+    field_url:"YouTubeのURLまたは動画ID", field_title_optional:"タイトル（任意）", field_artist_optional:"アーティスト / チャンネル（任意）",
+    field_genre:"ジャンル", field_mood:"ムード", field_lang:"言語 / 地域", field_lyrics_optional:"歌詞（任意、原語のみ — カスタム曲は自動翻訳されません）",
+    add_track_submit:"追加して再生", cancel:"キャンセル", sp_open_yt:"YouTubeで開く",
+    toast_track_added:"キューに追加しました", toast_invalid_link:"このリンクから動画IDを読み取れませんでした", toast_meta_failed:"追加しましたが、タイトル/チャンネルを取得できませんでした — 手動で編集してください",
+  },
+  zh:{ nav_menu:"菜单", nav_home:"主页", nav_search:"搜索与筛选", nav_search_short:"搜索", nav_library:"音乐库", nav_playlists:"播放列表", nav_settings:"设置",
+    foot_title:"循环播放", foot_sub:"本周最喜爱的5首歌正在塑造明天的推荐。",
+    topbar_title:"发现", topbar_search_ph:"搜索歌曲、艺术家、心情...",
+    hero_eyebrow:"根据你的品味", hero_title:"午夜乌德琴与合成器之夜", hero_sub:"基于你过去30天听歌记录打造的忧郁混音——弦乐丰富，噪音更少。",
+    sec_vibe:"根据你的品味", sec_new:"尝试新内容", sec_moods:"心情与流派", sec_onrepeat:"循环播放", sec_mostplayed:"最常播放", sec_yourplaylists:"你的播放列表", see_all:"查看全部",
+    search_ph:"搜索 YouTube 与 Spotify 索引...",
+    tab_fav:"收藏", tab_playlists:"播放列表", tab_history:"历史记录", tab_offline:"离线缓存",
+    set_theme_title:"主题定制", set_theme_desc:"选择一个奢华预设主题，或从零开始设计。",
+    set_custom_title:"自定义主题构建器", set_custom_desc:"选择主色调、背景色和渐变混合。",
+    set_primary:"主色调", set_bg:"背景色", set_gradient:"渐变混合", set_apply:"应用主题",
+    set_lang_title:"语言", set_lang_desc:"在多种全球语言之间切换整个界面。",
+    set_playback_title:"播放设置", set_autoplay:"自动播放相似歌曲", set_autoplay_sub:"播放列表结束后延续氛围",
+    set_dual:"默认显示双语歌词", set_dual_sub:"始终同时显示原文与译文",
+    set_island:"灵动岛模拟", set_island_sub:"显示类似锁屏样式的正在播放提示",
+    sp_subgenre:"流派", sp_bpm:"每分钟节拍数", sp_year:"发行年份", sp_duration:"时长", sp_download:"下载歌曲", sp_lyrics:"查看歌词",
+    lyr_no_translate:"不翻译", lyr_dual:"双语歌词",
+    empty_fav_t:"还没有收藏", empty_fav_s:"点击任意歌曲的爱心即可保存于此。",
+    empty_hist_t:"没有播放历史", empty_hist_s:"你播放过的歌曲会显示在这里。",
+    empty_off_t:"没有已下载的内容", empty_off_s:"下载歌曲即可离线使用。",
+    new_playlist:"新建播放列表", toast_download:"已开始下载（演示）", toast_fav_add:"已加入收藏", toast_fav_rm:"已从收藏中移除",
+    filter_btn:"筛选", filter_title:"高级筛选", filter_desc:"按流派、心情、语言或地区筛选结果。",
+    filter_genres:"流派", filter_moods:"心情", filter_lang_region:"语言 / 地区", filter_reset:"重置筛选", filter_apply:"应用筛选",
+    reopen_player:"正在播放", toast_filters_applied:"已应用筛选", toast_filters_reset:"已重置筛选", toast_player_closed:"已停止播放",
+    add_link_btn:"添加链接", ads_notice:"播放通过 YouTube 官方 Player API 实时流式传输 — 不会下载任何文件。视频所有者设置的 YouTube 广告仍可能出现，本应用无法移除。",
+    add_track_title:"添加 YouTube 曲目", add_track_desc:"粘贴 YouTube 链接或视频 ID —— 标题、频道和封面将自动获取。",
+    field_url:"YouTube 链接或视频 ID", field_title_optional:"标题（可选覆盖）", field_artist_optional:"艺术家 / 频道（可选）",
+    field_genre:"流派", field_mood:"心情", field_lang:"语言 / 地区", field_lyrics_optional:"歌词（可选，仅原语言 —— 自定义曲目不支持自动翻译）",
+    add_track_submit:"添加并播放", cancel:"取消", sp_open_yt:"在 YouTube 上打开",
+    toast_track_added:"已添加到你的队列", toast_invalid_link:"无法从该链接读取视频 ID", toast_meta_failed:"已添加，但无法获取标题/频道 —— 请手动编辑",
+  },
+  es:{ nav_menu:"Menú", nav_home:"Inicio", nav_search:"Buscar y filtrar", nav_search_short:"Buscar", nav_library:"Biblioteca", nav_playlists:"Listas", nav_settings:"Ajustes",
+    foot_title:"En repetición", foot_sub:"Tus 5 mejores pistas de esta semana están dando forma al mix de mañana.",
+    topbar_title:"Descubrir", topbar_search_ph:"Busca canciones, artistas, estados de ánimo...",
+    hero_eyebrow:"Según tu estilo", hero_title:"Sesiones de oud y sintetizador a medianoche", hero_sub:"Una mezcla melancólica creada con tus últimos 30 días de escucha — con muchas cuerdas y poco ruido.",
+    sec_vibe:"Según tu estilo", sec_new:"Prueba algo nuevo", sec_moods:"Estados de ánimo y géneros", sec_onrepeat:"En repetición", sec_mostplayed:"Más reproducidas", sec_yourplaylists:"Tus listas", see_all:"Ver todo",
+    search_ph:"Busca en el índice de YouTube y Spotify...",
+    tab_fav:"Favoritas", tab_playlists:"Listas", tab_history:"Historial", tab_offline:"Caché sin conexión",
+    set_theme_title:"Personalizador de tema", set_theme_desc:"Elige un preset de lujo o diseña el tuyo desde cero.",
+    set_custom_title:"Creador de tema personalizado", set_custom_desc:"Elige un color de acento, fondo y mezcla de degradado.",
+    set_primary:"Color de acento", set_bg:"Fondo", set_gradient:"Mezcla de degradado", set_apply:"Aplicar tema",
+    set_lang_title:"Idioma", set_lang_desc:"Cambia toda la interfaz entre idiomas globales.",
+    set_playback_title:"Reproducción", set_autoplay:"Reproducción automática de pistas similares", set_autoplay_sub:"Mantén el ambiente al terminar una lista",
+    set_dual:"Letras duales por defecto", set_dual_sub:"Muestra siempre el original y la traducción juntos",
+    set_island:"Simulación de isla dinámica", set_island_sub:"Muestra una barra estilo pantalla de bloqueo",
+    sp_subgenre:"Género", sp_bpm:"BPM", sp_year:"Año de lanzamiento", sp_duration:"Duración", sp_download:"Descargar canción", sp_lyrics:"Ver letra",
+    lyr_no_translate:"Sin traducción", lyr_dual:"Letras duales",
+    empty_fav_t:"Aún no hay favoritas", empty_fav_s:"Toca el corazón de cualquier pista para guardarla aquí.",
+    empty_hist_t:"Sin historial de reproducción", empty_hist_s:"Las pistas que reproduzcas aparecerán aquí.",
+    empty_off_t:"Nada descargado", empty_off_s:"Descarga una canción para tenerla disponible sin conexión.",
+    new_playlist:"Nueva lista", toast_download:"Descarga iniciada (demo)", toast_fav_add:"Añadida a Favoritas", toast_fav_rm:"Quitada de Favoritas",
+    filter_btn:"Filtrar", filter_title:"Filtros avanzados", filter_desc:"Filtra resultados por género, estado de ánimo e idioma o región.",
+    filter_genres:"Géneros", filter_moods:"Estados de ánimo", filter_lang_region:"Idioma / Región", filter_reset:"Restablecer filtros", filter_apply:"Aplicar filtros",
+    reopen_player:"Reproduciendo ahora", toast_filters_applied:"Filtros aplicados", toast_filters_reset:"Filtros restablecidos", toast_player_closed:"Reproducción detenida",
+    add_link_btn:"Añadir enlace", ads_notice:"La reproducción se transmite en vivo desde YouTube mediante la API oficial del reproductor — no se descarga ningún archivo. Los anuncios de YouTube controlados por el propietario del video pueden seguir apareciendo; esta app no puede eliminarlos.",
+    add_track_title:"Añadir una pista de YouTube", add_track_desc:"Pega un enlace de YouTube o un ID de video — el título, el canal y la portada se obtienen automáticamente.",
+    field_url:"URL de YouTube o ID de video", field_title_optional:"Título (anulación opcional)", field_artist_optional:"Artista / Canal (opcional)",
+    field_genre:"Género", field_mood:"Estado de ánimo", field_lang:"Idioma / Región", field_lyrics_optional:"Letra (opcional, solo idioma original — sin traducción automática para pistas personalizadas)",
+    add_track_submit:"Añadir y reproducir", cancel:"Cancelar", sp_open_yt:"Abrir en YouTube",
+    toast_track_added:"Añadida a tu cola", toast_invalid_link:"No se pudo leer un ID de video de ese enlace", toast_meta_failed:"Añadida, pero no se pudo obtener título/canal — edítalos manualmente",
+  },
+  fr:{ nav_menu:"Menu", nav_home:"Accueil", nav_search:"Recherche et filtres", nav_search_short:"Recherche", nav_library:"Bibliothèque", nav_playlists:"Playlists", nav_settings:"Paramètres",
+    foot_title:"En boucle", foot_sub:"Vos 5 meilleurs titres de la semaine façonnent le mix de demain.",
+    topbar_title:"Découvrir", topbar_search_ph:"Rechercher titres, artistes, ambiances...",
+    hero_eyebrow:"Selon votre ambiance", hero_title:"Sessions de oud et synthé à minuit", hero_sub:"Un mélange mélancolique créé à partir de vos 30 derniers jours d'écoute — riche en cordes, peu de bruit.",
+    sec_vibe:"Selon votre ambiance", sec_new:"Essayez du nouveau", sec_moods:"Ambiances et genres", sec_onrepeat:"En boucle", sec_mostplayed:"Les plus écoutées", sec_yourplaylists:"Vos playlists", see_all:"Tout voir",
+    search_ph:"Rechercher dans l'index YouTube et Spotify...",
+    tab_fav:"Favoris", tab_playlists:"Playlists", tab_history:"Historique", tab_offline:"Cache hors ligne",
+    set_theme_title:"Personnalisation du thème", set_theme_desc:"Choisissez un préréglage de luxe ou créez le vôtre.",
+    set_custom_title:"Créateur de thème personnalisé", set_custom_desc:"Choisissez une couleur d'accent, un fond et un dégradé.",
+    set_primary:"Couleur d'accent", set_bg:"Arrière-plan", set_gradient:"Mélange de dégradé", set_apply:"Appliquer le thème",
+    set_lang_title:"Langue", set_lang_desc:"Changez toute l'interface entre plusieurs langues.",
+    set_playback_title:"Lecture", set_autoplay:"Lecture automatique de titres similaires", set_autoplay_sub:"Continuez l'ambiance à la fin d'une playlist",
+    set_dual:"Paroles bilingues par défaut", set_dual_sub:"Toujours afficher l'original et la traduction ensemble",
+    set_island:"Simulation d'île dynamique", set_island_sub:"Afficher une pastille façon écran verrouillé",
+    sp_subgenre:"Genre", sp_bpm:"BPM", sp_year:"Année de sortie", sp_duration:"Durée", sp_download:"Télécharger le titre", sp_lyrics:"Voir les paroles",
+    lyr_no_translate:"Aucune traduction", lyr_dual:"Paroles bilingues",
+    empty_fav_t:"Aucun favori pour l'instant", empty_fav_s:"Touchez le cœur d'un titre pour l'enregistrer ici.",
+    empty_hist_t:"Aucun historique d'écoute", empty_hist_s:"Les titres écoutés apparaîtront ici.",
+    empty_off_t:"Rien de téléchargé", empty_off_s:"Téléchargez un titre pour l'écouter hors ligne.",
+    new_playlist:"Nouvelle playlist", toast_download:"Téléchargement démarré (démo)", toast_fav_add:"Ajouté aux favoris", toast_fav_rm:"Retiré des favoris",
+    filter_btn:"Filtrer", filter_title:"Filtres avancés", filter_desc:"Affinez les résultats par genre, ambiance et langue ou région.",
+    filter_genres:"Genres", filter_moods:"Ambiances", filter_lang_region:"Langue / Région", filter_reset:"Réinitialiser", filter_apply:"Appliquer les filtres",
+    reopen_player:"En cours de lecture", toast_filters_applied:"Filtres appliqués", toast_filters_reset:"Filtres réinitialisés", toast_player_closed:"Lecture arrêtée",
+    add_link_btn:"Ajouter un lien", ads_notice:"La lecture est diffusée en direct depuis YouTube via l'API officielle du lecteur — aucun fichier n'est téléchargé. Les publicités YouTube contrôlées par le propriétaire de la vidéo peuvent tout de même apparaître ; cette appli ne peut pas les supprimer.",
+    add_track_title:"Ajouter un titre YouTube", add_track_desc:"Collez un lien YouTube ou un ID de vidéo — le titre, la chaîne et la pochette sont récupérés automatiquement.",
+    field_url:"URL YouTube ou ID de vidéo", field_title_optional:"Titre (remplacement facultatif)", field_artist_optional:"Artiste / Chaîne (facultatif)",
+    field_genre:"Genre", field_mood:"Ambiance", field_lang:"Langue / Région", field_lyrics_optional:"Paroles (facultatif, langue originale uniquement — pas de traduction automatique pour les titres personnalisés)",
+    add_track_submit:"Ajouter et lire", cancel:"Annuler", sp_open_yt:"Ouvrir sur YouTube",
+    toast_track_added:"Ajouté à votre file d'attente", toast_invalid_link:"Impossible de lire un ID de vidéo depuis ce lien", toast_meta_failed:"Ajouté, mais impossible de récupérer le titre/la chaîne — modifiez-les manuellement",
+  },
+  de:{ nav_menu:"Menü", nav_home:"Start", nav_search:"Suche & Filter", nav_search_short:"Suche", nav_library:"Bibliothek", nav_playlists:"Playlists", nav_settings:"Einstellungen",
+    foot_title:"Wiederholt", foot_sub:"Deine Top 5 Titel dieser Woche prägen den Discover-Mix von morgen.",
+    topbar_title:"Entdecken", topbar_search_ph:"Titel, Künstler, Stimmungen suchen...",
+    hero_eyebrow:"Basierend auf deinem Stil", hero_title:"Mitternachts-Oud & Synth-Sessions", hero_sub:"Eine stimmungsvolle Mischung aus deinen letzten 30 Hörtagen — viele Saiten, wenig Lärm.",
+    sec_vibe:"Basierend auf deinem Stil", sec_new:"Probier etwas Neues", sec_moods:"Stimmungen & Genres", sec_onrepeat:"Wiederholt", sec_mostplayed:"Meistgehört", sec_yourplaylists:"Deine Playlists", see_all:"Alle anzeigen",
+    search_ph:"YouTube- und Spotify-Index durchsuchen...",
+    tab_fav:"Favoriten", tab_playlists:"Playlists", tab_history:"Verlauf", tab_offline:"Offline-Cache",
+    set_theme_title:"Theme-Anpassung", set_theme_desc:"Wähle ein luxuriöses Preset oder gestalte dein eigenes.",
+    set_custom_title:"Eigener Theme-Builder", set_custom_desc:"Wähle Akzentfarbe, Hintergrund und Farbverlauf.",
+    set_primary:"Akzentfarbe", set_bg:"Hintergrund", set_gradient:"Farbverlauf", set_apply:"Theme anwenden",
+    set_lang_title:"Sprache", set_lang_desc:"Wechsle die gesamte Oberfläche zwischen globalen Sprachen.",
+    set_playback_title:"Wiedergabe", set_autoplay:"Ähnliche Titel automatisch abspielen", set_autoplay_sub:"Stimmung nach Ende der Playlist fortsetzen",
+    set_dual:"Standardmäßig zweisprachige Lyrics", set_dual_sub:"Original und Übersetzung immer gemeinsam anzeigen",
+    set_island:"Dynamic-Island-Simulation", set_island_sub:"Sperrbildschirm-ähnliche Now-Playing-Anzeige",
+    sp_subgenre:"Genre", sp_bpm:"BPM", sp_year:"Erscheinungsjahr", sp_duration:"Dauer", sp_download:"Titel herunterladen", sp_lyrics:"Lyrics ansehen",
+    lyr_no_translate:"Keine Übersetzung", lyr_dual:"Zweisprachige Lyrics",
+    empty_fav_t:"Noch keine Favoriten", empty_fav_s:"Tippe auf das Herz eines Titels, um ihn hier zu speichern.",
+    empty_hist_t:"Kein Wiedergabeverlauf", empty_hist_s:"Abgespielte Titel erscheinen hier.",
+    empty_off_t:"Nichts heruntergeladen", empty_off_s:"Lade einen Song herunter, um ihn offline zu nutzen.",
+    new_playlist:"Neue Playlist", toast_download:"Download gestartet (Demo)", toast_fav_add:"Zu Favoriten hinzugefügt", toast_fav_rm:"Aus Favoriten entfernt",
+    filter_btn:"Filter", filter_title:"Erweiterte Filter", filter_desc:"Ergebnisse nach Genre, Stimmung und Sprache oder Region eingrenzen.",
+    filter_genres:"Genres", filter_moods:"Stimmungen", filter_lang_region:"Sprache / Region", filter_reset:"Filter zurücksetzen", filter_apply:"Filter anwenden",
+    reopen_player:"Läuft gerade", toast_filters_applied:"Filter angewendet", toast_filters_reset:"Filter zurückgesetzt", toast_player_closed:"Wiedergabe gestoppt",
+    add_link_btn:"Link hinzufügen", ads_notice:"Die Wiedergabe wird live von YouTube über die offizielle Player-API gestreamt — es werden keine Dateien heruntergeladen. Von YouTube bzw. dem Video-Ersteller gesteuerte Werbung kann trotzdem erscheinen; diese App kann sie nicht entfernen.",
+    add_track_title:"YouTube-Titel hinzufügen", add_track_desc:"Füge einen YouTube-Link oder eine Video-ID ein — Titel, Kanal und Cover werden automatisch abgerufen.",
+    field_url:"YouTube-URL oder Video-ID", field_title_optional:"Titel (optionale Überschreibung)", field_artist_optional:"Künstler / Kanal (optional)",
+    field_genre:"Genre", field_mood:"Stimmung", field_lang:"Sprache / Region", field_lyrics_optional:"Songtext (optional, nur Originalsprache — keine automatische Übersetzung für eigene Titel)",
+    add_track_submit:"Hinzufügen & Abspielen", cancel:"Abbrechen", sp_open_yt:"Auf YouTube öffnen",
+    toast_track_added:"Zur Warteschlange hinzugefügt", toast_invalid_link:"Aus diesem Link konnte keine Video-ID gelesen werden", toast_meta_failed:"Hinzugefügt, aber Titel/Kanal konnten nicht abgerufen werden — bitte manuell bearbeiten",
+  },
+  ko:{ nav_menu:"메뉴", nav_home:"홈", nav_search:"검색 및 필터", nav_search_short:"검색", nav_library:"보관함", nav_playlists:"플레이리스트", nav_settings:"설정",
+    foot_title:"반복 재생 중", foot_sub:"이번 주 가장 많이 들은 상위 5곡이 내일의 추천을 만들어갑니다.",
+    topbar_title:"둘러보기", topbar_search_ph:"곡, 아티스트, 분위기 검색...",
+    hero_eyebrow:"당신의 취향 기반", hero_title:"한밤중의 우드와 신스 세션", hero_sub:"지난 30일간의 청취 기록으로 만든 잔잔한 믹스 — 현악기는 풍부하게, 소음은 적게.",
+    sec_vibe:"당신의 취향 기반", sec_new:"새로운 시도", sec_moods:"분위기 & 장르", sec_onrepeat:"반복 재생 중", sec_mostplayed:"가장 많이 재생됨", sec_yourplaylists:"내 플레이리스트", see_all:"전체 보기",
+    search_ph:"YouTube 및 Spotify 색인 검색...",
+    tab_fav:"즐겨찾기", tab_playlists:"플레이리스트", tab_history:"기록", tab_offline:"오프라인 캐시",
+    set_theme_title:"테마 커스터마이저", set_theme_desc:"고급 프리셋을 선택하거나 직접 디자인하세요.",
+    set_custom_title:"커스텀 테마 빌더", set_custom_desc:"강조 색상, 배경, 그라디언트를 선택하세요.",
+    set_primary:"강조 색상", set_bg:"배경", set_gradient:"그라디언트", set_apply:"테마 적용",
+    set_lang_title:"언어", set_lang_desc:"전체 인터페이스를 여러 언어 간에 전환합니다.",
+    set_playback_title:"재생", set_autoplay:"유사한 곡 자동 재생", set_autoplay_sub:"플레이리스트가 끝나도 분위기 유지",
+    set_dual:"기본적으로 이중 가사 표시", set_dual_sub:"원문과 번역을 항상 함께 표시",
+    set_island:"다이나믹 아일랜드 시뮬레이션", set_island_sub:"잠금화면 스타일의 재생 중 알약 표시",
+    sp_subgenre:"장르", sp_bpm:"BPM", sp_year:"발매 연도", sp_duration:"재생 시간", sp_download:"곡 다운로드", sp_lyrics:"가사 보기",
+    lyr_no_translate:"번역 없음", lyr_dual:"이중 가사",
+    empty_fav_t:"즐겨찾기가 없습니다", empty_fav_s:"곡의 하트를 눌러 여기에 저장하세요.",
+    empty_hist_t:"재생 기록이 없습니다", empty_hist_s:"재생한 곡이 여기에 표시됩니다.",
+    empty_off_t:"다운로드된 항목이 없습니다", empty_off_s:"곡을 다운로드하면 오프라인에서 이용할 수 있습니다.",
+    new_playlist:"새 플레이리스트", toast_download:"다운로드가 시작되었습니다 (데모)", toast_fav_add:"즐겨찾기에 추가됨", toast_fav_rm:"즐겨찾기에서 제거됨",
+    filter_btn:"필터", filter_title:"고급 필터", filter_desc:"장르, 분위기, 언어/지역별로 결과를 좁혀보세요.",
+    filter_genres:"장르", filter_moods:"분위기", filter_lang_region:"언어 / 지역", filter_reset:"필터 초기화", filter_apply:"필터 적용",
+    reopen_player:"지금 재생 중", toast_filters_applied:"필터가 적용되었습니다", toast_filters_reset:"필터가 초기화되었습니다", toast_player_closed:"재생이 중지되었습니다",
+    add_link_btn:"링크 추가", ads_notice:"재생은 공식 Player API를 통해 YouTube에서 실시간으로 스트리밍됩니다 — 파일은 다운로드되지 않습니다. 동영상 소유자가 설정한 YouTube 광고가 표시될 수 있으며, 이 앱은 이를 제거할 수 없습니다.",
+    add_track_title:"YouTube 트랙 추가", add_track_desc:"YouTube 링크나 동영상 ID를 붙여넣으면 제목, 채널, 커버 아트가 자동으로 가져와집니다.",
+    field_url:"YouTube URL 또는 동영상 ID", field_title_optional:"제목 (선택 사항)", field_artist_optional:"아티스트 / 채널 (선택 사항)",
+    field_genre:"장르", field_mood:"분위기", field_lang:"언어 / 지역", field_lyrics_optional:"가사 (선택 사항, 원어만 — 커스텀 트랙은 자동 번역되지 않음)",
+    add_track_submit:"추가 후 재생", cancel:"취소", sp_open_yt:"YouTube에서 열기",
+    toast_track_added:"대기열에 추가되었습니다", toast_invalid_link:"이 링크에서 동영상 ID를 읽을 수 없습니다", toast_meta_failed:"추가되었지만 제목/채널을 가져오지 못했습니다 — 직접 수정하세요",
+  },
+  ru:{ nav_menu:"Меню", nav_home:"Главная", nav_search:"Поиск и фильтры", nav_search_short:"Поиск", nav_library:"Медиатека", nav_playlists:"Плейлисты", nav_settings:"Настройки",
+    foot_title:"На повторе", foot_sub:"Ваши 5 любимых треков этой недели формируют завтрашнюю подборку.",
+    topbar_title:"Обзор", topbar_search_ph:"Поиск треков, исполнителей, настроений...",
+    hero_eyebrow:"По вашему настроению", hero_title:"Полуночные сессии уда и синтезатора", hero_sub:"Атмосферный микс на основе ваших последних 30 дней прослушивания — много струнных, минимум шума.",
+    sec_vibe:"По вашему настроению", sec_new:"Попробуйте новое", sec_moods:"Настроения и жанры", sec_onrepeat:"На повторе", sec_mostplayed:"Самые прослушиваемые", sec_yourplaylists:"Ваши плейлисты", see_all:"Смотреть все",
+    search_ph:"Поиск по индексу YouTube и Spotify...",
+    tab_fav:"Избранное", tab_playlists:"Плейлисты", tab_history:"История", tab_offline:"Офлайн-кэш",
+    set_theme_title:"Настройка темы", set_theme_desc:"Выберите люксовый пресет или создайте свой.",
+    set_custom_title:"Конструктор темы", set_custom_desc:"Выберите акцентный цвет, фон и градиент.",
+    set_primary:"Акцентный цвет", set_bg:"Фон", set_gradient:"Градиент", set_apply:"Применить тему",
+    set_lang_title:"Язык", set_lang_desc:"Переключайте весь интерфейс между языками мира.",
+    set_playback_title:"Воспроизведение", set_autoplay:"Автовоспроизведение похожих треков", set_autoplay_sub:"Продолжать атмосферу после окончания плейлиста",
+    set_dual:"Двойной текст песни по умолчанию", set_dual_sub:"Всегда показывать оригинал и перевод вместе",
+    set_island:"Симуляция Dynamic Island", set_island_sub:"Показывать плашку в стиле экрана блокировки",
+    sp_subgenre:"Жанр", sp_bpm:"BPM", sp_year:"Год выпуска", sp_duration:"Длительность", sp_download:"Скачать трек", sp_lyrics:"Показать текст",
+    lyr_no_translate:"Без перевода", lyr_dual:"Двойной текст",
+    empty_fav_t:"Пока нет избранного", empty_fav_s:"Нажмите на сердечко у трека, чтобы сохранить его здесь.",
+    empty_hist_t:"Нет истории прослушивания", empty_hist_s:"Прослушанные треки появятся здесь.",
+    empty_off_t:"Ничего не скачано", empty_off_s:"Скачайте трек, чтобы слушать его офлайн.",
+    new_playlist:"Новый плейлист", toast_download:"Загрузка начата (демо)", toast_fav_add:"Добавлено в избранное", toast_fav_rm:"Удалено из избранного",
+    filter_btn:"Фильтр", filter_title:"Расширенные фильтры", filter_desc:"Уточните результаты по жанру, настроению и языку или региону.",
+    filter_genres:"Жанры", filter_moods:"Настроения", filter_lang_region:"Язык / Регион", filter_reset:"Сбросить фильтры", filter_apply:"Применить фильтры",
+    reopen_player:"Сейчас играет", toast_filters_applied:"Фильтры применены", toast_filters_reset:"Фильтры сброшены", toast_player_closed:"Воспроизведение остановлено",
+    add_link_btn:"Добавить ссылку", ads_notice:"Воспроизведение транслируется напрямую с YouTube через официальный Player API — файлы не скачиваются. Реклама YouTube, которую контролирует владелец видео, всё же может показываться; приложение не может её убрать.",
+    add_track_title:"Добавить трек с YouTube", add_track_desc:"Вставьте ссылку на YouTube или ID видео — название, канал и обложка будут получены автоматически.",
+    field_url:"Ссылка на YouTube или ID видео", field_title_optional:"Название (необязательно)", field_artist_optional:"Исполнитель / Канал (необязательно)",
+    field_genre:"Жанр", field_mood:"Настроение", field_lang:"Язык / Регион", field_lyrics_optional:"Текст песни (необязательно, только на языке оригинала — без автоперевода для пользовательских треков)",
+    add_track_submit:"Добавить и воспроизвести", cancel:"Отмена", sp_open_yt:"Открыть на YouTube",
+    toast_track_added:"Добавлено в очередь", toast_invalid_link:"Не удалось определить ID видео по этой ссылке", toast_meta_failed:"Добавлено, но не удалось получить название/канал — отредактируйте вручную",
+  },
+  tr:{ nav_menu:"Menü", nav_home:"Ana Sayfa", nav_search:"Arama ve Filtreler", nav_search_short:"Ara", nav_library:"Kitaplık", nav_playlists:"Çalma Listeleri", nav_settings:"Ayarlar",
+    foot_title:"Tekrarda", foot_sub:"Bu haftanın en iyi 5 parçası yarının önerilerini şekillendiriyor.",
+    topbar_title:"Keşfet", topbar_search_ph:"Parça, sanatçı, ruh hali ara...",
+    hero_eyebrow:"Tarzına Göre", hero_title:"Gece Yarısı Ud ve Synth Seansları", hero_sub:"Son 30 günlük dinleme geçmişinden oluşan, tellerin ağır bastığı, gürültüsü az bir karışım.",
+    sec_vibe:"Tarzına Göre", sec_new:"Yeni Bir Şey Dene", sec_moods:"Ruh Halleri ve Türler", sec_onrepeat:"Tekrarda", sec_mostplayed:"En Çok Çalınanlar", sec_yourplaylists:"Çalma Listelerin", see_all:"Tümünü gör",
+    search_ph:"YouTube ve Spotify dizininde ara...",
+    tab_fav:"Favoriler", tab_playlists:"Çalma Listeleri", tab_history:"Geçmiş", tab_offline:"Çevrimdışı Önbellek",
+    set_theme_title:"Tema Özelleştirici", set_theme_desc:"Lüks bir hazır tema seç ya da sıfırdan tasarla.",
+    set_custom_title:"Özel Tema Oluşturucu", set_custom_desc:"Ana vurgu rengi, arka plan ve gradyan karışımı seç.",
+    set_primary:"Ana Vurgu Rengi", set_bg:"Arka Plan", set_gradient:"Gradyan Karışımı", set_apply:"Temayı Uygula",
+    set_lang_title:"Dil", set_lang_desc:"Tüm arayüzü küresel diller arasında değiştir.",
+    set_playback_title:"Oynatma", set_autoplay:"Benzer parçaları otomatik çal", set_autoplay_sub:"Liste bitince atmosferi sürdür",
+    set_dual:"Varsayılan olarak çift dilli sözler", set_dual_sub:"Orijinali ve çeviriyi her zaman birlikte göster",
+    set_island:"Dynamic Island Simülasyonu", set_island_sub:"Kilit ekranı tarzında şimdi çalıyor kapsülü göster",
+    sp_subgenre:"Tür", sp_bpm:"BPM", sp_year:"Çıkış Yılı", sp_duration:"Süre", sp_download:"Şarkıyı İndir", sp_lyrics:"Sözleri Görüntüle",
+    lyr_no_translate:"Çeviri yok", lyr_dual:"Çift Dilli Sözler",
+    empty_fav_t:"Henüz favori yok", empty_fav_s:"Bir parçanın kalbine dokunarak burada sakla.",
+    empty_hist_t:"Dinleme geçmişi yok", empty_hist_s:"Çaldığın parçalar burada görünecek.",
+    empty_off_t:"İndirilen bir şey yok", empty_off_s:"Çevrimdışı dinlemek için bir şarkı indir.",
+    new_playlist:"Yeni Çalma Listesi", toast_download:"İndirme başladı (demo)", toast_fav_add:"Favorilere eklendi", toast_fav_rm:"Favorilerden kaldırıldı",
+    filter_btn:"Filtre", filter_title:"Gelişmiş Filtreler", filter_desc:"Sonuçları tür, ruh hali ve dil/bölgeye göre daraltın.",
+    filter_genres:"Türler", filter_moods:"Ruh Halleri", filter_lang_region:"Dil / Bölge", filter_reset:"Filtreleri Sıfırla", filter_apply:"Filtreleri Uygula",
+    reopen_player:"Şimdi Çalıyor", toast_filters_applied:"Filtreler uygulandı", toast_filters_reset:"Filtreler sıfırlandı", toast_player_closed:"Oynatma durduruldu",
+    add_link_btn:"Bağlantı Ekle", ads_notice:"Oynatma, resmi Player API üzerinden doğrudan YouTube'dan akış olarak yapılır — hiçbir dosya indirilmez. Video sahibinin kontrol ettiği YouTube reklamları yine de görünebilir; bu uygulama bunları kaldıramaz.",
+    add_track_title:"YouTube Parçası Ekle", add_track_desc:"Bir YouTube bağlantısı veya video kimliği yapıştırın — başlık, kanal ve kapak görseli otomatik olarak alınır.",
+    field_url:"YouTube URL'si veya Video Kimliği", field_title_optional:"Başlık (isteğe bağlı geçersiz kılma)", field_artist_optional:"Sanatçı / Kanal (isteğe bağlı)",
+    field_genre:"Tür", field_mood:"Ruh Hali", field_lang:"Dil / Bölge", field_lyrics_optional:"Sözler (isteğe bağlı, yalnızca orijinal dil — özel parçalar için otomatik çeviri yok)",
+    add_track_submit:"Ekle ve Çal", cancel:"İptal", sp_open_yt:"YouTube'da Aç",
+    toast_track_added:"Kuyruğuna eklendi", toast_invalid_link:"Bu bağlantıdan bir video kimliği okunamadı", toast_meta_failed:"Eklendi, ancak başlık/kanal alınamadı — elle düzenleyin",
+  },
+};
+let curLang = 'en';
+function setLang(code){
+  curLang = code;
+  const meta = languages.find(l=>l.code===code);
+  document.documentElement.lang = code;
+  document.documentElement.dir = meta.dir;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    if(i18n[code][key]) el.textContent = i18n[code][key];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+    const key = el.getAttribute('data-i18n-ph');
+    if(i18n[code][key]) el.placeholder = i18n[code][key];
+  });
+  document.getElementById('langQuickLabel').textContent = code.toUpperCase();
+  renderLangUI();
+  renderAll();
+}
+function renderLangUI(){
+  document.getElementById('langDropdown').innerHTML = languages.map(l=>`
+    <div class="lang-opt ${l.code===curLang?'selected':''}" onclick="setLang('${l.code}'); toggleLangDropdown()">
+      <span>${l.name}</span><span class="native">${l.native}</span>
+    </div>`).join('');
+  document.getElementById('langGrid').innerHTML = languages.map(l=>`
+    <div class="lang-card ${l.code===curLang?'selected':''}" onclick="setLang('${l.code}')">
+      <div class="lname">${l.name}</div><div class="lnative">${l.native}</div>
+    </div>`).join('');
+}
+function toggleLangDropdown(e){
+  if(e) e.stopPropagation();
+  document.getElementById('langDropdown').classList.toggle('open');
+}
+document.addEventListener('click', (e)=>{
+  const dd = document.getElementById('langDropdown');
+  if(dd.classList.contains('open') && !e.target.closest('.lang-quick')) dd.classList.remove('open');
+});
+
+/* ================= THEMES ================= */
+const themes = [
+  {id:'gold', name:'Golden Oud', accent:'#D4A853', accent2:'#8B5E34', bg:'#0B0D12', surface:'#14171F', elevated:'#1C2029'},
+  {id:'emerald', name:'Emerald Nile', accent:'#2FA37C', accent2:'#0B4F3D', bg:'#071410', surface:'#0E1E18', elevated:'#152A22'},
+  {id:'amethyst', name:'Royal Amethyst', accent:'#9B6BD9', accent2:'#4B2E83', bg:'#0F0B1A', surface:'#181228', elevated:'#211A34'},
+  {id:'rose', name:'Rose Petal', accent:'#E0708C', accent2:'#7A2C42', bg:'#170B10', surface:'#231018', elevated:'#2E1620'},
+  {id:'sapphire', name:'Sapphire Night', accent:'#4C8DD9', accent2:'#1E3A6B', bg:'#070C16', surface:'#0E1626', elevated:'#152134'},
+  {id:'copper', name:'Copper Sunset', accent:'#D97A3D', accent2:'#7A3A16', bg:'#160D07', surface:'#221408', elevated:'#2E1B0C'},
+  {id:'jade', name:'Jade Silk', accent:'#4FBFA0', accent2:'#1F5F4C', bg:'#08140F', surface:'#0F1F18', elevated:'#182D23'},
+  {id:'ruby', name:'Ruby Velvet', accent:'#C4365B', accent2:'#5C0F2C', bg:'#150710', surface:'#210C1A', elevated:'#2C1023'},
+  {id:'silver', name:'Silver Moon', accent:'#B8BEC9', accent2:'#54606E', bg:'#0E1013', surface:'#171A1E', elevated:'#20242A'},
+  {id:'obsidian', name:'Obsidian Blue', accent:'#5B7FD9', accent2:'#12213F', bg:'#05070C', surface:'#0C1018', elevated:'#141A26'},
+];
+let activeThemeId = 'gold';
+function applyTheme(t){
+  const r = document.documentElement.style;
+  r.setProperty('--accent', t.accent);
+  r.setProperty('--accent2', t.accent2);
+  r.setProperty('--bg', t.bg);
+  r.setProperty('--surface', t.surface);
+  r.setProperty('--elevated', t.elevated);
+  r.setProperty('--elevated-2', shade(t.elevated, 8));
+  activeThemeId = t.id || 'custom';
+  document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.toggle('selected', s.dataset.id===activeThemeId));
+}
+function shade(hex, amt){
+  const c = hex.replace('#','');
+  const num = parseInt(c,16);
+  let r = Math.min(255,(num>>16)+amt), g = Math.min(255,((num>>8)&0xff)+amt), b = Math.min(255,(num&0xff)+amt);
+  return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
+}
+function applyCustomTheme(){
+  const accent = document.getElementById('cPrimary').value;
+  const bg = document.getElementById('cBg').value;
+  const accent2 = document.getElementById('cGrad').value;
+  applyTheme({id:'custom', accent, accent2, bg, surface:shade(bg,10), elevated:shade(bg,20)});
+  showToast(curLang==='ar'?'تم تطبيق المظهر المخصص':'Custom theme applied');
+}
+function renderThemeGrid(){
+  const grid = document.getElementById('themeGrid');
+  grid.innerHTML = themes.map(t=>`
+    <div class="theme-swatch ${t.id===activeThemeId?'selected':''}" data-id="${t.id}" onclick='applyTheme(${JSON.stringify(t)})'>
+      <div class="dot-row">
+        <div class="dot" style="background:${t.accent}"></div>
+        <div class="dot" style="background:${t.accent2}"></div>
+        <div class="dot" style="background:${t.bg}; border:1px solid rgba(255,255,255,.15)"></div>
+      </div>
+      <div class="tname">${t.name}</div>
+    </div>
+  `).join('');
+}
+
+/* ================= YOUTUBE-BACKED QUEUE ================= */
+// Every track plays live from YouTube via the IFrame Player API — nothing is downloaded or stored as media.
+// title / artist / cover are auto-fetched from YouTube's public oEmbed endpoint when a track is added.
+function ytThumb(id){ return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`; }
+let seedCoverIdx = 0;
+function seedTrack(id, title, artist, genre, mood, language, extra){
+  return Object.assign({
+    id, videoId:id, title, titleAr:title, artist, artistAr:artist,
+    genre, mood, language, duration:0,
+    cover: ytThumb(id), coverFallback: svgCover(title.charAt(0), seedCoverIdx++),
+  }, extra||{});
+}
+const tracks = [
+  seedTrack('dQw4w9WgXcQ', "Never Gonna Give You Up", "Rick Astley", "Upbeat Foreign", "Energetic", "English"),
+  seedTrack('9bZkp7q19f0', "Gangnam Style", "PSY", "Upbeat Foreign", "Energetic", "Korean", {
+    isDemoLyrics:true, lyricsLang:'ar',
+    lyrics:["في عيونك الليل يهدا","والقلب يحكي بلا صوت","أسهر معك بلا مدى","وأنساك وأنت قدّي","كل نجمة فوق تحكي","حكاية ما بتنقال","سهر سهر يا ليالي","وقلبي دايم بحوال"],
+    translations:{
+      en:["In your eyes, the night grows calm","And the heart speaks without a sound","I stay awake with you, boundless","And I forget you while you're near","Every star above tells","A story that's never told","Stay up, stay up, oh nights","And my heart keeps turning still"],
+      es:["En tus ojos, la noche se calma","Y el corazón habla sin voz","Me desvelo contigo, sin límites","Y te olvido mientras estás cerca","Cada estrella arriba cuenta","Una historia jamás contada","Desvélate, oh noches","Y mi corazón sigue girando"],
+      fr:["Dans tes yeux, la nuit s'apaise","Et le cœur parle sans un son","Je veille avec toi, sans limites","Et je t'oublie quand tu es près","Chaque étoile là-haut raconte","Une histoire jamais dite","Veille, veille, ô nuits","Et mon cœur tourne encore"],
+      ja:["君の瞳の中で夜は静まる","心は声もなく語る","果てしなく君と夜を明かす","近くにいる君を忘れる","空の星々が語るのは","誰も知らない物語","夜よ、夜よ、明けないで","僕の心は回り続ける"],
+      zh:["在你眼中 夜渐渐平静","心无声地诉说着","与你彻夜不眠 没有尽头","你在身边时却将你遗忘","天上的每颗星都在诉说","一个从未被讲述的故事","夜啊 夜啊 请继续","我的心仍在转动"]
+    }
+  }),
+  seedTrack('jNQXAC9IVRw', "Me at the zoo", "jawed", "Lo-Fi", "Chill", "Global", {
+    isDemoLyrics:true, lyricsLang:'en',
+    lyrics:["We are neon ghosts in the rain","Chasing shadows down the drain","City lights won't say your name","Static love, we play the same","Underneath a violet sky","We forgot the reason why","Hearts on fire, hands too cold","Every secret left untold"],
+    translations:{
+      ar:["نحن أشباح نيون في المطر","نطارد الظلال في المصرف","أضواء المدينة لن تقول اسمك","حب ثابت، نلعب نفس اللعبة","تحت سماء بنفسجية","نسينا السبب","قلوب مشتعلة، أيادٍ باردة جداً","كل سر تُرك بلا حكاية"],
+      es:["Somos fantasmas de neón bajo la lluvia","Persiguiendo sombras por el desagüe","Las luces no dirán tu nombre","Amor estático, jugamos igual","Bajo un cielo violeta","Olvidamos la razón","Corazones en llamas, manos tan frías","Cada secreto quedó sin contar"],
+      ja:["雨の中のネオンの幽霊たち","排水溝へ影を追いかける","街の光は君の名を呼ばない","静的な愛、同じことを繰り返す","紫の空の下で","理由さえ忘れてしまった","燃える心、冷たすぎる手","語られぬ秘密ばかり"],
+      zh:["我们是雨中的霓虹幽灵","沿着排水沟追逐影子","城市的灯光不会说出你的名字","静止的爱 我们重复着同样的戏","在紫色的天空下","我们忘记了原因","心在燃烧 手却冰冷","每个秘密都未曾说出"]
+    }
+  }),
+];
+// Fetch real metadata for the seed tracks so titles/channels reflect YouTube, not hardcoded guesses.
+tracks.forEach(t=>{
+  fetchOEmbed(t.videoId).then(meta=>{
+    if(!meta) return;
+    t.title = meta.title; t.titleAr = meta.title;
+    t.artist = meta.author_name; t.artistAr = meta.author_name;
+    t.coverFallback = svgCover(meta.title.charAt(0), tracks.indexOf(t));
+    renderAll();
+  });
+});
+function fmtTime(s){ s = Math.max(0, Math.floor(s||0)); const m=Math.floor(s/60), sec=s%60; return m+':'+String(sec).padStart(2,'0'); }
+function tName(t){ return curLang==='ar' ? t.titleAr : t.title; }
+function aName(t){ return curLang==='ar' ? t.artistAr : t.artist; }
+function coverImg(t, extraAttrs){ return `<img src="${t.cover}" onerror="this.onerror=null;this.src='${t.coverFallback}'" ${extraAttrs||''}>`; }
+
+const moods = [
+  {name:"Chill Arabic", nameAr:"شرقي هادئ", c1:'#8B5E34', c2:'#0B0D12'},
+  {name:"Sad Arabic", nameAr:"شرقي حزين", c1:'#4C6E9B', c2:'#0B0D12'},
+  {name:"Upbeat Foreign", nameAr:"أجنبي حيوي", c1:'#D4A853', c2:'#5C3A0F'},
+  {name:"Sheilat", nameAr:"شيلات", c1:'#7A4B2A', c2:'#1A0E06'},
+  {name:"Dark Pop", nameAr:"دارك بوب", c1:'#6B2C6E', c2:'#100816'},
+  {name:"Rock/Metal", nameAr:"روك/ميتال", c1:'#5A5A5A', c2:'#0D0D0D'},
+];
+const filterGenres = ["Dark Pop","Metal","Rock","Synthwave","Lo-Fi","Hip-Hop","Indie","Classical","Sheilat","Folk","Jazz","EDM","Acoustic"];
+const filterMoods = ["Chill","Sad","Energetic","Focus","Cinematic","Dark"];
+const filterLangs = ["Arabic","English","Japanese","Korean","Global"];
+
+/* ================= STATE ================= */
+let favorites = new Set();
+let history = [];
+let playlists = [
+  {name:"My Queue", nameAr:"قائمتي", tracks:['dQw4w9WgXcQ','9bZkp7q19f0','jNQXAC9IVRw']},
+];
+let currentTrackId = 'dQw4w9WgXcQ';
+let isPlaying = false;
+let isShuffled = false;
+let repeatMode = 0;
+let progress = 0;
+let timer = null;
+let playerVisible = true;
+
+let activeFilters = { genres:new Set(), moods:new Set(), langs:new Set() };
+let draftFilters = { genres:new Set(), moods:new Set(), langs:new Set() };
+
+/* ================= RENDER: HOME/CARDS ================= */
+function trackCardHTML(t){
+  return `<div class="track-card" onclick="playTrackById('${t.id}')">
+    <div class="art-wrap">${coverImg(t, `alt="${t.title}"`)}
+      <div class="play-overlay"><div class="mini-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div></div>
+    </div>
+    <div class="tt">${tName(t)}</div><div class="ta">${aName(t)}</div>
+  </div>`;
+}
+function renderRows(){
+  document.getElementById('rowVibe').innerHTML = tracks.slice(0,6).map(trackCardHTML).join('');
+  document.getElementById('rowNew').innerHTML = [...tracks].reverse().slice(0,6).map(trackCardHTML).join('');
+  document.getElementById('rowRepeat').innerHTML = tracks.filter(t=>history.includes(t.id)).map(trackCardHTML).join('') || tracks.slice(0,4).map(trackCardHTML).join('');
+  document.getElementById('rowMost').innerHTML = (tracks.length>3 ? tracks.slice(3,9) : tracks).map(trackCardHTML).join('');
+}
+function renderMoods(){
+  document.getElementById('moodGrid').innerHTML = moods.map(m=>`
+    <div class="mood-card" onclick="quickGenreSearch('${m.name}')" style="background:linear-gradient(135deg, ${m.c1}, ${m.c2});">
+      <span>${curLang==='ar'?m.nameAr:m.name}</span>
+    </div>`).join('');
+}
+function quickGenreSearch(g){
+  activeFilters.genres = new Set([g]);
+  goView('search');
+  renderSearchResults();
+}
+
+/* ================= SEARCH + FILTERS ================= */
+function renderSearchResults(){
+  const q = (document.getElementById('searchInput').value||'').toLowerCase();
+  let list = tracks.filter(t=>{
+    const matchesQ = !q || t.title.toLowerCase().includes(q) || t.artist.toLowerCase().includes(q) || t.titleAr.includes(q);
+    const matchesGenre = activeFilters.genres.size===0 || activeFilters.genres.has(t.genre);
+    const matchesMood = activeFilters.moods.size===0 || activeFilters.moods.has(t.mood);
+    const matchesLang = activeFilters.langs.size===0 || activeFilters.langs.has(t.language);
+    return matchesQ && matchesGenre && matchesMood && matchesLang;
+  });
+  document.getElementById('resultList').innerHTML = list.map(t=>`
+    <div class="result-row">
+      ${coverImg(t, `alt="" onclick="playTrackById('${t.id}')"`)}
+      <div class="info" onclick="playTrackById('${t.id}')"><div class="tt">${tName(t)}</div><div class="ta">${aName(t)}</div></div>
+      <span class="genre-tag">${t.genre}</span>
+      <span class="meta">${fmtTime(t.duration)}</span>
+      <div class="row-actions">
+        <button class="icon-btn" style="width:32px;height:32px;" onclick="event.stopPropagation();openSongProfile('${t.id}')" title="Info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        </button>
+        <button class="icon-btn" style="width:32px;height:32px;" onclick="event.stopPropagation();toggleFavorite('${t.id}')" title="Favorite">
+          <svg viewBox="0 0 24 24" fill="${favorites.has(t.id)?'var(--accent)':'none'}" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z"/></svg>
+        </button>
+      </div>
+    </div>`).join('') || `<div class="empty-state"><div class="e-t">No results</div></div>`;
+  renderActivePills();
+}
+function renderActivePills(){
+  const pills = [];
+  activeFilters.genres.forEach(g=>pills.push({type:'genres', val:g}));
+  activeFilters.moods.forEach(g=>pills.push({type:'moods', val:g}));
+  activeFilters.langs.forEach(g=>pills.push({type:'langs', val:g}));
+  document.getElementById('activePills').innerHTML = pills.map(p=>`
+    <div class="pill">${p.val}<button onclick="removeFilter('${p.type}','${p.val}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+  `).join('');
+  const count = activeFilters.genres.size + activeFilters.moods.size + activeFilters.langs.size;
+  const badge = document.getElementById('filterBadge');
+  badge.style.display = count>0 ? 'flex' : 'none';
+  badge.textContent = count;
+}
+function removeFilter(type, val){
+  activeFilters[type].delete(val);
+  renderSearchResults();
+}
+
+/* Filter modal */
+function openFilterModal(){
+  draftFilters = { genres:new Set(activeFilters.genres), moods:new Set(activeFilters.moods), langs:new Set(activeFilters.langs) };
+  renderFilterModal();
+  openModal('filter');
+}
+function renderFilterModal(){
+  document.getElementById('filterGenreRow').innerHTML = filterGenres.map(g=>`
+    <button class="filter-chip ${draftFilters.genres.has(g)?'active':''}" onclick="toggleDraft('genres','${g}')">${g}</button>`).join('');
+  document.getElementById('filterMoodRow').innerHTML = filterMoods.map(m=>`
+    <button class="filter-chip ${draftFilters.moods.has(m)?'active':''}" onclick="toggleDraft('moods','${m}')">${m}</button>`).join('');
+  document.getElementById('filterLangRow').innerHTML = filterLangs.map(l=>`
+    <button class="filter-chip ${draftFilters.langs.has(l)?'active':''}" onclick="toggleDraft('langs','${l}')">${l}</button>`).join('');
+}
+function toggleDraft(type, val){
+  if(draftFilters[type].has(val)) draftFilters[type].delete(val); else draftFilters[type].add(val);
+  renderFilterModal();
+}
+function resetFilters(){
+  draftFilters = { genres:new Set(), moods:new Set(), langs:new Set() };
+  renderFilterModal();
+  showToast(i18n[curLang].toast_filters_reset);
+}
+function applyFilters(){
+  activeFilters = { genres:new Set(draftFilters.genres), moods:new Set(draftFilters.moods), langs:new Set(draftFilters.langs) };
+  renderSearchResults();
+  closeModal('filter');
+  showToast(i18n[curLang].toast_filters_applied);
+}
+
+/* ================= LIBRARY ================= */
+function renderLibrary(){
+  const favT = tracks.filter(t=>favorites.has(t.id));
+  document.getElementById('lib-fav').innerHTML = favT.length ? favT.map(trackRowSimple).join('') :
+    `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z"/></svg><div class="e-t">${i18n[curLang].empty_fav_t}</div><div class="e-s">${i18n[curLang].empty_fav_s}</div></div>`;
+  document.getElementById('lib-playlists').innerHTML = `<div class="playlist-grid">${playlists.map(p=>playlistCardHTML(p)).join('')}</div>`;
+  const histT = history.map(id=>tracks.find(t=>t.id===id)).filter(Boolean);
+  document.getElementById('lib-history').innerHTML = histT.length ? histT.map(trackRowSimple).join('') :
+    `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><div class="e-t">${i18n[curLang].empty_hist_t}</div><div class="e-s">${i18n[curLang].empty_hist_s}</div></div>`;
+}
+function trackRowSimple(t){
+  return `<div class="result-row">
+    ${coverImg(t, `alt="" onclick="playTrackById('${t.id}')"`)}
+    <div class="info" onclick="playTrackById('${t.id}')"><div class="tt">${tName(t)}</div><div class="ta">${aName(t)}</div></div>
+    <span class="meta">${fmtTime(t.duration)}</span>
+    <div class="row-actions">
+      <button class="icon-btn" style="width:32px;height:32px;" onclick="toggleFavorite('${t.id}')">
+        <svg viewBox="0 0 24 24" fill="${favorites.has(t.id)?'var(--accent)':'none'}" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z"/></svg>
+      </button>
+    </div>
+  </div>`;
+}
+function playlistCardHTML(p){
+  const items = p.tracks.map(id=>tracks.find(t=>t.id===id)).filter(Boolean);
+  return `<div class="playlist-card" onclick="playTrackById('${p.tracks[0]}')">
+    <div class="art-wrap"><div class="playlist-collage">${items.slice(0,4).map(t=>coverImg(t)).join('')}</div></div>
+    <div class="tt">${curLang==='ar'?p.nameAr:p.name}</div>
+    <div class="ta">${p.tracks.length} tracks</div>
+  </div>`;
+}
+function renderPlaylistsView(){
+  document.getElementById('playlistGrid').innerHTML = playlists.map(p=>playlistCardHTML(p)).join('') +
+    `<div class="playlist-card new-playlist-card" onclick="showToast(curLang==='ar'?'إنشاء قائمة (تجريبي)':'Create playlist (demo)')">
+      <div class="art-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></div>
+      <div class="tt">${i18n[curLang].new_playlist}</div>
+    </div>`;
+}
+function renderAll(){
+  renderRows(); renderMoods(); renderSearchResults(); renderLibrary(); renderPlaylistsView(); renderThemeGrid();
+  updatePlayerUI();
+}
+
+/* ================= NAVIGATION / DRAWER ================= */
+function goView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.view===name));
+  const titles = {home:'topbar_title', search:'nav_search', library:'nav_library', playlists:'nav_playlists', settings:'nav_settings'};
+  document.querySelector('.topbar h1').textContent = i18n[curLang][titles[name]] || '';
+  document.querySelector('.content').scrollTop = 0;
+  closeDrawer();
+}
+document.querySelectorAll('.nav-item').forEach(el=>el.addEventListener('click', ()=>goView(el.dataset.view)));
+document.getElementById('searchInput').addEventListener('input', renderSearchResults);
+
+function openDrawer(){ document.getElementById('drawer').classList.add('open'); document.getElementById('drawerBackdrop').classList.add('open'); }
+function closeDrawer(){ document.getElementById('drawer').classList.remove('open'); document.getElementById('drawerBackdrop').classList.remove('open'); }
+
+/* Library tabs */
+document.getElementById('libTabs').addEventListener('click', (e)=>{
+  const btn = e.target.closest('.tab-btn'); if(!btn) return;
+  document.querySelectorAll('#libTabs .tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.lib-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('lib-'+btn.dataset.tab).classList.add('active');
+});
+
+/* ================= PLAYER LOGIC (real YouTube IFrame Player API) ================= */
+let ytPlayer = null;
+let ytReady = false;
+let pendingPlayId = null;
+
+// Loaded by the https://www.youtube.com/iframe_api script tag once it finishes loading.
+function onYouTubeIframeAPIReady(){
+  ytPlayer = new YT.Player('ytPlayerMount', {
+    height: '1', width: '1',
+    playerVars: {
+      // These trim YouTube's own chrome/branding/related-video clutter; they cannot remove
+      // ads inserted by YouTube on monetized videos — that's controlled by the video owner.
+      autoplay: 0, controls: 0, rel: 0, modestbranding: 1, iv_load_policy: 3, fs: 0, disablekb: 1, playsinline: 1
+    },
+    events: { onReady: onPlayerReady, onStateChange: onPlayerStateChange, onError: onPlayerError }
+  });
+}
+function onPlayerReady(){
+  ytReady = true;
+  ytPlayer.setVolume(volume);
+  if(pendingPlayId){ const id = pendingPlayId; pendingPlayId = null; loadAndPlay(id); }
+}
+function onPlayerStateChange(e){
+  if(e.data === YT.PlayerState.PLAYING){ isPlaying = true; updatePlayerUI(); }
+  else if(e.data === YT.PlayerState.PAUSED){ isPlaying = false; updatePlayerUI(); }
+  else if(e.data === YT.PlayerState.ENDED){ handleTrackEnd(); }
+}
+function onPlayerError(){ showToast(curLang==='ar' ? 'تعذّر تشغيل هذا الفيديو' : "This video can't be played"); }
+function handleTrackEnd(){
+  if(repeatMode === 2){ ytPlayer.seekTo(0, true); ytPlayer.playVideo(); }
+  else { nextTrack(); }
+}
+function loadAndPlay(videoId){
+  if(!ytReady){ pendingPlayId = videoId; return; }
+  ytPlayer.loadVideoById(videoId);
+  ytPlayer.playVideo();
+}
+
+// Single always-on poll that reads real playback position from the YouTube player.
+setInterval(()=>{
+  if(!ytReady || !isPlaying || !playerVisible) return;
+  const t = currentTrack(); if(!t) return;
+  progress = ytPlayer.getCurrentTime() || 0;
+  const liveDuration = ytPlayer.getDuration();
+  if(liveDuration && Math.abs(liveDuration - t.duration) > 1){ t.duration = liveDuration; }
+  updateProgressUI();
+}, 1000);
+
+function currentTrack(){ return tracks.find(t=>t.id===currentTrackId); }
+function playTrackById(id){
+  currentTrackId = id;
+  progress = 0;
+  isPlaying = true;
+  showPlayerBar();
+  if(!history.includes(id)) history.unshift(id);
+  history = history.slice(0,12);
+  updatePlayerUI();
+  loadAndPlay(id);
+  renderLibrary();
+}
+function togglePlay(){
+  if(!ytReady){ return; }
+  if(isPlaying) ytPlayer.pauseVideo(); else ytPlayer.playVideo();
+}
+function nextTrack(){
+  const idx = tracks.findIndex(t=>t.id===currentTrackId);
+  let nextIdx;
+  if(isShuffled) nextIdx = Math.floor(Math.random()*tracks.length);
+  else nextIdx = (idx+1) % tracks.length;
+  playTrackById(tracks[nextIdx].id);
+}
+function prevTrack(){
+  const idx = tracks.findIndex(t=>t.id===currentTrackId);
+  const prevIdx = (idx-1+tracks.length) % tracks.length;
+  playTrackById(tracks[prevIdx].id);
+}
+function toggleShuffle(){ isShuffled=!isShuffled; document.getElementById('btnShuffle').classList.toggle('active', isShuffled); }
+function toggleRepeat(){
+  repeatMode = (repeatMode+1)%3;
+  const btn = document.getElementById('btnRepeat');
+  btn.classList.toggle('active', repeatMode!==0);
+  btn.style.opacity = repeatMode===2 ? '0.7':'1';
+}
+function toggleFavorite(id){
+  if(!id) return;
+  if(favorites.has(id)){ favorites.delete(id); showToast(i18n[curLang].toast_fav_rm); }
+  else { favorites.add(id); showToast(i18n[curLang].toast_fav_add); }
+  updatePlayerUI(); renderLibrary(); renderSearchResults();
+}
+function seek(e){
+  if(!ytReady) return;
+  const rect = e.currentTarget.getBoundingClientRect();
+  let pct = document.documentElement.dir==='rtl' ? (rect.right-e.clientX)/rect.width : (e.clientX-rect.left)/rect.width;
+  pct = Math.max(0,Math.min(1,pct));
+  const dur = currentTrack().duration || ytPlayer.getDuration() || 0;
+  ytPlayer.seekTo(pct*dur, true);
+  progress = pct*dur;
+  updateProgressUI();
+}
+let volume = 70;
+function setVolume(e){
+  const rect = e.currentTarget.getBoundingClientRect();
+  let pct = document.documentElement.dir==='rtl' ? (rect.right-e.clientX)/rect.width : (e.clientX-rect.left)/rect.width;
+  volume = Math.max(0,Math.min(100, Math.round(pct*100)));
+  document.getElementById('volFill').style.width = volume+'%';
+  if(ytReady) ytPlayer.setVolume(volume);
+}
+function updateProgressUI(){
+  const t = currentTrack(); if(!t) return;
+  document.getElementById('tCurrent').textContent = fmtTime(progress);
+  document.getElementById('tTotal').textContent = fmtTime(t.duration);
+  document.getElementById('progressFill').style.width = t.duration ? (progress/t.duration*100)+'%' : '0%';
+}
+function updatePlayerUI(){
+  const t = currentTrack(); if(!t) return;
+  document.getElementById('pImg').src = t.cover;
+  document.getElementById('pImg').onerror = function(){ this.onerror=null; this.src=t.coverFallback; };
+  document.getElementById('pTitle').textContent = tName(t);
+  document.getElementById('pArtist').textContent = aName(t);
+  document.getElementById('pHeart').classList.toggle('active', favorites.has(t.id));
+  document.getElementById('playIcon').innerHTML = isPlaying
+    ? '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>'
+    : '<path d="M8 5v14l11-7z"/>';
+  updateProgressUI();
+  updateDynIsland();
+}
+function updateDynIsland(){
+  const island = document.getElementById('dynIsland');
+  if(!islandEnabled || !playerVisible){ island.classList.remove('show'); return; }
+  if(isPlaying){
+    const t = currentTrack(); if(!t) return;
+    const img = document.getElementById('diImg');
+    img.src = t.cover; img.onerror = function(){ this.onerror=null; this.src=t.coverFallback; };
+    document.getElementById('diText').textContent = tName(t)+' · '+aName(t);
+    island.classList.add('show');
+  } else {
+    island.classList.remove('show');
+  }
+}
+let islandEnabled = true;
+function toggleIslandSetting(el){
+  el.classList.toggle('on');
+  islandEnabled = el.classList.contains('on');
+  updateDynIsland();
+}
+
+/* Close / reopen player bar */
+function closePlayerBar(){
+  if(ytReady) ytPlayer.pauseVideo();
+  isPlaying = false;
+  playerVisible = false;
+  document.getElementById('playerBar').classList.add('hidden');
+  document.getElementById('reopenPill').classList.add('show');
+  updateDynIsland();
+  showToast(i18n[curLang].toast_player_closed);
+}
+function showPlayerBar(){
+  playerVisible = true;
+  document.getElementById('playerBar').classList.remove('hidden');
+  document.getElementById('reopenPill').classList.remove('show');
+}
+function reopenPlayer(){
+  showPlayerBar();
+  if(ytReady) ytPlayer.playVideo();
+  else if(currentTrackId) loadAndPlay(currentTrackId);
+  updatePlayerUI();
+}
+
+/* ================= SONG PROFILE MODAL ================= */
+let profileTrackId = null;
+function openSongProfile(id){
+  profileTrackId = id;
+  const t = tracks.find(x=>x.id===id);
+  const img = document.getElementById('spImg');
+  img.src = t.cover; img.onerror = function(){ this.onerror=null; this.src=t.coverFallback; };
+  document.getElementById('spTitle').textContent = tName(t);
+  document.getElementById('spArtist').textContent = aName(t);
+  document.getElementById('spGenre').textContent = t.genre || '—';
+  document.getElementById('spBpm').textContent = t.mood || '—';
+  document.getElementById('spYear').textContent = t.language || '—';
+  document.getElementById('spDuration').textContent = t.duration ? fmtTime(t.duration) : '—';
+  document.getElementById('spYoutubeLink').href = `https://www.youtube.com/watch?v=${t.videoId}`;
+  openModal('sp');
+}
+
+/* ================= LYRICS MODAL ================= */
+function openLyrics(){
+  const t = currentTrack();
+  const img = document.getElementById('lyrImg');
+  img.src = t.cover; img.onerror = function(){ this.onerror=null; this.src=t.coverFallback; };
+  document.getElementById('lyrTitle').textContent = tName(t);
+  document.getElementById('lyrArtist').textContent = aName(t);
+  document.getElementById('lyrLangSelect').value = 'none';
+  document.getElementById('lyrLangSelect').disabled = !t.translations;
+  document.getElementById('dualCheck').checked = false;
+  renderLyrics();
+  openModal('lyr');
+}
+function renderLyrics(){
+  const t = currentTrack();
+  const body = document.getElementById('lyrBody');
+  if(!t.lyrics){
+    body.innerHTML = `<div class="empty-state"><div class="e-t">${curLang==='ar'?'الكلمات غير متوفرة':'Lyrics not available'}</div><div class="e-s">${curLang==='ar'?'أضف كلمات عند إضافة الأغنية، أو جرّب أغنية أخرى':'Add lyrics when adding a track, or try another one'}</div></div>`;
+    return;
+  }
+  const demoNote = t.isDemoLyrics
+    ? `<div class="form-hint" style="margin-top:0;">${curLang==='ar'?'كلمات توضيحية لعرض ميزة الترجمة — ليست كلمات هذا الفيديو الفعلية.':'Sample lyrics to showcase the translation feature — not the real lyrics for this video.'}</div>` : '';
+  const langSel = document.getElementById('lyrLangSelect').value;
+  const dual = document.getElementById('dualCheck').checked;
+  const trans = (t.translations && langSel!=='none' && langSel!==t.lyricsLang) ? (t.translations[langSel] || null) : null;
+  let html = demoNote;
+  if(dual && trans){
+    html += t.lyrics.map((line,i)=>`
+      <div class="lyr-pair"><div class="lyr-line orig">${line}</div><div class="lyr-line trans">${trans[i]||''}</div></div>`).join('');
+  } else if(trans){
+    html += trans.map(line=>`<div class="lyr-line orig">${line}</div>`).join('');
+  } else {
+    html += t.lyrics.map(line=>`<div class="lyr-line orig">${line}</div>`).join('');
+  }
+  body.innerHTML = html;
+}
+
+/* ================= ADD TRACK (YouTube link → queue) ================= */
+function parseYouTubeId(input){
+  if(!input) return null;
+  input = input.trim();
+  if(/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
+  try{
+    const url = new URL(input);
+    if(url.hostname.replace('www.','') === 'youtu.be') return url.pathname.slice(1,12) || null;
+    if(url.hostname.includes('youtube.com')){
+      if(url.searchParams.get('v')) return url.searchParams.get('v');
+      const m = url.pathname.match(/\/(embed|shorts|live)\/([a-zA-Z0-9_-]{11})/);
+      if(m) return m[2];
+    }
+  }catch(e){ /* not a full URL */ }
+  const m2 = input.match(/([a-zA-Z0-9_-]{11})(?:[?&#]|$)/);
+  return m2 ? m2[1] : null;
+}
+async function fetchOEmbed(videoId){
+  try{
+    const res = await fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v='+videoId)}&format=json`);
+    if(!res.ok) throw new Error('bad response');
+    return await res.json(); // { title, author_name, thumbnail_url, ... }
+  }catch(e){ return null; }
+}
+function populateAddSelects(){
+  document.getElementById('addGenreSelect').innerHTML = filterGenres.map(g=>`<option value="${g}">${g}</option>`).join('');
+  document.getElementById('addMoodSelect').innerHTML = filterMoods.map(m=>`<option value="${m}">${m}</option>`).join('');
+  document.getElementById('addLangSelect').innerHTML = filterLangs.map(l=>`<option value="${l}">${l}</option>`).join('');
+}
+function openAddModal(){
+  populateAddSelects();
+  ['addUrlInput','addTitleInput','addArtistInput','addLyricsInput'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('addPreview').classList.remove('show');
+  openModal('add');
+}
+let addPreviewTimer;
+function previewAddTrack(){
+  clearTimeout(addPreviewTimer);
+  const id = parseYouTubeId(document.getElementById('addUrlInput').value);
+  const prev = document.getElementById('addPreview');
+  if(!id){ prev.classList.remove('show'); return; }
+  addPreviewTimer = setTimeout(async ()=>{
+    const meta = await fetchOEmbed(id);
+    if(!meta){ prev.classList.remove('show'); return; }
+    document.getElementById('addPreviewImg').src = ytThumb(id);
+    document.getElementById('addPreviewTitle').textContent = meta.title;
+    document.getElementById('addPreviewArtist').textContent = meta.author_name;
+    document.getElementById('addTitleInput').placeholder = meta.title;
+    document.getElementById('addArtistInput').placeholder = meta.author_name;
+    prev.classList.add('show');
+  }, 550);
+}
+async function submitAddTrack(){
+  const id = parseYouTubeId(document.getElementById('addUrlInput').value);
+  if(!id){ showToast(i18n[curLang].toast_invalid_link); return; }
+  const existing = tracks.find(t=>t.id===id);
+  if(existing){ closeModal('add'); playTrackById(id); return; }
+  const meta = await fetchOEmbed(id);
+  const titleOverride = document.getElementById('addTitleInput').value.trim();
+  const artistOverride = document.getElementById('addArtistInput').value.trim();
+  const genre = document.getElementById('addGenreSelect').value;
+  const mood = document.getElementById('addMoodSelect').value;
+  const language = document.getElementById('addLangSelect').value;
+  const lyricsText = document.getElementById('addLyricsInput').value.trim();
+  const title = titleOverride || (meta ? meta.title : id);
+  const artist = artistOverride || (meta ? meta.author_name : 'Unknown');
+  if(!meta && !titleOverride) showToast(i18n[curLang].toast_meta_failed);
+  const track = seedTrack(id, title, artist, genre, mood, language, {
+    lyrics: lyricsText ? lyricsText.split('\n').filter(Boolean) : null,
+    lyricsLang: lyricsText ? (language==='Arabic' ? 'ar' : 'en') : null,
+    isCustom:true,
+  });
+  tracks.unshift(track);
+  renderAll();
+  closeModal('add');
+  playTrackById(id);
+  showToast(i18n[curLang].toast_track_added);
+}
+
+/* ================= MODAL HELPERS ================= */
+function openModal(name){
+  document.getElementById(name+'Backdrop').classList.add('show');
+  document.getElementById(name+'Modal').classList.add('show');
+}
+function closeModal(name){
+  document.getElementById(name+'Backdrop').classList.remove('show');
+  document.getElementById(name+'Modal').classList.remove('show');
+}
+
+/* ================= TOAST ================= */
+let toastTimer;
+function showToast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove('show'), 2200);
+}
+
+/* ================= INIT ================= */
+document.getElementById('volFill').style.width = volume+'%';
+renderLangUI();
+setLang('en');
+currentTrackId = tracks[0].id;
+updatePlayerUI();
+isPlaying = false;
+
+// Load the official YouTube IFrame Player API script (this drives all real playback).
+(function(){
+  const tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(tag);
+})();
+</script>
+</body>
+</html>
