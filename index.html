@@ -334,6 +334,17 @@ html[lang="ar"] .settings-block h3{font-style:normal;}
 .player-close{ width:30px; height:30px; border-radius:50%; background:var(--elevated); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:.18s;}
 .player-close:hover{ background:#C4365B; }
 .player-close svg{ width:13px; height:13px; }
+.vol-pct{ font-size:11px; color:var(--text-muted); width:36px; text-align:end; flex-shrink:0; font-variant-numeric:tabular-nums; }
+
+/* Mobile-only "close" pinned prominently at the top corner of the player bar */
+.player-close-mobile{
+  display:none; position:absolute; top:-14px; inset-inline-end:14px; width:30px; height:30px; border-radius:50%;
+  background:var(--elevated-2); align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(0,0,0,.45);
+  border:1px solid var(--border); z-index:5;
+}
+.player-close-mobile svg{ width:13px; height:13px; }
+.player-close-mobile:hover{ background:#C4365B; }
+.mobile-only{ display:none; }
 
 /* Reopen pill when player bar closed */
 .reopen-pill{
@@ -408,7 +419,60 @@ html[lang="ar"] .sp-head h2{font-style:normal;}
 .filter-actions{ display:flex; gap:10px; padding-top:8px; border-top:1px solid var(--border); margin-top:6px; }
 .filter-actions .btn-primary, .filter-actions .btn-ghost{ flex:1; text-align:center; }
 
-/* toast */
+/* Range sliders (progress + volume) */
+input[type="range"].seek-range, input[type="range"].vol-range{
+  -webkit-appearance:none; appearance:none; width:100%; height:4px; border-radius:4px;
+  background:linear-gradient(to var(--dir,right), var(--accent) var(--pct,0%), var(--elevated-2) var(--pct,0%));
+  outline:none; cursor:pointer; margin:0;
+}
+html[dir="rtl"] input[type="range"].seek-range, html[dir="rtl"] input[type="range"].vol-range{ --dir:left; }
+input[type="range"].seek-range::-webkit-slider-thumb, input[type="range"].vol-range::-webkit-slider-thumb{
+  -webkit-appearance:none; width:13px; height:13px; border-radius:50%; background:var(--text); cursor:pointer; transition:transform .12s;
+}
+input[type="range"].seek-range::-webkit-slider-thumb:hover, input[type="range"].vol-range::-webkit-slider-thumb:hover{ transform:scale(1.15); }
+input[type="range"].seek-range::-moz-range-thumb, input[type="range"].vol-range::-moz-range-thumb{
+  width:13px; height:13px; border-radius:50%; background:var(--text); border:none; cursor:pointer;
+}
+input[type="range"].seek-range::-moz-range-track, input[type="range"].vol-range::-moz-range-track{ background:transparent; }
+
+/* Mobile volume popover */
+.vol-popover{
+  position:fixed; bottom:150px; inset-inline-end:16px; z-index:70; background:var(--surface); border:1px solid var(--border);
+  border-radius:16px; padding:16px 12px; width:44px; height:150px; display:flex; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none; transform:translateY(10px); transition:.2s;
+}
+.vol-popover.show{ opacity:1; pointer-events:auto; transform:translateY(0); }
+.vol-popover input[type="range"]{ writing-mode:vertical-lr; direction:ltr; width:4px; height:100%; }
+
+/* Context menu */
+.ctx-menu{ display:flex; flex-direction:column; gap:2px; }
+.ctx-item{ display:flex; align-items:center; gap:12px; padding:12px 10px; border-radius:10px; font-size:13.5px; font-weight:600; text-align:start; transition:.15s; width:100%; }
+.ctx-item:hover{ background:var(--elevated); }
+.ctx-item svg{ width:17px; height:17px; color:var(--text-muted); flex-shrink:0; }
+.ctx-item.danger{ color:#E4607E; }
+.ctx-item.danger svg{ color:#E4607E; }
+.ctx-submenu{ display:none; flex-direction:column; gap:2px; padding-inline-start:14px; margin-top:2px; border-inline-start:2px solid var(--border); }
+.ctx-submenu.open{ display:flex; }
+.more-btn{ width:32px; height:32px; border-radius:50%; background:transparent; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:.15s; }
+.more-btn:hover{ background:var(--elevated-2); }
+.more-btn svg{ width:16px; height:16px; color:var(--text-muted); }
+.playlist-pick-row{ display:flex; align-items:center; justify-content:space-between; padding:10px; border-radius:9px; }
+.playlist-pick-row:hover{ background:var(--elevated); }
+.new-playlist-inline{ display:flex; gap:8px; margin-top:8px; }
+.new-playlist-inline input{ flex:1; }
+
+/* Playlist detail modal */
+.pd-head{ display:flex; gap:16px; align-items:center; margin-bottom:20px; padding-inline-end:36px;}
+.pd-head img{ width:80px; height:80px; border-radius:14px; object-fit:cover; }
+.pd-head h2{ font-family:var(--font-display); font-style:italic; font-size:20px; font-weight:600;}
+html[lang="ar"] .pd-head h2{font-style:normal;}
+.pd-actions{ display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
+.pd-actions .btn-primary, .pd-actions .btn-ghost{ flex:1; min-width:110px; text-align:center; white-space:nowrap; }
+.pd-track-list{ display:flex; flex-direction:column; gap:2px; max-height:44vh; overflow-y:auto; }
+/* Context menu must always sit above every other modal, including one already open (e.g. Playlist Detail) */
+#ctxBackdrop{ z-index:9998 !important; }
+#ctxModal{ z-index:9999 !important; }
+
 .toast{ position:fixed; bottom:112px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--elevated-2); color:var(--text); padding:12px 22px; border-radius:999px; font-size:13px; font-weight:600; opacity:0; transition:.3s; z-index:100; border:1px solid var(--border); pointer-events:none; white-space:nowrap;}
 .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 
@@ -416,11 +480,12 @@ html[lang="ar"] .sp-head h2{font-style:normal;}
 @media (max-width:900px){
   .content{ padding:18px 16px 150px; }
   .topbar{ padding:12px 14px; }
-  .player-bar{ height:auto; padding:10px 12px 8px; flex-wrap:wrap; }
-  .player-track{ width:auto; flex:1; }
+  .player-bar{ position:fixed; height:auto; padding:14px 14px 10px; flex-wrap:wrap; gap:8px; }
+  .player-track{ width:auto; flex:1; min-width:0; }
   .player-center{ order:3; width:100%; max-width:none; }
-  .player-right{ width:auto; }
-  .vol-row{ display:none; }
+  .desktop-only{ display:none !important; }
+  .mobile-only{ display:flex !important; }
+  .player-close-mobile{ display:flex; }
   .dyn-island{ top:10px; }
   .filter-btn span.f-label{ display:none; }
   .filter-btn{ padding:14px; }
@@ -429,7 +494,7 @@ html[lang="ar"] .sp-head h2{font-style:normal;}
 </head>
 <body>
 <!-- شاشة تسجيل الدخول الشخصية -->
-<div id="login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #121212; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999;">
+<div id="login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #121212; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 99999;">
   <h2 style="margin-bottom: 20px; font-family: sans-serif;">تسجيل الدخول للموقع الشخصي 🎵</h2>
   <form id="login-form" style="display: flex; flex-direction: column; gap: 12px; width: 300px;">
     <input type="text" id="username" placeholder="اسم المستخدم" required style="padding: 12px; border-radius: 6px; border: 1px solid #333; background: #222; color: white; outline: none;">
@@ -438,7 +503,6 @@ html[lang="ar"] .sp-head h2{font-style:normal;}
   </form>
   <p id="error-msg" style="color: #ff5555; margin-top: 15px; display: none; font-family: sans-serif;"></p>
 </div>
-
 
 <div class="lattice-bg"></div>
 <div class="grain-fade"></div>
@@ -644,20 +708,23 @@ html[lang="ar"] .sp-head h2{font-style:normal;}
 
 <!-- PLAYER BAR -->
 <div class="player-bar" id="playerBar">
+  <button class="player-close-mobile" onclick="closePlayerBar()" title="Close player">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg>
+  </button>
   <div class="player-track">
     <img id="pImg" src="" alt="">
     <div class="info">
       <div class="tt" id="pTitle">—</div>
       <div class="ta" id="pArtist">—</div>
     </div>
-    <button class="heart-btn" id="pHeart" onclick="toggleFavorite(currentTrackId)">
+    <button class="heart-btn desktop-only" id="pHeart" onclick="toggleFavorite(currentTrackId)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z"/></svg>
     </button>
   </div>
 
   <div class="player-center">
     <div class="transport">
-      <button class="shuffle" id="btnShuffle" onclick="toggleShuffle()">
+      <button class="shuffle desktop-only" id="btnShuffle" onclick="toggleShuffle()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg>
       </button>
       <button onclick="prevTrack()">
@@ -669,30 +736,72 @@ html[lang="ar"] .sp-head h2{font-style:normal;}
       <button onclick="nextTrack()">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 6h-2v12h2zM4 6l9 6-9 6z"/></svg>
       </button>
-      <button class="repeat" id="btnRepeat" onclick="toggleRepeat()">
+      <button class="repeat desktop-only" id="btnRepeat" onclick="toggleRepeat()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+      </button>
+      <button class="icon-btn mobile-only" onclick="openPlayerMore()" title="More" style="width:32px; height:32px;">
+        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
       </button>
     </div>
     <div class="progress-row">
       <span class="time" id="tCurrent">0:00</span>
-      <div class="progress-track" id="progressTrack" onclick="seek(event)"><div class="progress-fill" id="progressFill"></div></div>
+      <input type="range" class="seek-range" id="seekRange" min="0" max="1000" value="0" oninput="onSeekInput(this)" onchange="onSeekCommit(this)">
       <span class="time" id="tTotal">0:00</span>
     </div>
   </div>
 
-  <div class="player-right">
+  <div class="player-right desktop-only">
     <button class="icon-btn" onclick="openLyrics()" title="Lyrics">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V6a2 2 0 012-2h10l4 4v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 10h8M8 14h5"/></svg>
     </button>
     <div class="vol-row">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="color:var(--text-muted); flex-shrink:0;"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19 7a7 7 0 010 10"/></svg>
-      <div class="vol-track" id="volTrack" onclick="setVolume(event)"><div class="vol-fill" id="volFill"></div></div>
+      <input type="range" class="vol-range" id="volRange" min="0" max="100" value="70" oninput="onVolumeInput(this)">
+      <span class="vol-pct" id="volPctDesktop">70%</span>
     </div>
     <button class="player-close" onclick="closePlayerBar()" title="Close player">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
   </div>
 </div>
+
+<!-- Mobile "more" sheet: secondary controls that don't fit the compact mobile bar -->
+<div class="modal-backdrop" id="pmoreBackdrop" onclick="closeModal('pmore')"></div>
+<div class="modal" id="pmoreModal" style="max-width:380px;">
+  <button class="modal-close" onclick="closeModal('pmore')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <div class="sp-head" style="margin-bottom:14px;">
+    <img id="pmoreImg" src="" alt="" style="width:52px;height:52px;">
+    <div>
+      <h2 id="pmoreTitle" style="font-size:15px;">—</h2>
+      <div class="art" id="pmoreArtist">—</div>
+    </div>
+  </div>
+  <div class="ctx-menu">
+    <button class="ctx-item" id="pmoreHeartBtn" onclick="toggleFavorite(currentTrackId); refreshPlayerMore();">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z"/></svg>
+      <span data-i18n="pm_favorite">Favorite</span>
+    </button>
+    <button class="ctx-item" id="pmoreShuffleBtn" onclick="toggleShuffle(); refreshPlayerMore();">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg>
+      <span data-i18n="pm_shuffle">Shuffle</span>
+    </button>
+    <button class="ctx-item" id="pmoreRepeatBtn" onclick="toggleRepeat(); refreshPlayerMore();">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+      <span data-i18n="pm_repeat">Repeat</span>
+    </button>
+    <button class="ctx-item" onclick="closeModal('pmore'); openLyrics();">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V6a2 2 0 012-2h10l4 4v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 10h8M8 14h5"/></svg>
+      <span data-i18n="pm_lyrics">Lyrics</span>
+    </button>
+  </div>
+  <div class="vol-row" style="width:100%; margin-top:14px; padding-top:14px; border-top:1px solid var(--border);">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="color:var(--text-muted); flex-shrink:0;"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19 7a7 7 0 010 10"/></svg>
+    <input type="range" class="vol-range" id="volRangeSheet" min="0" max="100" value="70" oninput="onVolumeInput(this)">
+    <span class="vol-pct" id="volPctSheet">70%</span>
+  </div>
+</div>
+
+
 
 <!-- Reopen pill -->
 <div class="reopen-pill" id="reopenPill" onclick="reopenPlayer()">
@@ -832,60 +941,69 @@ html[lang="ar"] .sp-head h2{font-style:normal;}
   </div>
 </div>
 
+<!-- CONTEXT MENU MODAL (⋮) -->
+<div class="modal-backdrop" id="ctxBackdrop" onclick="closeModal('ctx')"></div>
+<div class="modal" id="ctxModal" style="max-width:400px;">
+  <button class="modal-close" onclick="closeModal('ctx')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <div class="sp-head" style="margin-bottom:14px;">
+    <img id="ctxImg" src="" alt="" style="width:56px;height:56px;">
+    <div>
+      <h2 id="ctxTitle" style="font-size:16px;">—</h2>
+      <div class="art" id="ctxArtist">—</div>
+    </div>
+  </div>
+  <div class="ctx-menu">
+    <button class="ctx-item" onclick="ctxAddToQueue()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h11M4 12h11M4 18h6"/><path d="M18 15v6M15 18h6"/></svg>
+      <span data-i18n="ctx_add_queue">Add to queue</span>
+    </button>
+    <button class="ctx-item" onclick="ctxToggleAddToPlaylistMenu()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      <span data-i18n="ctx_add_playlist">Add to playlist / Move</span>
+    </button>
+    <div class="ctx-submenu" id="ctxPlaylistSubmenu">
+      <div id="ctxPlaylistList"></div>
+      <div class="new-playlist-inline">
+        <input type="text" id="ctxNewPlaylistInput" data-i18n-ph="ctx_new_playlist_ph" placeholder="New playlist name...">
+        <button class="btn-primary" style="padding:8px 14px; font-size:12px;" onclick="ctxCreatePlaylistFromMenu()" data-i18n="ctx_create_short">Create</button>
+      </div>
+    </div>
+    <button class="ctx-item" id="ctxRemoveFromPlaylistBtn" onclick="ctxRemoveFromPlaylist()" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      <span data-i18n="ctx_remove_playlist">Remove from this playlist</span>
+    </button>
+    <button class="ctx-item danger" onclick="ctxDeleteEntirely()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6h16z"/></svg>
+      <span data-i18n="ctx_delete">Delete entirely</span>
+    </button>
+  </div>
+</div>
+
+<!-- PLAYLIST DETAIL MODAL -->
+<div class="modal-backdrop" id="pdBackdrop" onclick="closeModal('pd')"></div>
+<div class="modal" id="pdModal">
+  <button class="modal-close" onclick="closeModal('pd')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <div class="pd-head">
+    <img id="pdImg" src="" alt="">
+    <div>
+      <h2 id="pdTitle">—</h2>
+      <div class="art" id="pdCount">—</div>
+    </div>
+  </div>
+  <div class="pd-actions">
+    <button class="btn-primary" id="pdPlayAllBtn" data-i18n="pd_play_all">▶ Play All</button>
+    <button class="btn-ghost" onclick="renamePlaylistPrompt()" data-i18n="pd_rename">✎ Rename</button>
+    <button class="btn-ghost" style="color:#E4607E;" onclick="deletePlaylistEntirely()" data-i18n="pd_delete">🗑 Delete Playlist</button>
+  </div>
+  <div class="pd-track-list" id="pdTrackList"></div>
+</div>
+
 <div class="toast" id="toast"></div>
 
-<!-- Firebase SDKs -->
+<!-- Firebase SDK (compat build — works as plain global scripts, no bundler needed) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-
-<!-- أضفنا سطر الـ Auth هنا بنفس الإصدار 10.12.2 -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-
-<!-- 2. تهيئة Firebase باستخدام بيانات مشروعك -->
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyAk0_JeX9u_yypyin1skvanDNfRs7h-HVc",
-    authDomain: "music-dashboard-a453d.firebaseapp.com",
-    projectId: "music-dashboard-a453d",
-    storageBucket: "music-dashboard-a453d.firebasestorage.app",
-    messagingSenderId: "924493048567",
-    appId: "1:924493048567:web:b887fb640dbc67a255c1f2",
-    measurementId: "G-668H45D1MX"
-  };
-
-  // تشغيل الفايربيس
-  firebase.initializeApp(firebaseConfig);
-
-  // 3. كود التحكم بشاشة تسجيل الدخول الشخصية
-  firebase.auth().onAuthStateChanged((user) => {
-    const loginOverlay = document.getElementById('login-overlay');
-    if (user) {
-      loginOverlay.style.display = 'none'; // إذا مسجل دخوله يُخفي شاشة الدخول
-      console.log("تم تسجيل الدخول بنجاح كـ:", user.email);
-    } else {
-      loginOverlay.style.display = 'flex'; // إذا مو مسجل يظهر الشاشة
-    }
-  });
-
-  document.getElementById('login-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const usernameInput = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value;
-    const errorMsg = document.getElementById('error-msg');
-
-    const fakeEmail = `${usernameInput}@mycustomapp.local`;
-
-    firebase.auth().signInWithEmailAndPassword(fakeEmail, password)
-      .catch((error) => {
-        errorMsg.style.display = 'block';
-        errorMsg.innerText = "اسم المستخدم أو كلمة المرور غير صحيحة!";
-      });
-  });
-</script>
-
-<!-- 4. سكريبت مشروعك الرئيسي يأتي بعدهم مباشرة -->
-<script src="app.js"></script>
-
 
 <script>
 /* ================= SVG COVER GENERATOR (fixes broken images) ================= */
@@ -956,6 +1074,7 @@ const i18n = {
     field_genre:"Genre", field_mood:"Mood", field_lang:"Language / Region", field_lyrics_optional:"Lyrics (optional, original language only — no auto-translate for custom tracks)",
     add_track_submit:"Add & Play", cancel:"Cancel", sp_open_yt:"Open on YouTube",
     toast_track_added:"Added to your queue", toast_invalid_link:"Couldn't read a video ID from that link", toast_meta_failed:"Added, but couldn't fetch title/channel — edit them manually",
+    filter_none_all:"None / All", opt_none:"None", toast_added_queue:"Added to queue", toast_added_playlist:"Added to playlist", toast_playlist_created:"Playlist created", toast_removed_playlist:"Removed from playlist", toast_deleted:"Track deleted", ctx_add_queue:"Add to queue", ctx_add_playlist:"Add to playlist / Move", ctx_new_playlist_ph:"New playlist name...", ctx_create_short:"Create", ctx_add_short:"Add", ctx_remove_playlist:"Remove from this playlist", ctx_delete:"Delete entirely", pd_play_all:"▶ Play All", pd_rename:"✎ Rename", pd_delete:"🗑 Delete Playlist", toast_playlist_renamed:"Playlist renamed", toast_playlist_deleted:"Playlist deleted", pm_favorite:"Favorite", pm_shuffle:"Shuffle", pm_repeat:"Repeat", pm_repeat_all:"Repeat: All", pm_repeat_one:"Repeat: One", pm_lyrics:"Lyrics",
   },
   ar:{ nav_menu:"القائمة", nav_home:"الرئيسية", nav_search:"البحث والتصفية", nav_search_short:"بحث", nav_library:"مكتبتي", nav_playlists:"قوائم التشغيل", nav_settings:"الإعدادات",
     foot_title:"الأكثر تكراراً", foot_sub:"أفضل 5 مقاطع استمعت إليها هذا الأسبوع تُشكّل توصيات الغد.",
@@ -986,6 +1105,7 @@ const i18n = {
     field_genre:"النوع", field_mood:"المزاج", field_lang:"اللغة / المنطقة", field_lyrics_optional:"الكلمات (اختياري، باللغة الأصلية فقط — بدون ترجمة تلقائية للمقاطع المخصصة)",
     add_track_submit:"إضافة وتشغيل", cancel:"إلغاء", sp_open_yt:"فتح على يوتيوب",
     toast_track_added:"أُضيفت إلى قائمتك", toast_invalid_link:"تعذّر استخراج معرّف الفيديو من هذا الرابط", toast_meta_failed:"تمت الإضافة، لكن تعذّر جلب العنوان/القناة — عدّلهما يدوياً",
+    filter_none_all:"بدون / الكل", opt_none:"بدون", toast_added_queue:"أُضيفت إلى طابور التشغيل", toast_added_playlist:"أُضيفت إلى القائمة", toast_playlist_created:"تم إنشاء القائمة", toast_removed_playlist:"أُزيلت من القائمة", toast_deleted:"تم حذف الأغنية", ctx_add_queue:"إضافة إلى طابور التشغيل", ctx_add_playlist:"إضافة إلى قائمة / نقل", ctx_new_playlist_ph:"اسم القائمة الجديدة...", ctx_create_short:"إنشاء", ctx_add_short:"إضافة", ctx_remove_playlist:"حذف من هذه القائمة", ctx_delete:"حذف نهائي", pd_play_all:"▶ تشغيل الكل", pd_rename:"✎ إعادة تسمية", pd_delete:"🗑 حذف القائمة", toast_playlist_renamed:"تمت إعادة تسمية القائمة", toast_playlist_deleted:"تم حذف القائمة", pm_favorite:"مفضلة", pm_shuffle:"عشوائي", pm_repeat:"تكرار", pm_repeat_all:"تكرار: الكل", pm_repeat_one:"تكرار: أغنية واحدة", pm_lyrics:"الكلمات",
   },
   ja:{ nav_menu:"メニュー", nav_home:"ホーム", nav_search:"検索とフィルター", nav_search_short:"検索", nav_library:"ライブラリ", nav_playlists:"プレイリスト", nav_settings:"設定",
     foot_title:"リピート中", foot_sub:"今週よく聴いたトップ5が明日のおすすめを形作ります。",
@@ -1016,6 +1136,7 @@ const i18n = {
     field_genre:"ジャンル", field_mood:"ムード", field_lang:"言語 / 地域", field_lyrics_optional:"歌詞（任意、原語のみ — カスタム曲は自動翻訳されません）",
     add_track_submit:"追加して再生", cancel:"キャンセル", sp_open_yt:"YouTubeで開く",
     toast_track_added:"キューに追加しました", toast_invalid_link:"このリンクから動画IDを読み取れませんでした", toast_meta_failed:"追加しましたが、タイトル/チャンネルを取得できませんでした — 手動で編集してください",
+    filter_none_all:"なし / すべて", opt_none:"なし", toast_added_queue:"キューに追加しました", toast_added_playlist:"プレイリストに追加しました", toast_playlist_created:"プレイリストを作成しました", toast_removed_playlist:"プレイリストから削除しました", toast_deleted:"曲を削除しました", ctx_add_queue:"キューに追加", ctx_add_playlist:"プレイリストに追加 / 移動", ctx_new_playlist_ph:"新しいプレイリスト名...", ctx_create_short:"作成", ctx_add_short:"追加", ctx_remove_playlist:"このプレイリストから削除", ctx_delete:"完全に削除", pd_play_all:"▶ すべて再生", pd_rename:"✎ 名前を変更", pd_delete:"🗑 プレイリストを削除", toast_playlist_renamed:"プレイリスト名を変更しました", toast_playlist_deleted:"プレイリストを削除しました", pm_favorite:"お気に入り", pm_shuffle:"シャッフル", pm_repeat:"リピート", pm_repeat_all:"リピート: すべて", pm_repeat_one:"リピート: 1曲", pm_lyrics:"歌詞",
   },
   zh:{ nav_menu:"菜单", nav_home:"主页", nav_search:"搜索与筛选", nav_search_short:"搜索", nav_library:"音乐库", nav_playlists:"播放列表", nav_settings:"设置",
     foot_title:"循环播放", foot_sub:"本周最喜爱的5首歌正在塑造明天的推荐。",
@@ -1046,6 +1167,7 @@ const i18n = {
     field_genre:"流派", field_mood:"心情", field_lang:"语言 / 地区", field_lyrics_optional:"歌词（可选，仅原语言 —— 自定义曲目不支持自动翻译）",
     add_track_submit:"添加并播放", cancel:"取消", sp_open_yt:"在 YouTube 上打开",
     toast_track_added:"已添加到你的队列", toast_invalid_link:"无法从该链接读取视频 ID", toast_meta_failed:"已添加，但无法获取标题/频道 —— 请手动编辑",
+    filter_none_all:"无 / 全部", opt_none:"无", toast_added_queue:"已添加到队列", toast_added_playlist:"已添加到播放列表", toast_playlist_created:"播放列表已创建", toast_removed_playlist:"已从播放列表移除", toast_deleted:"歌曲已删除", ctx_add_queue:"添加到队列", ctx_add_playlist:"添加到播放列表 / 移动", ctx_new_playlist_ph:"新播放列表名称...", ctx_create_short:"创建", ctx_add_short:"添加", ctx_remove_playlist:"从此播放列表中移除", ctx_delete:"彻底删除", pd_play_all:"▶ 播放全部", pd_rename:"✎ 重命名", pd_delete:"🗑 删除播放列表", toast_playlist_renamed:"播放列表已重命名", toast_playlist_deleted:"播放列表已删除", pm_favorite:"收藏", pm_shuffle:"随机播放", pm_repeat:"循环", pm_repeat_all:"循环：全部", pm_repeat_one:"循环：单曲", pm_lyrics:"歌词",
   },
   es:{ nav_menu:"Menú", nav_home:"Inicio", nav_search:"Buscar y filtrar", nav_search_short:"Buscar", nav_library:"Biblioteca", nav_playlists:"Listas", nav_settings:"Ajustes",
     foot_title:"En repetición", foot_sub:"Tus 5 mejores pistas de esta semana están dando forma al mix de mañana.",
@@ -1076,6 +1198,7 @@ const i18n = {
     field_genre:"Género", field_mood:"Estado de ánimo", field_lang:"Idioma / Región", field_lyrics_optional:"Letra (opcional, solo idioma original — sin traducción automática para pistas personalizadas)",
     add_track_submit:"Añadir y reproducir", cancel:"Cancelar", sp_open_yt:"Abrir en YouTube",
     toast_track_added:"Añadida a tu cola", toast_invalid_link:"No se pudo leer un ID de video de ese enlace", toast_meta_failed:"Añadida, pero no se pudo obtener título/canal — edítalos manualmente",
+    filter_none_all:"Ninguno / Todos", opt_none:"Ninguno", toast_added_queue:"Añadida a la cola", toast_added_playlist:"Añadida a la lista", toast_playlist_created:"Lista creada", toast_removed_playlist:"Quitada de la lista", toast_deleted:"Pista eliminada", ctx_add_queue:"Añadir a la cola", ctx_add_playlist:"Añadir a lista / Mover", ctx_new_playlist_ph:"Nombre de la nueva lista...", ctx_create_short:"Crear", ctx_add_short:"Añadir", ctx_remove_playlist:"Quitar de esta lista", ctx_delete:"Eliminar definitivamente", pd_play_all:"▶ Reproducir todo", pd_rename:"✎ Renombrar", pd_delete:"🗑 Eliminar lista", toast_playlist_renamed:"Lista renombrada", toast_playlist_deleted:"Lista eliminada", pm_favorite:"Favorito", pm_shuffle:"Aleatorio", pm_repeat:"Repetir", pm_repeat_all:"Repetir: Todo", pm_repeat_one:"Repetir: Una", pm_lyrics:"Letra",
   },
   fr:{ nav_menu:"Menu", nav_home:"Accueil", nav_search:"Recherche et filtres", nav_search_short:"Recherche", nav_library:"Bibliothèque", nav_playlists:"Playlists", nav_settings:"Paramètres",
     foot_title:"En boucle", foot_sub:"Vos 5 meilleurs titres de la semaine façonnent le mix de demain.",
@@ -1106,6 +1229,7 @@ const i18n = {
     field_genre:"Genre", field_mood:"Ambiance", field_lang:"Langue / Région", field_lyrics_optional:"Paroles (facultatif, langue originale uniquement — pas de traduction automatique pour les titres personnalisés)",
     add_track_submit:"Ajouter et lire", cancel:"Annuler", sp_open_yt:"Ouvrir sur YouTube",
     toast_track_added:"Ajouté à votre file d'attente", toast_invalid_link:"Impossible de lire un ID de vidéo depuis ce lien", toast_meta_failed:"Ajouté, mais impossible de récupérer le titre/la chaîne — modifiez-les manuellement",
+    filter_none_all:"Aucun / Tous", opt_none:"Aucun", toast_added_queue:"Ajouté à la file d'attente", toast_added_playlist:"Ajouté à la playlist", toast_playlist_created:"Playlist créée", toast_removed_playlist:"Retiré de la playlist", toast_deleted:"Titre supprimé", ctx_add_queue:"Ajouter à la file d'attente", ctx_add_playlist:"Ajouter à une playlist / Déplacer", ctx_new_playlist_ph:"Nom de la nouvelle playlist...", ctx_create_short:"Créer", ctx_add_short:"Ajouter", ctx_remove_playlist:"Retirer de cette playlist", ctx_delete:"Supprimer définitivement", pd_play_all:"▶ Tout lire", pd_rename:"✎ Renommer", pd_delete:"🗑 Supprimer la playlist", toast_playlist_renamed:"Playlist renommée", toast_playlist_deleted:"Playlist supprimée", pm_favorite:"Favori", pm_shuffle:"Aléatoire", pm_repeat:"Répéter", pm_repeat_all:"Répéter : Tout", pm_repeat_one:"Répéter : Un titre", pm_lyrics:"Paroles",
   },
   de:{ nav_menu:"Menü", nav_home:"Start", nav_search:"Suche & Filter", nav_search_short:"Suche", nav_library:"Bibliothek", nav_playlists:"Playlists", nav_settings:"Einstellungen",
     foot_title:"Wiederholt", foot_sub:"Deine Top 5 Titel dieser Woche prägen den Discover-Mix von morgen.",
@@ -1136,6 +1260,7 @@ const i18n = {
     field_genre:"Genre", field_mood:"Stimmung", field_lang:"Sprache / Region", field_lyrics_optional:"Songtext (optional, nur Originalsprache — keine automatische Übersetzung für eigene Titel)",
     add_track_submit:"Hinzufügen & Abspielen", cancel:"Abbrechen", sp_open_yt:"Auf YouTube öffnen",
     toast_track_added:"Zur Warteschlange hinzugefügt", toast_invalid_link:"Aus diesem Link konnte keine Video-ID gelesen werden", toast_meta_failed:"Hinzugefügt, aber Titel/Kanal konnten nicht abgerufen werden — bitte manuell bearbeiten",
+    filter_none_all:"Keine / Alle", opt_none:"Keine", toast_added_queue:"Zur Warteschlange hinzugefügt", toast_added_playlist:"Zur Playlist hinzugefügt", toast_playlist_created:"Playlist erstellt", toast_removed_playlist:"Aus Playlist entfernt", toast_deleted:"Titel gelöscht", ctx_add_queue:"Zur Warteschlange hinzufügen", ctx_add_playlist:"Zu Playlist hinzufügen / Verschieben", ctx_new_playlist_ph:"Name der neuen Playlist...", ctx_create_short:"Erstellen", ctx_add_short:"Hinzufügen", ctx_remove_playlist:"Aus dieser Playlist entfernen", ctx_delete:"Endgültig löschen", pd_play_all:"▶ Alle abspielen", pd_rename:"✎ Umbenennen", pd_delete:"🗑 Playlist löschen", toast_playlist_renamed:"Playlist umbenannt", toast_playlist_deleted:"Playlist gelöscht", pm_favorite:"Favorit", pm_shuffle:"Zufall", pm_repeat:"Wiederholen", pm_repeat_all:"Wiederholen: Alle", pm_repeat_one:"Wiederholen: Einen", pm_lyrics:"Lyrics",
   },
   ko:{ nav_menu:"메뉴", nav_home:"홈", nav_search:"검색 및 필터", nav_search_short:"검색", nav_library:"보관함", nav_playlists:"플레이리스트", nav_settings:"설정",
     foot_title:"반복 재생 중", foot_sub:"이번 주 가장 많이 들은 상위 5곡이 내일의 추천을 만들어갑니다.",
@@ -1166,6 +1291,7 @@ const i18n = {
     field_genre:"장르", field_mood:"분위기", field_lang:"언어 / 지역", field_lyrics_optional:"가사 (선택 사항, 원어만 — 커스텀 트랙은 자동 번역되지 않음)",
     add_track_submit:"추가 후 재생", cancel:"취소", sp_open_yt:"YouTube에서 열기",
     toast_track_added:"대기열에 추가되었습니다", toast_invalid_link:"이 링크에서 동영상 ID를 읽을 수 없습니다", toast_meta_failed:"추가되었지만 제목/채널을 가져오지 못했습니다 — 직접 수정하세요",
+    filter_none_all:"없음 / 전체", opt_none:"없음", toast_added_queue:"대기열에 추가되었습니다", toast_added_playlist:"플레이리스트에 추가되었습니다", toast_playlist_created:"플레이리스트가 생성되었습니다", toast_removed_playlist:"플레이리스트에서 제거되었습니다", toast_deleted:"트랙이 삭제되었습니다", ctx_add_queue:"대기열에 추가", ctx_add_playlist:"플레이리스트에 추가 / 이동", ctx_new_playlist_ph:"새 플레이리스트 이름...", ctx_create_short:"만들기", ctx_add_short:"추가", ctx_remove_playlist:"이 플레이리스트에서 제거", ctx_delete:"완전히 삭제", pd_play_all:"▶ 전체 재생", pd_rename:"✎ 이름 변경", pd_delete:"🗑 플레이리스트 삭제", toast_playlist_renamed:"플레이리스트 이름이 변경되었습니다", toast_playlist_deleted:"플레이리스트가 삭제되었습니다", pm_favorite:"즐겨찾기", pm_shuffle:"셔플", pm_repeat:"반복", pm_repeat_all:"반복: 전체", pm_repeat_one:"반복: 한 곡", pm_lyrics:"가사",
   },
   ru:{ nav_menu:"Меню", nav_home:"Главная", nav_search:"Поиск и фильтры", nav_search_short:"Поиск", nav_library:"Медиатека", nav_playlists:"Плейлисты", nav_settings:"Настройки",
     foot_title:"На повторе", foot_sub:"Ваши 5 любимых треков этой недели формируют завтрашнюю подборку.",
@@ -1196,6 +1322,7 @@ const i18n = {
     field_genre:"Жанр", field_mood:"Настроение", field_lang:"Язык / Регион", field_lyrics_optional:"Текст песни (необязательно, только на языке оригинала — без автоперевода для пользовательских треков)",
     add_track_submit:"Добавить и воспроизвести", cancel:"Отмена", sp_open_yt:"Открыть на YouTube",
     toast_track_added:"Добавлено в очередь", toast_invalid_link:"Не удалось определить ID видео по этой ссылке", toast_meta_failed:"Добавлено, но не удалось получить название/канал — отредактируйте вручную",
+    filter_none_all:"Нет / Все", opt_none:"Нет", toast_added_queue:"Добавлено в очередь", toast_added_playlist:"Добавлено в плейлист", toast_playlist_created:"Плейлист создан", toast_removed_playlist:"Удалено из плейлиста", toast_deleted:"Трек удалён", ctx_add_queue:"Добавить в очередь", ctx_add_playlist:"Добавить в плейлист / Переместить", ctx_new_playlist_ph:"Название нового плейлиста...", ctx_create_short:"Создать", ctx_add_short:"Добавить", ctx_remove_playlist:"Удалить из этого плейлиста", ctx_delete:"Удалить навсегда", pd_play_all:"▶ Воспроизвести всё", pd_rename:"✎ Переименовать", pd_delete:"🗑 Удалить плейлист", toast_playlist_renamed:"Плейлист переименован", toast_playlist_deleted:"Плейлист удалён", pm_favorite:"Избранное", pm_shuffle:"Перемешать", pm_repeat:"Повтор", pm_repeat_all:"Повтор: Все", pm_repeat_one:"Повтор: Один", pm_lyrics:"Текст песни",
   },
   tr:{ nav_menu:"Menü", nav_home:"Ana Sayfa", nav_search:"Arama ve Filtreler", nav_search_short:"Ara", nav_library:"Kitaplık", nav_playlists:"Çalma Listeleri", nav_settings:"Ayarlar",
     foot_title:"Tekrarda", foot_sub:"Bu haftanın en iyi 5 parçası yarının önerilerini şekillendiriyor.",
@@ -1226,6 +1353,7 @@ const i18n = {
     field_genre:"Tür", field_mood:"Ruh Hali", field_lang:"Dil / Bölge", field_lyrics_optional:"Sözler (isteğe bağlı, yalnızca orijinal dil — özel parçalar için otomatik çeviri yok)",
     add_track_submit:"Ekle ve Çal", cancel:"İptal", sp_open_yt:"YouTube'da Aç",
     toast_track_added:"Kuyruğuna eklendi", toast_invalid_link:"Bu bağlantıdan bir video kimliği okunamadı", toast_meta_failed:"Eklendi, ancak başlık/kanal alınamadı — elle düzenleyin",
+    filter_none_all:"Yok / Tümü", opt_none:"Yok", toast_added_queue:"Kuyruğa eklendi", toast_added_playlist:"Çalma listesine eklendi", toast_playlist_created:"Çalma listesi oluşturuldu", toast_removed_playlist:"Çalma listesinden kaldırıldı", toast_deleted:"Parça silindi", ctx_add_queue:"Kuyruğa ekle", ctx_add_playlist:"Çalma listesine ekle / Taşı", ctx_new_playlist_ph:"Yeni çalma listesi adı...", ctx_create_short:"Oluştur", ctx_add_short:"Ekle", ctx_remove_playlist:"Bu çalma listesinden kaldır", ctx_delete:"Kalıcı olarak sil", pd_play_all:"▶ Tümünü Çal", pd_rename:"✎ Yeniden Adlandır", pd_delete:"🗑 Çalma Listesini Sil", toast_playlist_renamed:"Çalma listesi yeniden adlandırıldı", toast_playlist_deleted:"Çalma listesi silindi", pm_favorite:"Favori", pm_shuffle:"Karıştır", pm_repeat:"Tekrarla", pm_repeat_all:"Tekrarla: Tümü", pm_repeat_one:"Tekrarla: Biri", pm_lyrics:"Sözler",
   },
 };
 let curLang = 'en';
@@ -1329,7 +1457,7 @@ function seedTrack(id, title, artist, genre, mood, language, extra){
     cover: ytThumb(id), coverFallback: svgCover(title.charAt(0), seedCoverIdx++),
   }, extra||{});
 }
-const tracks = [
+let tracks = [
   seedTrack('dQw4w9WgXcQ', "Never Gonna Give You Up", "Rick Astley", "Upbeat Foreign", "Energetic", "English"),
   seedTrack('9bZkp7q19f0', "Gangnam Style", "PSY", "Upbeat Foreign", "Energetic", "Korean", {
     isDemoLyrics:true, lyricsLang:'ar',
@@ -1368,6 +1496,80 @@ function tName(t){ return curLang==='ar' ? t.titleAr : t.title; }
 function aName(t){ return curLang==='ar' ? t.artistAr : t.artist; }
 function coverImg(t, extraAttrs){ return `<img src="${t.cover}" onerror="this.onerror=null;this.src='${t.coverFallback}'" ${extraAttrs||''}>`; }
 
+/* ================= 🔥 FIREBASE — your project keys ================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyAk0_JeX9u_yypyin1skvanDNfRs7h-HVc",
+  authDomain: "music-dashboard-a453d.firebaseapp.com",
+  // ⚠️ You didn't include a databaseURL — this is the standard default pattern for your project ID,
+  // but please verify it in Firebase Console → Realtime Database → Data tab (the URL shown at the top).
+  // If your database was created in a non-us region, this guess will be wrong and cloud sync will silently fail.
+  databaseURL: "https://music-dashboard-a453d-default-rtdb.firebaseio.com",
+  projectId: "music-dashboard-a453d",
+  storageBucket: "music-dashboard-a453d.firebasestorage.app",
+  messagingSenderId: "924493048567",
+  appId: "1:924493048567:web:b887fb640dbc67a255c1f2",
+  measurementId: "G-668H45D1MX"
+};
+let fbDb = null, firebaseEnabled = false;
+try{
+  firebase.initializeApp(firebaseConfig);
+  fbDb = firebase.database();
+  firebaseEnabled = true;
+}catch(e){ console.warn('Firebase not initialized — check firebaseConfig.', e); firebaseEnabled = false; }
+
+// Security: every write in this app is gated behind this check (matches your Realtime Database
+// rule ".write": "auth != null" — the rule is what actually enforces it server-side; this is a
+// client-side mirror so the UI doesn't even attempt writes while logged out).
+function isAuthed(){ return firebaseEnabled && firebase.auth().currentUser != null; }
+
+// Personal login screen — blocks the whole app until signed in.
+firebase.auth().onAuthStateChanged((user)=>{
+  const overlay = document.getElementById('login-overlay');
+  if(user){ overlay.style.display = 'none'; console.log('Signed in as', user.email); }
+  else{ overlay.style.display = 'flex'; }
+});
+document.getElementById('login-form').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const usernameInput = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const errorMsg = document.getElementById('error-msg');
+  const fakeEmail = `${usernameInput}@mycustomapp.local`;
+  firebase.auth().signInWithEmailAndPassword(fakeEmail, password).catch(()=>{
+    errorMsg.style.display = 'block';
+    errorMsg.innerText = "اسم المستخدم أو كلمة المرور غير صحيحة!";
+  });
+});
+
+function fbSaveTrack(t){
+  if(!isAuthed()) return;
+  const { coverFallback, ...clean } = t; // don't store the generated placeholder data-URI, it's regenerated locally
+  fbDb.ref('sawt/tracks/'+t.id).set(clean).catch(err=>console.warn('Firebase save track failed', err));
+}
+function fbDeleteTrack(id){
+  if(!isAuthed()) return;
+  fbDb.ref('sawt/tracks/'+id).remove().catch(err=>console.warn('Firebase delete track failed', err));
+}
+function fbSavePlaylists(){
+  if(!isAuthed()) return;
+  fbDb.ref('sawt/playlists').set(playlists).catch(err=>console.warn('Firebase save playlists failed', err));
+}
+function fbListen(){
+  if(!firebaseEnabled) return;
+  fbDb.ref('sawt/tracks').on('value', snap=>{
+    const val = snap.val() || {};
+    Object.values(val).forEach(remote=>{
+      const local = tracks.find(t=>t.id===remote.id);
+      if(local){ Object.assign(local, remote); if(!local.coverFallback) local.coverFallback = svgCover((remote.title||'?').charAt(0), seedCoverIdx++); }
+      else { remote.coverFallback = svgCover((remote.title||'?').charAt(0), seedCoverIdx++); tracks.unshift(remote); }
+    });
+    renderAll();
+  });
+  fbDb.ref('sawt/playlists').on('value', snap=>{
+    const val = snap.val();
+    if(val){ playlists = Array.isArray(val) ? val.filter(Boolean) : Object.values(val); renderPlaylistsView(); renderLibrary(); }
+  });
+}
+
 const moods = [
   {name:"Chill Arabic", nameAr:"شرقي هادئ", c1:'#8B5E34', c2:'#0B0D12'},
   {name:"Sad Arabic", nameAr:"شرقي حزين", c1:'#4C6E9B', c2:'#0B0D12'},
@@ -1381,36 +1583,46 @@ const filterMoods = ["Chill","Sad","Energetic","Focus","Cinematic","Dark"];
 const filterLangs = ["Arabic","English","Japanese","Korean","Global"];
 
 /* ================= STATE ================= */
-let favorites = new Set();
 let history = [];
 let playlists = [
-  {name:"My Queue", nameAr:"قائمتي", tracks:['dQw4w9WgXcQ','9bZkp7q19f0','jNQXAC9IVRw']},
+  {id:'pl_seed_queue', name:"My Queue", nameAr:"قائمتي", trackIds:['dQw4w9WgXcQ','9bZkp7q19f0','jNQXAC9IVRw']},
 ];
 let currentTrackId = 'dQw4w9WgXcQ';
+let queueIds = [];           // the active, scoped playback queue (Spotify-style: play-from-here context)
 let isPlaying = false;
 let isShuffled = false;
-let repeatMode = 0;
+let repeatMode = 0;          // 0 off, 1 repeat-all(queue), 2 repeat-one
 let progress = 0;
-let timer = null;
 let playerVisible = true;
+let seekDragging = false;
 
 let activeFilters = { genres:new Set(), moods:new Set(), langs:new Set() };
 let draftFilters = { genres:new Set(), moods:new Set(), langs:new Set() };
 
 /* ================= RENDER: HOME/CARDS ================= */
-function trackCardHTML(t){
-  return `<div class="track-card" onclick="playTrackById('${t.id}')">
-    <div class="art-wrap">${coverImg(t, `alt="${t.title}"`)}
+function trackCardHTML(t, queueStr){
+  const q = queueStr ? `,'${queueStr}'` : '';
+  return `<div class="track-card">
+    <div class="art-wrap" onclick="playTrackById('${t.id}'${q})">${coverImg(t, `alt="${t.title}"`)}
       <div class="play-overlay"><div class="mini-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div></div>
     </div>
-    <div class="tt">${tName(t)}</div><div class="ta">${aName(t)}</div>
+    <div class="tt" onclick="playTrackById('${t.id}'${q})">${tName(t)}</div>
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
+      <div class="ta">${aName(t)}</div>
+      <button class="more-btn" onclick="event.stopPropagation();openContextMenu('${t.id}')"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+    </div>
   </div>`;
 }
 function renderRows(){
-  document.getElementById('rowVibe').innerHTML = tracks.slice(0,6).map(trackCardHTML).join('');
-  document.getElementById('rowNew').innerHTML = [...tracks].reverse().slice(0,6).map(trackCardHTML).join('');
-  document.getElementById('rowRepeat').innerHTML = tracks.filter(t=>history.includes(t.id)).map(trackCardHTML).join('') || tracks.slice(0,4).map(trackCardHTML).join('');
-  document.getElementById('rowMost').innerHTML = (tracks.length>3 ? tracks.slice(3,9) : tracks).map(trackCardHTML).join('');
+  const vibeList = tracks.slice(0,6);
+  document.getElementById('rowVibe').innerHTML = vibeList.map(t=>trackCardHTML(t, vibeList.map(x=>x.id).join(','))).join('');
+  const newList = [...tracks].reverse().slice(0,6);
+  document.getElementById('rowNew').innerHTML = newList.map(t=>trackCardHTML(t, newList.map(x=>x.id).join(','))).join('');
+  const repeatList = tracks.filter(t=>history.includes(t.id));
+  const repeatFinal = repeatList.length ? repeatList : tracks.slice(0,4);
+  document.getElementById('rowRepeat').innerHTML = repeatFinal.map(t=>trackCardHTML(t, repeatFinal.map(x=>x.id).join(','))).join('');
+  const mostList = tracks.length>3 ? tracks.slice(3,9) : tracks;
+  document.getElementById('rowMost').innerHTML = mostList.map(t=>trackCardHTML(t, mostList.map(x=>x.id).join(','))).join('');
 }
 function renderMoods(){
   document.getElementById('moodGrid').innerHTML = moods.map(m=>`
@@ -1434,18 +1646,19 @@ function renderSearchResults(){
     const matchesLang = activeFilters.langs.size===0 || activeFilters.langs.has(t.language);
     return matchesQ && matchesGenre && matchesMood && matchesLang;
   });
+  const queueStr = list.map(t=>t.id).join(',');
   document.getElementById('resultList').innerHTML = list.map(t=>`
     <div class="result-row">
-      ${coverImg(t, `alt="" onclick="playTrackById('${t.id}')"`)}
-      <div class="info" onclick="playTrackById('${t.id}')"><div class="tt">${tName(t)}</div><div class="ta">${aName(t)}</div></div>
-      <span class="genre-tag">${t.genre}</span>
+      ${coverImg(t, `alt="" onclick="playTrackById('${t.id}','${queueStr}')"`)}
+      <div class="info" onclick="playTrackById('${t.id}','${queueStr}')"><div class="tt">${tName(t)}</div><div class="ta">${aName(t)}</div></div>
+      <span class="genre-tag">${t.genre==='None'?(curLang==='ar'?'غير مصنّف':'Unclassified'):t.genre}</span>
       <span class="meta">${fmtTime(t.duration)}</span>
       <div class="row-actions">
-        <button class="icon-btn" style="width:32px;height:32px;" onclick="event.stopPropagation();openSongProfile('${t.id}')" title="Info">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-        </button>
         <button class="icon-btn" style="width:32px;height:32px;" onclick="event.stopPropagation();toggleFavorite('${t.id}')" title="Favorite">
-          <svg viewBox="0 0 24 24" fill="${favorites.has(t.id)?'var(--accent)':'none'}" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z"/></svg>
+          <svg viewBox="0 0 24 24" fill="${t.favorite?'var(--accent)':'none'}" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z"/></svg>
+        </button>
+        <button class="more-btn" onclick="event.stopPropagation();openContextMenu('${t.id}')" title="More">
+          <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
         </button>
       </div>
     </div>`).join('') || `<div class="empty-state"><div class="e-t">No results</div></div>`;
@@ -1469,22 +1682,30 @@ function removeFilter(type, val){
   renderSearchResults();
 }
 
-/* Filter modal */
+/* Filter modal — each category gets a leading "None / All" chip that clears just that category */
 function openFilterModal(){
   draftFilters = { genres:new Set(activeFilters.genres), moods:new Set(activeFilters.moods), langs:new Set(activeFilters.langs) };
   renderFilterModal();
   openModal('filter');
 }
 function renderFilterModal(){
-  document.getElementById('filterGenreRow').innerHTML = filterGenres.map(g=>`
-    <button class="filter-chip ${draftFilters.genres.has(g)?'active':''}" onclick="toggleDraft('genres','${g}')">${g}</button>`).join('');
-  document.getElementById('filterMoodRow').innerHTML = filterMoods.map(m=>`
-    <button class="filter-chip ${draftFilters.moods.has(m)?'active':''}" onclick="toggleDraft('moods','${m}')">${m}</button>`).join('');
-  document.getElementById('filterLangRow').innerHTML = filterLangs.map(l=>`
-    <button class="filter-chip ${draftFilters.langs.has(l)?'active':''}" onclick="toggleDraft('langs','${l}')">${l}</button>`).join('');
+  const noneLabel = i18n[curLang].filter_none_all;
+  document.getElementById('filterGenreRow').innerHTML =
+    `<button class="filter-chip ${draftFilters.genres.size===0?'active':''}" onclick="clearDraftGroup('genres')">${noneLabel}</button>` +
+    filterGenres.map(g=>`<button class="filter-chip ${draftFilters.genres.has(g)?'active':''}" onclick="toggleDraft('genres','${g}')">${g}</button>`).join('');
+  document.getElementById('filterMoodRow').innerHTML =
+    `<button class="filter-chip ${draftFilters.moods.size===0?'active':''}" onclick="clearDraftGroup('moods')">${noneLabel}</button>` +
+    filterMoods.map(m=>`<button class="filter-chip ${draftFilters.moods.has(m)?'active':''}" onclick="toggleDraft('moods','${m}')">${m}</button>`).join('');
+  document.getElementById('filterLangRow').innerHTML =
+    `<button class="filter-chip ${draftFilters.langs.size===0?'active':''}" onclick="clearDraftGroup('langs')">${noneLabel}</button>` +
+    filterLangs.map(l=>`<button class="filter-chip ${draftFilters.langs.has(l)?'active':''}" onclick="toggleDraft('langs','${l}')">${l}</button>`).join('');
 }
 function toggleDraft(type, val){
   if(draftFilters[type].has(val)) draftFilters[type].delete(val); else draftFilters[type].add(val);
+  renderFilterModal();
+}
+function clearDraftGroup(type){
+  draftFilters[type] = new Set();
   renderFilterModal();
 }
 function resetFilters(){
@@ -1501,40 +1722,46 @@ function applyFilters(){
 
 /* ================= LIBRARY ================= */
 function renderLibrary(){
-  const favT = tracks.filter(t=>favorites.has(t.id));
-  document.getElementById('lib-fav').innerHTML = favT.length ? favT.map(trackRowSimple).join('') :
+  const favT = tracks.filter(t=>t.favorite);
+  const favQueue = favT.map(t=>t.id).join(',');
+  document.getElementById('lib-fav').innerHTML = favT.length ? favT.map(t=>trackRowSimple(t, favQueue)).join('') :
     `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z"/></svg><div class="e-t">${i18n[curLang].empty_fav_t}</div><div class="e-s">${i18n[curLang].empty_fav_s}</div></div>`;
-  document.getElementById('lib-playlists').innerHTML = `<div class="playlist-grid">${playlists.map(p=>playlistCardHTML(p)).join('')}</div>`;
+  document.getElementById('lib-playlists').innerHTML = `<div class="playlist-grid">${playlists.map(p=>playlistCardHTML(p)).join('')}${newPlaylistCardHTML()}</div>`;
   const histT = history.map(id=>tracks.find(t=>t.id===id)).filter(Boolean);
-  document.getElementById('lib-history').innerHTML = histT.length ? histT.map(trackRowSimple).join('') :
+  const histQueue = histT.map(t=>t.id).join(',');
+  document.getElementById('lib-history').innerHTML = histT.length ? histT.map(t=>trackRowSimple(t, histQueue)).join('') :
     `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><div class="e-t">${i18n[curLang].empty_hist_t}</div><div class="e-s">${i18n[curLang].empty_hist_s}</div></div>`;
 }
-function trackRowSimple(t){
+function trackRowSimple(t, queueStr){
+  const q = queueStr ? `,'${queueStr}'` : '';
   return `<div class="result-row">
-    ${coverImg(t, `alt="" onclick="playTrackById('${t.id}')"`)}
-    <div class="info" onclick="playTrackById('${t.id}')"><div class="tt">${tName(t)}</div><div class="ta">${aName(t)}</div></div>
+    ${coverImg(t, `alt="" onclick="playTrackById('${t.id}'${q})"`)}
+    <div class="info" onclick="playTrackById('${t.id}'${q})"><div class="tt">${tName(t)}</div><div class="ta">${aName(t)}</div></div>
     <span class="meta">${fmtTime(t.duration)}</span>
     <div class="row-actions">
       <button class="icon-btn" style="width:32px;height:32px;" onclick="toggleFavorite('${t.id}')">
-        <svg viewBox="0 0 24 24" fill="${favorites.has(t.id)?'var(--accent)':'none'}" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z"/></svg>
+        <svg viewBox="0 0 24 24" fill="${t.favorite?'var(--accent)':'none'}" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z"/></svg>
       </button>
+      <button class="more-btn" onclick="openContextMenu('${t.id}')"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
     </div>
   </div>`;
 }
 function playlistCardHTML(p){
-  const items = p.tracks.map(id=>tracks.find(t=>t.id===id)).filter(Boolean);
-  return `<div class="playlist-card" onclick="playTrackById('${p.tracks[0]}')">
-    <div class="art-wrap"><div class="playlist-collage">${items.slice(0,4).map(t=>coverImg(t)).join('')}</div></div>
+  const items = p.trackIds.map(id=>tracks.find(t=>t.id===id)).filter(Boolean);
+  return `<div class="playlist-card" onclick="openPlaylistDetail('${p.id}')">
+    <div class="art-wrap"><div class="playlist-collage">${items.slice(0,4).map(t=>coverImg(t)).join('') || '<div style="background:var(--elevated); width:100%; height:100%;"></div>'}</div></div>
     <div class="tt">${curLang==='ar'?p.nameAr:p.name}</div>
-    <div class="ta">${p.tracks.length} tracks</div>
+    <div class="ta">${p.trackIds.length} tracks</div>
+  </div>`;
+}
+function newPlaylistCardHTML(){
+  return `<div class="playlist-card new-playlist-card" onclick="createPlaylistPrompt()">
+    <div class="art-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></div>
+    <div class="tt">${i18n[curLang].new_playlist}</div>
   </div>`;
 }
 function renderPlaylistsView(){
-  document.getElementById('playlistGrid').innerHTML = playlists.map(p=>playlistCardHTML(p)).join('') +
-    `<div class="playlist-card new-playlist-card" onclick="showToast(curLang==='ar'?'إنشاء قائمة (تجريبي)':'Create playlist (demo)')">
-      <div class="art-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></div>
-      <div class="tt">${i18n[curLang].new_playlist}</div>
-    </div>`;
+  document.getElementById('playlistGrid').innerHTML = playlists.map(p=>playlistCardHTML(p)).join('') + newPlaylistCardHTML();
 }
 function renderAll(){
   renderRows(); renderMoods(); renderSearchResults(); renderLibrary(); renderPlaylistsView(); renderThemeGrid();
@@ -1566,7 +1793,7 @@ document.getElementById('libTabs').addEventListener('click', (e)=>{
   document.getElementById('lib-'+btn.dataset.tab).classList.add('active');
 });
 
-/* ================= PLAYER LOGIC (real YouTube IFrame Player API) ================= */
+/* ================= PLAYER LOGIC (real YouTube IFrame Player API, queue-scoped) ================= */
 let ytPlayer = null;
 let ytReady = false;
 let pendingPlayId = null;
@@ -1595,9 +1822,15 @@ function onPlayerStateChange(e){
   else if(e.data === YT.PlayerState.ENDED){ handleTrackEnd(); }
 }
 function onPlayerError(){ showToast(curLang==='ar' ? 'تعذّر تشغيل هذا الفيديو' : "This video can't be played"); }
+
+// End-of-queue behavior: repeat-one replays; otherwise advance within the CURRENT queue only —
+// never falls back to the whole library, per the "don't shuffle into the general catalog" requirement.
 function handleTrackEnd(){
-  if(repeatMode === 2){ ytPlayer.seekTo(0, true); ytPlayer.playVideo(); }
-  else { nextTrack(); }
+  if(repeatMode === 2){ ytPlayer.seekTo(0, true); ytPlayer.playVideo(); return; }
+  const idx = queueIds.indexOf(currentTrackId);
+  const atEnd = isShuffled ? false : idx >= queueIds.length - 1;
+  if(atEnd && repeatMode !== 1){ isPlaying = false; ytPlayer.pauseVideo(); updatePlayerUI(); return; }
+  nextTrack();
 }
 function loadAndPlay(videoId){
   if(!ytReady){ pendingPlayId = videoId; return; }
@@ -1609,14 +1842,22 @@ function loadAndPlay(videoId){
 setInterval(()=>{
   if(!ytReady || !isPlaying || !playerVisible) return;
   const t = currentTrack(); if(!t) return;
-  progress = ytPlayer.getCurrentTime() || 0;
+  if(!seekDragging) progress = ytPlayer.getCurrentTime() || 0;
   const liveDuration = ytPlayer.getDuration();
   if(liveDuration && Math.abs(liveDuration - t.duration) > 1){ t.duration = liveDuration; }
   updateProgressUI();
 }, 1000);
 
 function currentTrack(){ return tracks.find(t=>t.id===currentTrackId); }
-function playTrackById(id){
+
+/**
+ * Plays a track. `queue` scopes playback: pass a comma-joined id string (or array) to lock
+ * next/prev/end-of-queue behavior to that list only (e.g. a playlist, Favorites, or a search result set).
+ * Omit it to keep playing within whatever queue is already active, or fall back to the full library.
+ */
+function playTrackById(id, queue){
+  if(queue){ queueIds = (typeof queue === 'string') ? queue.split(',').filter(Boolean) : queue.slice(); }
+  else if(!queueIds.includes(id)){ queueIds = tracks.map(t=>t.id); }
   currentTrackId = id;
   progress = 0;
   isPlaying = true;
@@ -1632,16 +1873,20 @@ function togglePlay(){
   if(isPlaying) ytPlayer.pauseVideo(); else ytPlayer.playVideo();
 }
 function nextTrack(){
-  const idx = tracks.findIndex(t=>t.id===currentTrackId);
-  let nextIdx;
-  if(isShuffled) nextIdx = Math.floor(Math.random()*tracks.length);
-  else nextIdx = (idx+1) % tracks.length;
-  playTrackById(tracks[nextIdx].id);
+  if(!queueIds.length) return;
+  const idx = queueIds.indexOf(currentTrackId);
+  let nextIdx = isShuffled ? Math.floor(Math.random()*queueIds.length) : idx+1;
+  if(nextIdx >= queueIds.length){
+    if(repeatMode === 1) nextIdx = 0; else return; // stop at the end of this queue, don't wrap into the library
+  }
+  playTrackById(queueIds[nextIdx]);
 }
 function prevTrack(){
-  const idx = tracks.findIndex(t=>t.id===currentTrackId);
-  const prevIdx = (idx-1+tracks.length) % tracks.length;
-  playTrackById(tracks[prevIdx].id);
+  if(!queueIds.length) return;
+  const idx = queueIds.indexOf(currentTrackId);
+  let prevIdx = idx-1;
+  if(prevIdx < 0) prevIdx = (repeatMode===1) ? queueIds.length-1 : 0;
+  playTrackById(queueIds[prevIdx]);
 }
 function toggleShuffle(){ isShuffled=!isShuffled; document.getElementById('btnShuffle').classList.toggle('active', isShuffled); }
 function toggleRepeat(){
@@ -1652,33 +1897,53 @@ function toggleRepeat(){
 }
 function toggleFavorite(id){
   if(!id) return;
-  if(favorites.has(id)){ favorites.delete(id); showToast(i18n[curLang].toast_fav_rm); }
-  else { favorites.add(id); showToast(i18n[curLang].toast_fav_add); }
+  const t = tracks.find(x=>x.id===id); if(!t) return;
+  t.favorite = !t.favorite;
+  fbSaveTrack(t);
+  showToast(t.favorite ? i18n[curLang].toast_fav_add : i18n[curLang].toast_fav_rm);
   updatePlayerUI(); renderLibrary(); renderSearchResults();
 }
-function seek(e){
-  if(!ytReady) return;
-  const rect = e.currentTarget.getBoundingClientRect();
-  let pct = document.documentElement.dir==='rtl' ? (rect.right-e.clientX)/rect.width : (e.clientX-rect.left)/rect.width;
-  pct = Math.max(0,Math.min(1,pct));
-  const dur = currentTrack().duration || ytPlayer.getDuration() || 0;
-  ytPlayer.seekTo(pct*dur, true);
+
+/* Range-slider seek + volume */
+function onSeekInput(el){
+  seekDragging = true;
+  const t = currentTrack(); if(!t) return;
+  const dur = t.duration || (ytReady ? ytPlayer.getDuration() : 0) || 0;
+  const pct = el.value/1000;
+  document.getElementById('tCurrent').textContent = fmtTime(pct*dur);
+  el.style.setProperty('--pct', (pct*100)+'%');
+}
+function onSeekCommit(el){
+  const t = currentTrack(); if(!t) return;
+  const dur = t.duration || (ytReady ? ytPlayer.getDuration() : 0) || 0;
+  const pct = el.value/1000;
   progress = pct*dur;
-  updateProgressUI();
+  if(ytReady) ytPlayer.seekTo(progress, true);
+  seekDragging = false;
 }
 let volume = 70;
-function setVolume(e){
-  const rect = e.currentTarget.getBoundingClientRect();
-  let pct = document.documentElement.dir==='rtl' ? (rect.right-e.clientX)/rect.width : (e.clientX-rect.left)/rect.width;
-  volume = Math.max(0,Math.min(100, Math.round(pct*100)));
-  document.getElementById('volFill').style.width = volume+'%';
+function onVolumeInput(el){
+  volume = parseInt(el.value, 10);
+  ['volRange','volRangeSheet'].forEach(id=>{
+    const r = document.getElementById(id);
+    if(!r) return;
+    if(r !== el) r.value = volume;
+    r.style.setProperty('--pct', volume+'%');
+  });
+  ['volPctDesktop','volPctSheet'].forEach(id=>{
+    const b = document.getElementById(id);
+    if(b) b.textContent = volume + '%';
+  });
   if(ytReady) ytPlayer.setVolume(volume);
 }
 function updateProgressUI(){
   const t = currentTrack(); if(!t) return;
   document.getElementById('tCurrent').textContent = fmtTime(progress);
   document.getElementById('tTotal').textContent = fmtTime(t.duration);
-  document.getElementById('progressFill').style.width = t.duration ? (progress/t.duration*100)+'%' : '0%';
+  const pct = t.duration ? (progress/t.duration) : 0;
+  const range = document.getElementById('seekRange');
+  if(!seekDragging){ range.value = Math.round(pct*1000); }
+  range.style.setProperty('--pct', (pct*100)+'%');
 }
 function updatePlayerUI(){
   const t = currentTrack(); if(!t) return;
@@ -1686,12 +1951,13 @@ function updatePlayerUI(){
   document.getElementById('pImg').onerror = function(){ this.onerror=null; this.src=t.coverFallback; };
   document.getElementById('pTitle').textContent = tName(t);
   document.getElementById('pArtist').textContent = aName(t);
-  document.getElementById('pHeart').classList.toggle('active', favorites.has(t.id));
+  document.getElementById('pHeart').classList.toggle('active', !!t.favorite);
   document.getElementById('playIcon').innerHTML = isPlaying
     ? '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>'
     : '<path d="M8 5v14l11-7z"/>';
   updateProgressUI();
   updateDynIsland();
+  updateMediaSession();
 }
 function updateDynIsland(){
   const island = document.getElementById('dynIsland');
@@ -1711,6 +1977,52 @@ function toggleIslandSetting(el){
   el.classList.toggle('on');
   islandEnabled = el.classList.contains('on');
   updateDynIsland();
+}
+
+/* Mobile "more" sheet — houses the controls that don't fit the compact mobile player bar */
+function openPlayerMore(){
+  const t = currentTrack(); if(!t) return;
+  const img = document.getElementById('pmoreImg');
+  img.src = t.cover; img.onerror = function(){ this.onerror=null; this.src=t.coverFallback; };
+  document.getElementById('pmoreTitle').textContent = tName(t);
+  document.getElementById('pmoreArtist').textContent = aName(t);
+  refreshPlayerMore();
+  openModal('pmore');
+}
+function refreshPlayerMore(){
+  const t = currentTrack(); if(!t) return;
+  const heartBtn = document.getElementById('pmoreHeartBtn');
+  heartBtn.querySelector('svg').setAttribute('fill', t.favorite ? 'var(--accent)' : 'none');
+  heartBtn.style.color = t.favorite ? 'var(--accent)' : '';
+  document.getElementById('pmoreShuffleBtn').style.color = isShuffled ? 'var(--accent)' : '';
+  const repeatBtn = document.getElementById('pmoreRepeatBtn');
+  repeatBtn.style.color = repeatMode !== 0 ? 'var(--accent)' : '';
+  const repeatLabel = repeatBtn.querySelector('span');
+  repeatLabel.textContent = repeatMode === 2
+    ? i18n[curLang].pm_repeat_one
+    : (repeatMode === 1 ? i18n[curLang].pm_repeat_all : i18n[curLang].pm_repeat);
+}
+
+/* MediaSession: shows lock-screen / notification playback controls where the browser supports it.
+   Note: true continued playback while the screen is locked depends on the browser/OS treatment of
+   background iframes and isn't guaranteed on every mobile platform for an embedded YouTube player. */
+function updateMediaSession(){
+  if(!('mediaSession' in navigator)) return;
+  const t = currentTrack(); if(!t) return;
+  try{
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: tName(t), artist: aName(t), album: 'Sawt',
+      artwork: [{ src: t.cover, sizes: '480x480', type: 'image/jpeg' }]
+    });
+    navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+    navigator.mediaSession.setActionHandler('play', ()=>{ if(ytReady) ytPlayer.playVideo(); });
+    navigator.mediaSession.setActionHandler('pause', ()=>{ if(ytReady) ytPlayer.pauseVideo(); });
+    navigator.mediaSession.setActionHandler('previoustrack', prevTrack);
+    navigator.mediaSession.setActionHandler('nexttrack', nextTrack);
+    navigator.mediaSession.setActionHandler('seekto', (details)=>{
+      if(ytReady && details.seekTime != null){ ytPlayer.seekTo(details.seekTime, true); progress = details.seekTime; updateProgressUI(); }
+    });
+  }catch(e){ /* MediaSession not fully supported in this browser */ }
 }
 
 /* Close / reopen player bar */
@@ -1734,6 +2046,151 @@ function reopenPlayer(){
   else if(currentTrackId) loadAndPlay(currentTrackId);
   updatePlayerUI();
 }
+
+/* ================= CONTEXT MENU (⋮) ================= */
+let ctxTrackId = null;
+let ctxPlaylistId = null; // set when opened from inside a playlist detail view, enables "remove from this playlist"
+function openContextMenu(id, playlistId){
+  ctxTrackId = id;
+  ctxPlaylistId = playlistId || null;
+  const t = tracks.find(x=>x.id===id); if(!t) return;
+  const img = document.getElementById('ctxImg');
+  img.src = t.cover; img.onerror = function(){ this.onerror=null; this.src=t.coverFallback; };
+  document.getElementById('ctxTitle').textContent = tName(t);
+  document.getElementById('ctxArtist').textContent = aName(t);
+  document.getElementById('ctxRemoveFromPlaylistBtn').style.display = ctxPlaylistId ? 'flex' : 'none';
+  document.getElementById('ctxPlaylistSubmenu').classList.remove('open');
+  renderCtxPlaylistPicker();
+  openModal('ctx');
+}
+function ctxAddToQueue(){
+  if(!ctxTrackId) return;
+  if(!queueIds.length) queueIds = [ctxTrackId];
+  else if(!queueIds.includes(ctxTrackId)) queueIds.push(ctxTrackId);
+  showToast(i18n[curLang].toast_added_queue);
+  closeModal('ctx');
+}
+function ctxToggleAddToPlaylistMenu(){
+  document.getElementById('ctxPlaylistSubmenu').classList.toggle('open');
+}
+function renderCtxPlaylistPicker(){
+  document.getElementById('ctxPlaylistList').innerHTML = playlists.map(p=>`
+    <div class="playlist-pick-row">
+      <span>${curLang==='ar'?p.nameAr:p.name}</span>
+      <button class="btn-ghost" style="padding:5px 12px; font-size:11.5px;" onclick="ctxAddToPlaylist('${p.id}')" data-i18n="ctx_add_short">Add</button>
+    </div>`).join('');
+}
+function ctxAddToPlaylist(playlistId){
+  const p = playlists.find(x=>x.id===playlistId); if(!p || !ctxTrackId) return;
+  if(!p.trackIds.includes(ctxTrackId)) p.trackIds.push(ctxTrackId);
+  fbSavePlaylists();
+  renderPlaylistsView(); renderLibrary();
+  showToast(i18n[curLang].toast_added_playlist);
+  closeModal('ctx');
+}
+function ctxCreatePlaylistFromMenu(){
+  const input = document.getElementById('ctxNewPlaylistInput');
+  const name = (input.value||'').trim();
+  if(!name) return;
+  const p = { id:'pl_'+Date.now()+'_'+Math.random().toString(36).slice(2,7), name, nameAr:name, trackIds: ctxTrackId ? [ctxTrackId] : [] };
+  playlists.push(p);
+  fbSavePlaylists();
+  renderPlaylistsView(); renderLibrary();
+  input.value = '';
+  showToast(i18n[curLang].toast_playlist_created);
+  closeModal('ctx');
+}
+function ctxRemoveFromPlaylist(){
+  if(!ctxPlaylistId || !ctxTrackId) return;
+  const p = playlists.find(x=>x.id===ctxPlaylistId); if(!p) return;
+  p.trackIds = p.trackIds.filter(id=>id!==ctxTrackId);
+  fbSavePlaylists();
+  renderPlaylistsView(); renderLibrary();
+  showToast(i18n[curLang].toast_removed_playlist);
+  closeModal('ctx');
+  if(document.getElementById('pdModal').classList.contains('show')) openPlaylistDetail(ctxPlaylistId);
+}
+function ctxDeleteEntirely(){
+  if(!ctxTrackId) return;
+  const confirmMsg = curLang==='ar' ? 'حذف هذه الأغنية نهائياً من الموقع؟ لا يمكن التراجع.' : 'Delete this track permanently from the site? This can\u2019t be undone.';
+  if(!window.confirm(confirmMsg)) return;
+  const id = ctxTrackId;
+  tracks = tracks.filter(t=>t.id!==id);
+  playlists.forEach(p=>{ p.trackIds = p.trackIds.filter(x=>x!==id); });
+  history = history.filter(x=>x!==id);
+  queueIds = queueIds.filter(x=>x!==id);
+  fbDeleteTrack(id);
+  fbSavePlaylists();
+  if(currentTrackId === id) closePlayerBar();
+  renderAll();
+  showToast(i18n[curLang].toast_deleted);
+  closeModal('ctx');
+}
+
+/* ================= PLAYLIST DETAIL VIEW ================= */
+let pdPlaylistId = null;
+function openPlaylistDetail(playlistId){
+  pdPlaylistId = playlistId;
+  const p = playlists.find(x=>x.id===playlistId); if(!p) return;
+  const items = p.trackIds.map(id=>tracks.find(t=>t.id===id)).filter(Boolean);
+  document.getElementById('pdTitle').textContent = curLang==='ar' ? p.nameAr : p.name;
+  document.getElementById('pdCount').textContent = items.length + (curLang==='ar' ? ' أغنية' : ' tracks');
+  const cover = items[0];
+  const img = document.getElementById('pdImg');
+  if(cover){ img.src = cover.cover; img.onerror = function(){ this.onerror=null; this.src=cover.coverFallback; }; }
+  else { img.src = svgCover('♪', 0); }
+  const queueStr = items.map(t=>t.id).join(',');
+  document.getElementById('pdTrackList').innerHTML = items.length ? items.map(t=>`
+    <div class="result-row">
+      ${coverImg(t, `alt="" onclick="playTrackById('${t.id}','${queueStr}')"`)}
+      <div class="info" onclick="playTrackById('${t.id}','${queueStr}')"><div class="tt">${tName(t)}</div><div class="ta">${aName(t)}</div></div>
+      <span class="meta">${fmtTime(t.duration)}</span>
+      <div class="row-actions">
+        <button class="more-btn" onclick="openContextMenu('${t.id}','${p.id}')"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+      </div>
+    </div>`).join('') : `<div class="empty-state"><div class="e-t">${curLang==='ar'?'القائمة فارغة':'This playlist is empty'}</div></div>`;
+  document.getElementById('pdPlayAllBtn').onclick = function(){
+    if(items.length) playTrackById(items[0].id, queueStr);
+  };
+  openModal('pd');
+}
+function createPlaylistPrompt(){
+  const name = window.prompt(curLang==='ar' ? 'اسم القائمة الجديدة:' : 'New playlist name:');
+  if(!name || !name.trim()) return;
+  const p = { id:'pl_'+Date.now()+'_'+Math.random().toString(36).slice(2,7), name:name.trim(), nameAr:name.trim(), trackIds:[] };
+  playlists.push(p);
+  fbSavePlaylists();
+  renderPlaylistsView(); renderLibrary();
+  showToast(i18n[curLang].toast_playlist_created);
+}
+function renamePlaylistPrompt(){
+  if(!pdPlaylistId) return;
+  const p = playlists.find(x=>x.id===pdPlaylistId); if(!p) return;
+  const current = curLang==='ar' ? p.nameAr : p.name;
+  const newName = window.prompt(curLang==='ar' ? 'الاسم الجديد للقائمة:' : 'New name for this playlist:', current);
+  if(!newName || !newName.trim()) return;
+  p.name = newName.trim();
+  p.nameAr = newName.trim();
+  fbSavePlaylists();
+  renderPlaylistsView(); renderLibrary();
+  openPlaylistDetail(pdPlaylistId); // refresh the open modal with the new name
+  showToast(i18n[curLang].toast_playlist_renamed);
+}
+function deletePlaylistEntirely(){
+  if(!pdPlaylistId) return;
+  const p = playlists.find(x=>x.id===pdPlaylistId); if(!p) return;
+  const label = curLang==='ar' ? p.nameAr : p.name;
+  const confirmMsg = curLang==='ar'
+    ? `حذف قائمة "${label}" نهائياً؟ هذا لا يحذف الأغاني نفسها، فقط القائمة.`
+    : `Delete the playlist "${label}" permanently? This won't delete the songs themselves, just the playlist.`;
+  if(!window.confirm(confirmMsg)) return;
+  playlists = playlists.filter(x=>x.id!==pdPlaylistId);
+  fbSavePlaylists();
+  closeModal('pd');
+  renderPlaylistsView(); renderLibrary();
+  showToast(i18n[curLang].toast_playlist_deleted);
+}
+
 
 /* ================= SONG PROFILE MODAL ================= */
 let profileTrackId = null;
@@ -1814,9 +2271,9 @@ async function fetchOEmbed(videoId){
   }catch(e){ return null; }
 }
 function populateAddSelects(){
-  document.getElementById('addGenreSelect').innerHTML = filterGenres.map(g=>`<option value="${g}">${g}</option>`).join('');
-  document.getElementById('addMoodSelect').innerHTML = filterMoods.map(m=>`<option value="${m}">${m}</option>`).join('');
-  document.getElementById('addLangSelect').innerHTML = filterLangs.map(l=>`<option value="${l}">${l}</option>`).join('');
+  document.getElementById('addGenreSelect').innerHTML = `<option value="None">${i18n[curLang].opt_none}</option>` + filterGenres.map(g=>`<option value="${g}">${g}</option>`).join('');
+  document.getElementById('addMoodSelect').innerHTML = `<option value="None">${i18n[curLang].opt_none}</option>` + filterMoods.map(m=>`<option value="${m}">${m}</option>`).join('');
+  document.getElementById('addLangSelect').innerHTML = `<option value="None">${i18n[curLang].opt_none}</option>` + filterLangs.map(l=>`<option value="${l}">${l}</option>`).join('');
 }
 function openAddModal(){
   populateAddSelects();
@@ -1862,6 +2319,7 @@ async function submitAddTrack(){
     isCustom:true,
   });
   tracks.unshift(track);
+  fbSaveTrack(track);
   renderAll();
   closeModal('add');
   playTrackById(id);
@@ -1889,12 +2347,18 @@ function showToast(msg){
 }
 
 /* ================= INIT ================= */
-document.getElementById('volFill').style.width = volume+'%';
+document.getElementById('volRange').style.setProperty('--pct', volume+'%');
+document.getElementById('volRangeSheet').style.setProperty('--pct', volume+'%');
+document.getElementById('volPctDesktop').textContent = volume + '%';
+document.getElementById('volPctSheet').textContent = volume + '%';
 renderLangUI();
 setLang('en');
 currentTrackId = tracks[0].id;
+queueIds = tracks.map(t=>t.id);
 updatePlayerUI();
 isPlaying = false;
+fbListen();
+if(!firebaseEnabled) console.info('Sawt: Firebase is not configured yet — edit firebaseConfig near the top of the script to enable cloud sync. Running in local-only mode for now.');
 
 // Load the official YouTube IFrame Player API script (this drives all real playback).
 (function(){
