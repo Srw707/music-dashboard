@@ -139,61 +139,16 @@ html[dir="rtl"] .drawer{ transform:translateX(102%); }
 .view.active{ display:block; }
 @keyframes fadein{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
 
-/* ============ HOME ============ */
-.section-head{ display:flex; align-items:baseline; justify-content:space-between; margin:34px 0 16px; }
-.section-head:first-child{margin-top:0;}
-.section-head h2{ font-family:var(--font-display); font-size:21px; font-weight:600; font-style:italic; }
-html[lang="ar"] .section-head h2{font-style:normal;}
-.section-head .see-all{ font-size:12.5px; color:var(--text-muted); font-weight:600; }
-.section-head .see-all:hover{ color:var(--accent); }
-
-.hero-card{
-  border-radius:24px; padding:36px; position:relative; overflow:hidden; min-height:200px;
-  background:linear-gradient(120deg, color-mix(in srgb, var(--accent) 30%, var(--surface)), var(--surface) 70%);
-  border:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
-}
-.hero-card::after{
-  content:''; position:absolute; inset:0; opacity:.16; pointer-events:none;
-  background-image:radial-gradient(circle at 8px 8px, var(--accent) 1.6px, transparent 1.8px);
-  background-size:34px 34px;
-}
-.hero-eyebrow{ font-size:11.5px; letter-spacing:2px; text-transform:uppercase; color:var(--accent); font-weight:700; margin-bottom:10px;}
-.hero-title{ font-family:var(--font-display); font-size:32px; font-weight:600; font-style:italic; max-width:520px; line-height:1.15;}
-html[lang="ar"] .hero-title{font-style:normal;}
-.hero-sub{ color:var(--text-muted); font-size:14px; margin-top:10px; max-width:440px;}
-.hero-play{
-  position:relative; z-index:2; width:64px; height:64px; border-radius:50%; background:var(--accent); color:#0B0D12;
-  display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:.2s;
-}
-.hero-play:hover{ transform:scale(1.07); }
-.hero-play svg{width:24px; height:24px;}
-
-.row-scroll{ display:flex; gap:16px; overflow-x:auto; padding-bottom:6px; scroll-snap-type:x proximity; }
-.row-scroll::-webkit-scrollbar{height:0;}
-
-.track-card{ width:168px; flex-shrink:0; scroll-snap-align:start; cursor:pointer; }
-.track-card .art-wrap{ position:relative; border-radius:var(--radius-md); overflow:hidden; aspect-ratio:1; margin-bottom:10px; background:var(--elevated); }
-.track-card img{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .35s ease; }
-.track-card:hover img{ transform:scale(1.06); }
-.play-overlay{
-  position:absolute; inset:0; background:linear-gradient(180deg, transparent 45%, rgba(0,0,0,.65)); opacity:0; transition:.2s;
-  display:flex; align-items:flex-end; justify-content:flex-end; padding:9px;
-}
-.track-card:hover .play-overlay{ opacity:1; }
-.mini-play{ width:36px; height:36px; border-radius:50%; background:var(--accent); color:#0B0D12; display:flex; align-items:center; justify-content:center; }
-.mini-play svg{width:14px; height:14px;}
-.track-card .tt{ font-size:13.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.track-card .ta{ font-size:12px; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;}
-
-.mood-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(190px,1fr)); gap:14px; }
-.mood-card{
-  border-radius:var(--radius-lg); padding:20px; height:110px; position:relative; overflow:hidden;
-  display:flex; align-items:flex-end; font-family:var(--font-display); font-weight:600; font-style:italic; font-size:17px;
-  border:1px solid var(--border); transition:transform .2s;
-}
-html[lang="ar"] .mood-card{font-style:normal;}
-.mood-card:hover{ transform:translateY(-3px); }
-.mood-card span{ position:relative; z-index:1; }
+/* ============ NOW PLAYING (home) ============ */
+.np-wrap{ min-height:calc(100vh - 290px); flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:8px 0 24px; }
+.np-cover-wrap{ width:min(76vw, 360px); aspect-ratio:1; border-radius:28px; overflow:hidden; background:var(--elevated); border:1px solid var(--border); box-shadow:0 30px 70px rgba(0,0,0,.5); transition:transform .5s ease, box-shadow .5s ease; margin-bottom:26px; }
+.np-cover-wrap img{ width:100%; height:100%; object-fit:cover; display:block; }
+.np-cover-wrap.playing{ transform:scale(1.02); box-shadow:0 30px 90px color-mix(in srgb, var(--accent) 38%, transparent); }
+.np-title{ font-family:var(--font-display); font-size:26px; font-weight:600; font-style:italic; line-height:1.3; max-width:min(90vw, 560px); overflow-wrap:anywhere; }
+html[lang="ar"] .np-title, html[lang="ja"] .np-title, html[lang="ko"] .np-title, html[lang="zh"] .np-title{ font-style:normal; }
+.np-artist{ color:var(--text-muted); font-size:15px; margin-top:6px; max-width:min(90vw, 560px); overflow-wrap:anywhere; }
+.np-more{ margin-top:20px; }
+.np-empty{ padding-top:12vh; }
 
 /* ============ SEARCH ============ */
 .search-bar-row{ display:flex; align-items:center; gap:10px; margin-bottom:22px; }
@@ -397,18 +352,6 @@ html[lang="ar"] .sp-head h2{font-style:normal;}
 .sp-stat .v{ font-size:15px; font-weight:700;}
 .sp-actions{ display:flex; gap:10px; }
 
-/* Lyrics modal */
-.lyr-modal{ width:min(620px,92vw); }
-.lyr-toolbar{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:20px; padding-inline-end:36px;}
-.lyr-select{ background:var(--elevated); border:1px solid var(--border); color:var(--text); font-size:12.5px; padding:8px 12px; border-radius:9px; outline:none;}
-.dual-toggle{ display:flex; align-items:center; gap:8px; margin-inline-start:auto; font-size:12.5px; color:var(--text-muted);}
-.lyr-body{ display:flex; flex-direction:column; gap:16px; max-height:52vh; overflow-y:auto; padding-inline-end:6px;}
-.lyr-line{ font-size:16px; line-height:1.6; color:var(--text-muted); transition:.2s; padding:2px 0;}
-.lyr-line.orig{ color:var(--text); font-weight:600; }
-.lyr-line.trans{ font-size:14px; color:var(--accent); font-style:italic; }
-.lyr-pair{ padding-bottom:10px; border-bottom:1px solid var(--border); }
-.lyr-pair:last-child{border-bottom:none;}
-
 /* Filter modal */
 .filter-section{ margin-bottom:22px; }
 .filter-section .fs-label{ font-size:11.5px; letter-spacing:1px; text-transform:uppercase; color:var(--text-muted); font-weight:700; margin-bottom:12px; }
@@ -434,15 +377,6 @@ input[type="range"].seek-range::-moz-range-thumb, input[type="range"].vol-range:
   width:13px; height:13px; border-radius:50%; background:var(--text); border:none; cursor:pointer;
 }
 input[type="range"].seek-range::-moz-range-track, input[type="range"].vol-range::-moz-range-track{ background:transparent; }
-
-/* Mobile volume popover */
-.vol-popover{
-  position:fixed; bottom:150px; inset-inline-end:16px; z-index:70; background:var(--surface); border:1px solid var(--border);
-  border-radius:16px; padding:16px 12px; width:44px; height:150px; display:flex; align-items:center; justify-content:center;
-  opacity:0; pointer-events:none; transform:translateY(10px); transition:.2s;
-}
-.vol-popover.show{ opacity:1; pointer-events:auto; transform:translateY(0); }
-.vol-popover input[type="range"]{ writing-mode:vertical-lr; direction:ltr; width:4px; height:100%; }
 
 /* Context menu */
 .ctx-menu{ display:flex; flex-direction:column; gap:2px; }
@@ -470,11 +404,21 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
 .pd-actions .btn-primary, .pd-actions .btn-ghost{ flex:1; min-width:110px; text-align:center; white-space:nowrap; }
 .pd-track-list{ display:flex; flex-direction:column; gap:2px; max-height:44vh; overflow-y:auto; }
 /* Context menu must always sit above every other modal, including one already open (e.g. Playlist Detail) */
+#addBackdrop{ z-index:9000 !important; }
+#addModal{ z-index:9001 !important; }
 #ctxBackdrop{ z-index:9998 !important; }
 #ctxModal{ z-index:9999 !important; }
 
 .toast{ position:fixed; bottom:112px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--elevated-2); color:var(--text); padding:12px 22px; border-radius:999px; font-size:13px; font-weight:600; opacity:0; transition:.3s; z-index:100; border:1px solid var(--border); pointer-events:none; white-space:nowrap;}
 .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* misc polish */
+.playlist-card .art-wrap > img{ width:100%; height:100%; object-fit:cover; display:block; }
+.playlist-card .tt{ font-size:13.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.playlist-card .ta{ font-size:12px; color:var(--text-muted); margin-top:2px; }
+.result-row .info .tt, .result-row .info .ta{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.form-field input:disabled{ opacity:.6; cursor:not-allowed; }
+@media (max-width:600px){ .result-row .genre-tag{ display:none; } }
 
 /* ============ RESPONSIVE ============ */
 @media (max-width:900px){
@@ -532,7 +476,7 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
     <div class="nav-label" data-i18n="nav_menu">Menu</div>
     <a class="nav-item active" data-view="home">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
-      <span data-i18n="nav_home">Home</span>
+      <span data-i18n="reopen_player">Now Playing</span>
     </a>
     <a class="nav-item" data-view="search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
@@ -551,10 +495,6 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
       <span data-i18n="nav_settings">Settings</span>
     </a>
   </nav>
-  <div class="sidebar-foot">
-    <div class="t" data-i18n="foot_title">On Repeat</div>
-    <div class="s" data-i18n="foot_sub">Your top 5 tracks this week are shaping tomorrow's Discover mix.</div>
-  </div>
 </aside>
 
 <div class="app">
@@ -566,12 +506,8 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
       <div class="brand-mark">S</div>
       <div class="brand-name">Sawt</div>
     </div>
-    <h1 data-i18n="topbar_title">Discover</h1>
+    <h1 id="topbarTitle"></h1>
     <div class="topbar-spacer"></div>
-    <div class="top-search" style="max-width:320px;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <input type="text" data-i18n-ph="topbar_search_ph" placeholder="Search tracks, artists, moods...">
-    </div>
     <div class="lang-quick">
       <button class="lang-quick-btn" onclick="toggleLangDropdown(event)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></svg>
@@ -583,33 +519,22 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
 
   <div class="main">
     <div class="content">
-      <!-- HOME VIEW -->
+      <!-- NOW PLAYING (home) -->
       <section class="view active" id="view-home">
-        <div class="hero-card">
-          <div>
-            <div class="hero-eyebrow" data-i18n="hero_eyebrow">Based on Your Vibe</div>
-            <div class="hero-title" data-i18n="hero_title">Midnight Oud & Synth Sessions</div>
-            <p class="hero-sub" data-i18n="hero_sub">A moody blend built from your last 30 days of listening — heavy on strings, low on noise.</p>
-          </div>
-          <button class="hero-play" onclick="playTrackById('t1')">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        <div class="np-wrap" id="npWrap" style="display:none;">
+          <div class="np-cover-wrap" id="npCoverWrap"><img id="npCover" src="" alt=""></div>
+          <div class="np-title" id="npTitle">—</div>
+          <div class="np-artist" id="npArtist">—</div>
+          <button class="icon-btn np-more" onclick="openContextMenu(currentTrackId)" title="More">
+            <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
           </button>
         </div>
-
-        <div class="section-head"><h2 data-i18n="sec_vibe">Based on Your Vibe</h2><span class="see-all" data-i18n="see_all">See all</span></div>
-        <div class="row-scroll" id="rowVibe"></div>
-
-        <div class="section-head"><h2 data-i18n="sec_new">Try Something New</h2><span class="see-all" data-i18n="see_all">See all</span></div>
-        <div class="row-scroll" id="rowNew"></div>
-
-        <div class="section-head"><h2 data-i18n="sec_moods">Moods & Genres</h2></div>
-        <div class="mood-grid" id="moodGrid"></div>
-
-        <div class="section-head"><h2 data-i18n="sec_onrepeat">On Repeat</h2><span class="see-all" data-i18n="see_all">See all</span></div>
-        <div class="row-scroll" id="rowRepeat"></div>
-
-        <div class="section-head"><h2 data-i18n="sec_mostplayed">Most Played</h2><span class="see-all" data-i18n="see_all">See all</span></div>
-        <div class="row-scroll" id="rowMost"></div>
+        <div class="empty-state np-empty" id="npEmpty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          <div class="e-t" data-i18n="np_empty_title">No songs yet</div>
+          <div class="e-s" data-i18n="np_empty_sub">Add a YouTube link to start listening.</div>
+          <button class="btn-primary" style="margin-top:18px;" onclick="goView('search'); openAddModal();" data-i18n="add_link_btn">Add Link</button>
+        </div>
       </section>
 
       <!-- SEARCH VIEW -->
@@ -693,10 +618,6 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
             <div class="switch on" onclick="this.classList.toggle('on')"></div>
           </div>
           <div class="settings-toggle-row">
-            <div class="toggle-label"><div class="tt" data-i18n="set_dual">Dual lyrics by default</div><div class="ss" data-i18n="set_dual_sub">Always show original + translation together</div></div>
-            <div class="switch" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="settings-toggle-row">
             <div class="toggle-label"><div class="tt" data-i18n="set_island">Dynamic Island simulation</div><div class="ss" data-i18n="set_island_sub">Show a lock-screen style now-playing pill</div></div>
             <div class="switch on" id="islandSwitch" onclick="toggleIslandSetting(this)"></div>
           </div>
@@ -751,9 +672,6 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
   </div>
 
   <div class="player-right desktop-only">
-    <button class="icon-btn" onclick="openLyrics()" title="Lyrics">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V6a2 2 0 012-2h10l4 4v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 10h8M8 14h5"/></svg>
-    </button>
     <div class="vol-row">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="color:var(--text-muted); flex-shrink:0;"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19 7a7 7 0 010 10"/></svg>
       <input type="range" class="vol-range" id="volRange" min="0" max="100" value="70" oninput="onVolumeInput(this)">
@@ -789,10 +707,6 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
       <span data-i18n="pm_repeat">Repeat</span>
     </button>
-    <button class="ctx-item" onclick="closeModal('pmore'); openLyrics();">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V6a2 2 0 012-2h10l4 4v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 10h8M8 14h5"/></svg>
-      <span data-i18n="pm_lyrics">Lyrics</span>
-    </button>
   </div>
   <div class="vol-row" style="width:100%; margin-top:14px; padding-top:14px; border-top:1px solid var(--border);">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="color:var(--text-muted); flex-shrink:0;"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19 7a7 7 0 010 10"/></svg>
@@ -807,58 +721,6 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
 <div class="reopen-pill" id="reopenPill" onclick="reopenPlayer()">
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
   <span data-i18n="reopen_player">Now Playing</span>
-</div>
-
-<!-- SONG PROFILE MODAL -->
-<div class="modal-backdrop" id="spBackdrop" onclick="closeModal('sp')"></div>
-<div class="modal" id="spModal">
-  <button class="modal-close" onclick="closeModal('sp')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
-  <div class="sp-head">
-    <img id="spImg" src="" alt="">
-    <div>
-      <h2 id="spTitle">—</h2>
-      <div class="art" id="spArtist">—</div>
-    </div>
-  </div>
-  <div class="sp-grid">
-    <div class="sp-stat"><div class="l" data-i18n="sp_subgenre">Genre</div><div class="v" id="spGenre">—</div></div>
-    <div class="sp-stat"><div class="l" data-i18n="field_mood">Mood</div><div class="v" id="spBpm">—</div></div>
-    <div class="sp-stat"><div class="l" data-i18n="field_lang">Language / Region</div><div class="v" id="spYear">—</div></div>
-    <div class="sp-stat"><div class="l" data-i18n="sp_duration">Duration</div><div class="v" id="spDuration">—</div></div>
-  </div>
-  <div class="sp-actions">
-    <a class="btn-primary" id="spYoutubeLink" href="#" target="_blank" rel="noopener" style="display:inline-block; text-decoration:none;" data-i18n="sp_open_yt">Open on YouTube</a>
-    <button class="btn-ghost" onclick="openLyrics(); closeModal('sp')" data-i18n="sp_lyrics">View Lyrics</button>
-  </div>
-</div>
-
-<!-- LYRICS MODAL -->
-<div class="modal-backdrop" id="lyrBackdrop" onclick="closeModal('lyr')"></div>
-<div class="modal lyr-modal" id="lyrModal">
-  <button class="modal-close" onclick="closeModal('lyr')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
-  <div class="sp-head" style="margin-bottom:14px;">
-    <img id="lyrImg" src="" alt="" style="width:56px;height:56px;">
-    <div>
-      <h2 id="lyrTitle" style="font-size:18px;">—</h2>
-      <div class="art" id="lyrArtist">—</div>
-    </div>
-  </div>
-  <div class="lyr-toolbar">
-    <select class="lyr-select" id="lyrLangSelect" onchange="renderLyrics()">
-      <option value="none" data-i18n="lyr_no_translate">No translation</option>
-      <option value="en">English</option>
-      <option value="ar">العربية (Arabic)</option>
-      <option value="es">Español</option>
-      <option value="fr">Français</option>
-      <option value="ja">日本語</option>
-      <option value="zh">中文</option>
-    </select>
-    <label class="dual-toggle">
-      <input type="checkbox" id="dualCheck" onchange="renderLyrics()">
-      <span data-i18n="lyr_dual">Dual Lyrics</span>
-    </label>
-  </div>
-  <div class="lyr-body" id="lyrBody"></div>
 </div>
 
 <!-- FILTER MODAL -->
@@ -891,8 +753,8 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
 <div class="modal-backdrop" id="addBackdrop" onclick="closeModal('add')"></div>
 <div class="modal" id="addModal">
   <button class="modal-close" onclick="closeModal('add')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
-  <h2 class="modal-title" data-i18n="add_track_title">Add a YouTube Track</h2>
-  <p class="modal-desc" data-i18n="add_track_desc">Paste a YouTube link or video ID — the title, channel, and cover art are fetched automatically.</p>
+  <h2 class="modal-title" id="addModalTitle" data-i18n="add_track_title">Add a YouTube Track</h2>
+  <p class="modal-desc" id="addModalDesc" data-i18n="add_track_desc">Paste a YouTube link or video ID — the title, channel, and cover art are fetched automatically.</p>
 
   <div class="form-field">
     <label data-i18n="field_url">YouTube URL or Video ID</label>
@@ -930,14 +792,10 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
     <label data-i18n="field_lang">Language / Region</label>
     <select id="addLangSelect"></select>
   </div>
-  <div class="form-field">
-    <label data-i18n="field_lyrics_optional">Lyrics (optional, original language only — no auto-translate for custom tracks)</label>
-    <textarea id="addLyricsInput" placeholder="Paste lyrics here if you have them..."></textarea>
-  </div>
 
   <div class="filter-actions">
     <button class="btn-ghost" onclick="closeModal('add')" data-i18n="cancel">Cancel</button>
-    <button class="btn-primary" onclick="submitAddTrack()" data-i18n="add_track_submit">Add & Play</button>
+    <button class="btn-primary" id="addSubmitBtn" onclick="submitAddTrack()" data-i18n="add_track_submit">Add & Play</button>
   </div>
 </div>
 
@@ -968,6 +826,10 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
         <button class="btn-primary" style="padding:8px 14px; font-size:12px;" onclick="ctxCreatePlaylistFromMenu()" data-i18n="ctx_create_short">Create</button>
       </div>
     </div>
+    <button class="ctx-item" onclick="ctxEditTrack()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>
+      <span data-i18n="ctx_edit">Edit details</span>
+    </button>
     <button class="ctx-item" id="ctxRemoveFromPlaylistBtn" onclick="ctxRemoveFromPlaylist()" style="display:none;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
       <span data-i18n="ctx_remove_playlist">Remove from this playlist</span>
@@ -1014,6 +876,7 @@ const coverGradients = [
 ];
 function svgCover(letter, idx){
   const g = coverGradients[idx % coverGradients.length];
+  const safe = String(letter).replace(/&/g,'&amp;').replace(/</g,'&lt;');
   const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'>
     <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
       <stop offset='0' stop-color='${g[0]}'/><stop offset='1' stop-color='${g[1]}'/>
@@ -1024,9 +887,9 @@ function svgCover(letter, idx){
     <path d='M70 130 V70 l50 -14 v56' stroke='rgba(255,255,255,0.55)' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/>
     <circle cx='66' cy='134' r='14' fill='rgba(255,255,255,0.85)'/>
     <circle cx='116' cy='120' r='14' fill='rgba(255,255,255,0.85)'/>
-    <text x='100' y='190' font-family='Arial' font-size='16' fill='rgba(255,255,255,0.55)' text-anchor='middle' font-weight='700'>${letter}</text>
+    <text x='100' y='190' font-family='Arial' font-size='16' fill='rgba(255,255,255,0.55)' text-anchor='middle' font-weight='700'>${safe}</text>
   </svg>`;
-  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg).replace(/'/g, '%27');
 }
 
 /* ================= LANGUAGES ================= */
@@ -1045,315 +908,315 @@ const languages = [
 
 /* ================= I18N ================= */
 const i18n = {
-  en:{ nav_menu:"Menu", nav_home:"Home", nav_search:"Search & Filters", nav_search_short:"Search", nav_library:"Library", nav_playlists:"Playlists", nav_settings:"Settings",
-    foot_title:"On Repeat", foot_sub:"Your top 5 tracks this week are shaping tomorrow's Discover mix.",
-    topbar_title:"Discover", topbar_search_ph:"Search tracks, artists, moods...",
-    hero_eyebrow:"Based on Your Vibe", hero_title:"Midnight Oud & Synth Sessions", hero_sub:"A moody blend built from your last 30 days of listening — heavy on strings, low on noise.",
-    sec_vibe:"Based on Your Vibe", sec_new:"Try Something New", sec_moods:"Moods & Genres", sec_onrepeat:"On Repeat", sec_mostplayed:"Most Played", sec_yourplaylists:"Your Playlists", see_all:"See all",
+  en:{ ctx_edit:"Edit details", edit_track_title:"Edit track", edit_track_desc:"Change the name, artist, genre, mood, or language. The YouTube link can't be changed.", save_changes:"Save changes", toast_track_updated:"Track updated", np_empty_title:"No songs yet", np_empty_sub:"Add a YouTube link to start listening.", no_results:"No results", unit_tracks:"tracks", toast_cloud_error:"Couldn't save to the cloud — check your connection or permissions", nav_menu:"Menu", nav_search:"Search & Filters", nav_library:"Library", nav_playlists:"Playlists", nav_settings:"Settings",
+    
+    
+    
+    sec_yourplaylists:"Your Playlists", 
     search_ph:"Search YouTube & Spotify index...",
-    tab_fav:"Favorites", tab_playlists:"Playlists", tab_history:"History", tab_offline:"Offline Cache",
+    tab_fav:"Favorites", tab_playlists:"Playlists", tab_history:"History", 
     set_theme_title:"Theme Customizer", set_theme_desc:"Choose a luxury preset, or design your own from scratch.",
     set_custom_title:"Custom Theme Builder", set_custom_desc:"Pick a primary accent, background, and gradient mix.",
     set_primary:"Primary Accent", set_bg:"Background", set_gradient:"Gradient Mix", set_apply:"Apply Theme",
     set_lang_title:"Language", set_lang_desc:"Switch the entire interface between global languages.",
     set_playback_title:"Playback", set_autoplay:"Autoplay similar tracks", set_autoplay_sub:"Keep the vibe going when a playlist ends",
-    set_dual:"Dual lyrics by default", set_dual_sub:"Always show original + translation together",
+    
     set_island:"Dynamic Island simulation", set_island_sub:"Show a lock-screen style now-playing pill",
-    sp_subgenre:"Genre", sp_bpm:"BPM", sp_year:"Release Year", sp_duration:"Duration", sp_download:"Download Song", sp_lyrics:"View Lyrics",
-    lyr_no_translate:"No translation", lyr_dual:"Dual Lyrics",
+    
+    
     empty_fav_t:"No favorites yet", empty_fav_s:"Tap the heart on any track to save it here.",
     empty_hist_t:"No listening history", empty_hist_s:"Tracks you play will show up here.",
-    empty_off_t:"Nothing downloaded", empty_off_s:"Download a song to make it available offline.",
-    new_playlist:"New Playlist", toast_download:"Download started (demo)", toast_fav_add:"Added to Favorites", toast_fav_rm:"Removed from Favorites",
+    
+    new_playlist:"New Playlist", toast_fav_add:"Added to Favorites", toast_fav_rm:"Removed from Favorites",
     filter_btn:"Filter", filter_title:"Advanced Filters", filter_desc:"Narrow results by genre, mood, and language or region.",
     filter_genres:"Genres", filter_moods:"Moods", filter_lang_region:"Language / Region", filter_reset:"Reset Filters", filter_apply:"Apply Filters",
     reopen_player:"Now Playing", toast_filters_applied:"Filters applied", toast_filters_reset:"Filters reset", toast_player_closed:"Playback stopped",
     add_link_btn:"Add Link", ads_notice:"Playback streams live from YouTube via the official Player API — no files are downloaded. YouTube ads controlled by the video owner may still appear; this app cannot remove them.",
     add_track_title:"Add a YouTube Track", add_track_desc:"Paste a YouTube link or video ID — the title, channel, and cover art are fetched automatically.",
     field_url:"YouTube URL or Video ID", field_title_optional:"Title (optional override)", field_artist_optional:"Artist / Channel (optional)",
-    field_genre:"Genre", field_mood:"Mood", field_lang:"Language / Region", field_lyrics_optional:"Lyrics (optional, original language only — no auto-translate for custom tracks)",
-    add_track_submit:"Add & Play", cancel:"Cancel", sp_open_yt:"Open on YouTube",
+    field_genre:"Genre", field_mood:"Mood", field_lang:"Language / Region", 
+    add_track_submit:"Add & Play", cancel:"Cancel", 
     toast_track_added:"Added to your queue", toast_invalid_link:"Couldn't read a video ID from that link", toast_meta_failed:"Added, but couldn't fetch title/channel — edit them manually",
-    filter_none_all:"None / All", opt_none:"None", toast_added_queue:"Added to queue", toast_added_playlist:"Added to playlist", toast_playlist_created:"Playlist created", toast_removed_playlist:"Removed from playlist", toast_deleted:"Track deleted", ctx_add_queue:"Add to queue", ctx_add_playlist:"Add to playlist / Move", ctx_new_playlist_ph:"New playlist name...", ctx_create_short:"Create", ctx_add_short:"Add", ctx_remove_playlist:"Remove from this playlist", ctx_delete:"Delete entirely", pd_play_all:"▶ Play All", pd_rename:"✎ Rename", pd_delete:"🗑 Delete Playlist", toast_playlist_renamed:"Playlist renamed", toast_playlist_deleted:"Playlist deleted", pm_favorite:"Favorite", pm_shuffle:"Shuffle", pm_repeat:"Repeat", pm_repeat_all:"Repeat: All", pm_repeat_one:"Repeat: One", pm_lyrics:"Lyrics",
+    filter_none_all:"None / All", opt_none:"None", toast_added_queue:"Added to queue", toast_added_playlist:"Added to playlist", toast_playlist_created:"Playlist created", toast_removed_playlist:"Removed from playlist", toast_deleted:"Track deleted", ctx_add_queue:"Add to queue", ctx_add_playlist:"Add to playlist / Move", ctx_new_playlist_ph:"New playlist name...", ctx_create_short:"Create", ctx_add_short:"Add", ctx_remove_playlist:"Remove from this playlist", ctx_delete:"Delete entirely", pd_play_all:"▶ Play All", pd_rename:"✎ Rename", pd_delete:"🗑 Delete Playlist", toast_playlist_renamed:"Playlist renamed", toast_playlist_deleted:"Playlist deleted", pm_favorite:"Favorite", pm_shuffle:"Shuffle", pm_repeat:"Repeat", pm_repeat_all:"Repeat: All", pm_repeat_one:"Repeat: One", 
   },
-  ar:{ nav_menu:"القائمة", nav_home:"الرئيسية", nav_search:"البحث والتصفية", nav_search_short:"بحث", nav_library:"مكتبتي", nav_playlists:"قوائم التشغيل", nav_settings:"الإعدادات",
-    foot_title:"الأكثر تكراراً", foot_sub:"أفضل 5 مقاطع استمعت إليها هذا الأسبوع تُشكّل توصيات الغد.",
-    topbar_title:"اكتشف", topbar_search_ph:"ابحث عن أغاني، فنانين، أو أمزجة...",
-    hero_eyebrow:"مبني على ذوقك", hero_title:"جلسات عود وسينث في منتصف الليل", hero_sub:"مزيج حزين مبني على استماعك خلال آخر 30 يوماً — أوتار كثيرة وضجيج أقل.",
-    sec_vibe:"مبني على ذوقك", sec_new:"جرّب شيئاً جديداً", sec_moods:"الأمزجة والأنواع", sec_onrepeat:"الأكثر تكراراً", sec_mostplayed:"الأكثر استماعاً", sec_yourplaylists:"قوائمك", see_all:"عرض الكل",
+  ar:{ ctx_edit:"تعديل البيانات", edit_track_title:"تعديل الأغنية", edit_track_desc:"عدّل الاسم أو الفنان أو النوع أو المزاج أو اللغة. رابط يوتيوب لا يمكن تغييره.", save_changes:"حفظ التعديلات", toast_track_updated:"تم تحديث الأغنية", np_empty_title:"لا توجد أغاني بعد", np_empty_sub:"أضف رابط يوتيوب لتبدأ الاستماع.", no_results:"لا توجد نتائج", unit_tracks:"أغنية", toast_cloud_error:"تعذّر الحفظ في السحابة — تحقق من الاتصال أو الصلاحيات", nav_menu:"القائمة", nav_search:"البحث والتصفية", nav_library:"مكتبتي", nav_playlists:"قوائم التشغيل", nav_settings:"الإعدادات",
+    
+    
+    
+    sec_yourplaylists:"قوائمك", 
     search_ph:"ابحث في فهرس يوتيوب وسبوتيفاي...",
-    tab_fav:"المفضلة", tab_playlists:"القوائم", tab_history:"السجل", tab_offline:"المخزّن دون اتصال",
+    tab_fav:"المفضلة", tab_playlists:"القوائم", tab_history:"السجل", 
     set_theme_title:"تخصيص المظهر", set_theme_desc:"اختر مظهراً فاخراً جاهزاً، أو صمّم مظهرك الخاص.",
     set_custom_title:"منشئ المظهر المخصص", set_custom_desc:"اختر اللون الأساسي، الخلفية، ومزيج التدرّج.",
     set_primary:"اللون الأساسي", set_bg:"الخلفية", set_gradient:"مزيج التدرّج", set_apply:"تطبيق المظهر",
     set_lang_title:"اللغة", set_lang_desc:"بدّل الواجهة بالكامل بين لغات العالم.",
     set_playback_title:"التشغيل", set_autoplay:"تشغيل تلقائي لمقاطع مشابهة", set_autoplay_sub:"استمرار الأجواء عند انتهاء القائمة",
-    set_dual:"كلمات مزدوجة افتراضياً", set_dual_sub:"عرض الأصل والترجمة معاً دائماً",
+    
     set_island:"محاكاة الجزيرة الديناميكية", set_island_sub:"عرض شريط تشغيل يشبه شاشة القفل",
-    sp_subgenre:"النوع", sp_bpm:"سرعة الإيقاع", sp_year:"سنة الإصدار", sp_duration:"المدة", sp_download:"تحميل الأغنية", sp_lyrics:"عرض الكلمات",
-    lyr_no_translate:"بدون ترجمة", lyr_dual:"كلمات مزدوجة",
+    
+    
     empty_fav_t:"لا توجد مفضلات بعد", empty_fav_s:"اضغط على القلب في أي أغنية لحفظها هنا.",
     empty_hist_t:"لا يوجد سجل استماع", empty_hist_s:"الأغاني التي تشغّلها ستظهر هنا.",
-    empty_off_t:"لا يوجد شيء محمّل", empty_off_s:"حمّل أغنية لتكون متاحة دون اتصال.",
-    new_playlist:"قائمة جديدة", toast_download:"بدأ التحميل (تجريبي)", toast_fav_add:"أُضيفت إلى المفضلة", toast_fav_rm:"أُزيلت من المفضلة",
+    
+    new_playlist:"قائمة جديدة", toast_fav_add:"أُضيفت إلى المفضلة", toast_fav_rm:"أُزيلت من المفضلة",
     filter_btn:"الفلاتر", filter_title:"فلاتر متقدمة", filter_desc:"صفّي النتائج حسب النوع والمزاج واللغة أو المنطقة.",
     filter_genres:"الأنواع", filter_moods:"الأمزجة", filter_lang_region:"اللغة / المنطقة", filter_reset:"إعادة تعيين", filter_apply:"تطبيق الفلاتر",
     reopen_player:"قيد التشغيل الآن", toast_filters_applied:"تم تطبيق الفلاتر", toast_filters_reset:"تمت إعادة التعيين", toast_player_closed:"تم إيقاف التشغيل",
     add_link_btn:"إضافة رابط", ads_notice:"يتم بث التشغيل مباشرة من يوتيوب عبر واجهة المشغل الرسمية — لا يتم تحميل أي ملفات. قد تظهر إعلانات يوتيوب التي يتحكم بها صاحب الفيديو، ولا يمكن لهذا التطبيق إزالتها.",
     add_track_title:"إضافة مقطع من يوتيوب", add_track_desc:"الصق رابط يوتيوب أو معرّف الفيديو — سيتم جلب العنوان والقناة وصورة الغلاف تلقائياً.",
     field_url:"رابط يوتيوب أو معرّف الفيديو", field_title_optional:"العنوان (اختياري)", field_artist_optional:"الفنان / القناة (اختياري)",
-    field_genre:"النوع", field_mood:"المزاج", field_lang:"اللغة / المنطقة", field_lyrics_optional:"الكلمات (اختياري، باللغة الأصلية فقط — بدون ترجمة تلقائية للمقاطع المخصصة)",
-    add_track_submit:"إضافة وتشغيل", cancel:"إلغاء", sp_open_yt:"فتح على يوتيوب",
+    field_genre:"النوع", field_mood:"المزاج", field_lang:"اللغة / المنطقة", 
+    add_track_submit:"إضافة وتشغيل", cancel:"إلغاء", 
     toast_track_added:"أُضيفت إلى قائمتك", toast_invalid_link:"تعذّر استخراج معرّف الفيديو من هذا الرابط", toast_meta_failed:"تمت الإضافة، لكن تعذّر جلب العنوان/القناة — عدّلهما يدوياً",
-    filter_none_all:"بدون / الكل", opt_none:"بدون", toast_added_queue:"أُضيفت إلى طابور التشغيل", toast_added_playlist:"أُضيفت إلى القائمة", toast_playlist_created:"تم إنشاء القائمة", toast_removed_playlist:"أُزيلت من القائمة", toast_deleted:"تم حذف الأغنية", ctx_add_queue:"إضافة إلى طابور التشغيل", ctx_add_playlist:"إضافة إلى قائمة / نقل", ctx_new_playlist_ph:"اسم القائمة الجديدة...", ctx_create_short:"إنشاء", ctx_add_short:"إضافة", ctx_remove_playlist:"حذف من هذه القائمة", ctx_delete:"حذف نهائي", pd_play_all:"▶ تشغيل الكل", pd_rename:"✎ إعادة تسمية", pd_delete:"🗑 حذف القائمة", toast_playlist_renamed:"تمت إعادة تسمية القائمة", toast_playlist_deleted:"تم حذف القائمة", pm_favorite:"مفضلة", pm_shuffle:"عشوائي", pm_repeat:"تكرار", pm_repeat_all:"تكرار: الكل", pm_repeat_one:"تكرار: أغنية واحدة", pm_lyrics:"الكلمات",
+    filter_none_all:"بدون / الكل", opt_none:"بدون", toast_added_queue:"أُضيفت إلى طابور التشغيل", toast_added_playlist:"أُضيفت إلى القائمة", toast_playlist_created:"تم إنشاء القائمة", toast_removed_playlist:"أُزيلت من القائمة", toast_deleted:"تم حذف الأغنية", ctx_add_queue:"إضافة إلى طابور التشغيل", ctx_add_playlist:"إضافة إلى قائمة / نقل", ctx_new_playlist_ph:"اسم القائمة الجديدة...", ctx_create_short:"إنشاء", ctx_add_short:"إضافة", ctx_remove_playlist:"حذف من هذه القائمة", ctx_delete:"حذف نهائي", pd_play_all:"▶ تشغيل الكل", pd_rename:"✎ إعادة تسمية", pd_delete:"🗑 حذف القائمة", toast_playlist_renamed:"تمت إعادة تسمية القائمة", toast_playlist_deleted:"تم حذف القائمة", pm_favorite:"مفضلة", pm_shuffle:"عشوائي", pm_repeat:"تكرار", pm_repeat_all:"تكرار: الكل", pm_repeat_one:"تكرار: أغنية واحدة", 
   },
-  ja:{ nav_menu:"メニュー", nav_home:"ホーム", nav_search:"検索とフィルター", nav_search_short:"検索", nav_library:"ライブラリ", nav_playlists:"プレイリスト", nav_settings:"設定",
-    foot_title:"リピート中", foot_sub:"今週よく聴いたトップ5が明日のおすすめを形作ります。",
-    topbar_title:"見つける", topbar_search_ph:"曲、アーティスト、ムードを検索...",
-    hero_eyebrow:"あなたの好みに基づく", hero_title:"真夜中のウードとシンセ", hero_sub:"過去30日間の再生履歴から生まれた、弦楽器多めで静かなミックス。",
-    sec_vibe:"あなたの好みに基づく", sec_new:"新しい発見", sec_moods:"ムード＆ジャンル", sec_onrepeat:"リピート中", sec_mostplayed:"再生回数の多い曲", sec_yourplaylists:"あなたのプレイリスト", see_all:"すべて見る",
+  ja:{ ctx_edit:"情報を編集", edit_track_title:"曲を編集", edit_track_desc:"名前、アーティスト、ジャンル、ムード、言語を変更できます。YouTubeのリンクは変更できません。", save_changes:"変更を保存", toast_track_updated:"曲を更新しました", np_empty_title:"まだ曲がありません", np_empty_sub:"YouTubeのリンクを追加して聴き始めましょう。", no_results:"結果がありません", unit_tracks:"曲", toast_cloud_error:"クラウドに保存できませんでした — 接続または権限を確認してください", nav_menu:"メニュー", nav_search:"検索とフィルター", nav_library:"ライブラリ", nav_playlists:"プレイリスト", nav_settings:"設定",
+    
+    
+    
+    sec_yourplaylists:"あなたのプレイリスト", 
     search_ph:"YouTubeとSpotifyのインデックスを検索...",
-    tab_fav:"お気に入り", tab_playlists:"プレイリスト", tab_history:"履歴", tab_offline:"オフラインキャッシュ",
+    tab_fav:"お気に入り", tab_playlists:"プレイリスト", tab_history:"履歴", 
     set_theme_title:"テーマカスタマイザー", set_theme_desc:"高級プリセットを選ぶか、自分だけのテーマを作成。",
     set_custom_title:"カスタムテーマビルダー", set_custom_desc:"アクセントカラー、背景、グラデーションを選択。",
     set_primary:"アクセントカラー", set_bg:"背景色", set_gradient:"グラデーション", set_apply:"テーマを適用",
     set_lang_title:"言語", set_lang_desc:"インターフェース全体の言語を切り替えます。",
     set_playback_title:"再生設定", set_autoplay:"類似曲を自動再生", set_autoplay_sub:"プレイリスト終了後も雰囲気を継続",
-    set_dual:"デフォルトでデュアル歌詞", set_dual_sub:"原文と翻訳を常に一緒に表示",
+    
     set_island:"ダイナミックアイランドの再現", set_island_sub:"ロック画面風の再生中ピルを表示",
-    sp_subgenre:"ジャンル", sp_bpm:"BPM", sp_year:"リリース年", sp_duration:"再生時間", sp_download:"曲をダウンロード", sp_lyrics:"歌詞を見る",
-    lyr_no_translate:"翻訳なし", lyr_dual:"デュアル歌詞",
+    
+    
     empty_fav_t:"お気に入りはまだありません", empty_fav_s:"ハートをタップして保存しましょう。",
     empty_hist_t:"再生履歴がありません", empty_hist_s:"再生した曲がここに表示されます。",
-    empty_off_t:"ダウンロード済みの曲がありません", empty_off_s:"曲をダウンロードするとオフラインで利用できます。",
-    new_playlist:"新しいプレイリスト", toast_download:"ダウンロードを開始しました（デモ）", toast_fav_add:"お気に入りに追加しました", toast_fav_rm:"お気に入りから削除しました",
+    
+    new_playlist:"新しいプレイリスト", toast_fav_add:"お気に入りに追加しました", toast_fav_rm:"お気に入りから削除しました",
     filter_btn:"フィルター", filter_title:"詳細フィルター", filter_desc:"ジャンル、ムード、言語・地域で絞り込みます。",
     filter_genres:"ジャンル", filter_moods:"ムード", filter_lang_region:"言語 / 地域", filter_reset:"リセット", filter_apply:"フィルターを適用",
     reopen_player:"再生中", toast_filters_applied:"フィルターを適用しました", toast_filters_reset:"フィルターをリセットしました", toast_player_closed:"再生を停止しました",
     add_link_btn:"リンクを追加", ads_notice:"再生は公式Player APIを通じてYouTubeから直接ストリーミングされます — ファイルはダウンロードされません。動画の所有者が設定したYouTube広告が表示される場合がありますが、このアプリでは削除できません。",
     add_track_title:"YouTubeの曲を追加", add_track_desc:"YouTubeのリンクまたは動画IDを貼り付けると、タイトル・チャンネル・カバーアートが自動取得されます。",
     field_url:"YouTubeのURLまたは動画ID", field_title_optional:"タイトル（任意）", field_artist_optional:"アーティスト / チャンネル（任意）",
-    field_genre:"ジャンル", field_mood:"ムード", field_lang:"言語 / 地域", field_lyrics_optional:"歌詞（任意、原語のみ — カスタム曲は自動翻訳されません）",
-    add_track_submit:"追加して再生", cancel:"キャンセル", sp_open_yt:"YouTubeで開く",
+    field_genre:"ジャンル", field_mood:"ムード", field_lang:"言語 / 地域", 
+    add_track_submit:"追加して再生", cancel:"キャンセル", 
     toast_track_added:"キューに追加しました", toast_invalid_link:"このリンクから動画IDを読み取れませんでした", toast_meta_failed:"追加しましたが、タイトル/チャンネルを取得できませんでした — 手動で編集してください",
-    filter_none_all:"なし / すべて", opt_none:"なし", toast_added_queue:"キューに追加しました", toast_added_playlist:"プレイリストに追加しました", toast_playlist_created:"プレイリストを作成しました", toast_removed_playlist:"プレイリストから削除しました", toast_deleted:"曲を削除しました", ctx_add_queue:"キューに追加", ctx_add_playlist:"プレイリストに追加 / 移動", ctx_new_playlist_ph:"新しいプレイリスト名...", ctx_create_short:"作成", ctx_add_short:"追加", ctx_remove_playlist:"このプレイリストから削除", ctx_delete:"完全に削除", pd_play_all:"▶ すべて再生", pd_rename:"✎ 名前を変更", pd_delete:"🗑 プレイリストを削除", toast_playlist_renamed:"プレイリスト名を変更しました", toast_playlist_deleted:"プレイリストを削除しました", pm_favorite:"お気に入り", pm_shuffle:"シャッフル", pm_repeat:"リピート", pm_repeat_all:"リピート: すべて", pm_repeat_one:"リピート: 1曲", pm_lyrics:"歌詞",
+    filter_none_all:"なし / すべて", opt_none:"なし", toast_added_queue:"キューに追加しました", toast_added_playlist:"プレイリストに追加しました", toast_playlist_created:"プレイリストを作成しました", toast_removed_playlist:"プレイリストから削除しました", toast_deleted:"曲を削除しました", ctx_add_queue:"キューに追加", ctx_add_playlist:"プレイリストに追加 / 移動", ctx_new_playlist_ph:"新しいプレイリスト名...", ctx_create_short:"作成", ctx_add_short:"追加", ctx_remove_playlist:"このプレイリストから削除", ctx_delete:"完全に削除", pd_play_all:"▶ すべて再生", pd_rename:"✎ 名前を変更", pd_delete:"🗑 プレイリストを削除", toast_playlist_renamed:"プレイリスト名を変更しました", toast_playlist_deleted:"プレイリストを削除しました", pm_favorite:"お気に入り", pm_shuffle:"シャッフル", pm_repeat:"リピート", pm_repeat_all:"リピート: すべて", pm_repeat_one:"リピート: 1曲", 
   },
-  zh:{ nav_menu:"菜单", nav_home:"主页", nav_search:"搜索与筛选", nav_search_short:"搜索", nav_library:"音乐库", nav_playlists:"播放列表", nav_settings:"设置",
-    foot_title:"循环播放", foot_sub:"本周最喜爱的5首歌正在塑造明天的推荐。",
-    topbar_title:"发现", topbar_search_ph:"搜索歌曲、艺术家、心情...",
-    hero_eyebrow:"根据你的品味", hero_title:"午夜乌德琴与合成器之夜", hero_sub:"基于你过去30天听歌记录打造的忧郁混音——弦乐丰富，噪音更少。",
-    sec_vibe:"根据你的品味", sec_new:"尝试新内容", sec_moods:"心情与流派", sec_onrepeat:"循环播放", sec_mostplayed:"最常播放", sec_yourplaylists:"你的播放列表", see_all:"查看全部",
+  zh:{ ctx_edit:"编辑信息", edit_track_title:"编辑曲目", edit_track_desc:"可修改名称、艺术家、流派、心情或语言。YouTube 链接无法更改。", save_changes:"保存更改", toast_track_updated:"曲目已更新", np_empty_title:"还没有歌曲", np_empty_sub:"添加 YouTube 链接开始收听。", no_results:"没有结果", unit_tracks:"首", toast_cloud_error:"无法保存到云端 —— 请检查网络或权限", nav_menu:"菜单", nav_search:"搜索与筛选", nav_library:"音乐库", nav_playlists:"播放列表", nav_settings:"设置",
+    
+    
+    
+    sec_yourplaylists:"你的播放列表", 
     search_ph:"搜索 YouTube 与 Spotify 索引...",
-    tab_fav:"收藏", tab_playlists:"播放列表", tab_history:"历史记录", tab_offline:"离线缓存",
+    tab_fav:"收藏", tab_playlists:"播放列表", tab_history:"历史记录", 
     set_theme_title:"主题定制", set_theme_desc:"选择一个奢华预设主题，或从零开始设计。",
     set_custom_title:"自定义主题构建器", set_custom_desc:"选择主色调、背景色和渐变混合。",
     set_primary:"主色调", set_bg:"背景色", set_gradient:"渐变混合", set_apply:"应用主题",
     set_lang_title:"语言", set_lang_desc:"在多种全球语言之间切换整个界面。",
     set_playback_title:"播放设置", set_autoplay:"自动播放相似歌曲", set_autoplay_sub:"播放列表结束后延续氛围",
-    set_dual:"默认显示双语歌词", set_dual_sub:"始终同时显示原文与译文",
+    
     set_island:"灵动岛模拟", set_island_sub:"显示类似锁屏样式的正在播放提示",
-    sp_subgenre:"流派", sp_bpm:"每分钟节拍数", sp_year:"发行年份", sp_duration:"时长", sp_download:"下载歌曲", sp_lyrics:"查看歌词",
-    lyr_no_translate:"不翻译", lyr_dual:"双语歌词",
+    
+    
     empty_fav_t:"还没有收藏", empty_fav_s:"点击任意歌曲的爱心即可保存于此。",
     empty_hist_t:"没有播放历史", empty_hist_s:"你播放过的歌曲会显示在这里。",
-    empty_off_t:"没有已下载的内容", empty_off_s:"下载歌曲即可离线使用。",
-    new_playlist:"新建播放列表", toast_download:"已开始下载（演示）", toast_fav_add:"已加入收藏", toast_fav_rm:"已从收藏中移除",
+    
+    new_playlist:"新建播放列表", toast_fav_add:"已加入收藏", toast_fav_rm:"已从收藏中移除",
     filter_btn:"筛选", filter_title:"高级筛选", filter_desc:"按流派、心情、语言或地区筛选结果。",
     filter_genres:"流派", filter_moods:"心情", filter_lang_region:"语言 / 地区", filter_reset:"重置筛选", filter_apply:"应用筛选",
     reopen_player:"正在播放", toast_filters_applied:"已应用筛选", toast_filters_reset:"已重置筛选", toast_player_closed:"已停止播放",
     add_link_btn:"添加链接", ads_notice:"播放通过 YouTube 官方 Player API 实时流式传输 — 不会下载任何文件。视频所有者设置的 YouTube 广告仍可能出现，本应用无法移除。",
     add_track_title:"添加 YouTube 曲目", add_track_desc:"粘贴 YouTube 链接或视频 ID —— 标题、频道和封面将自动获取。",
     field_url:"YouTube 链接或视频 ID", field_title_optional:"标题（可选覆盖）", field_artist_optional:"艺术家 / 频道（可选）",
-    field_genre:"流派", field_mood:"心情", field_lang:"语言 / 地区", field_lyrics_optional:"歌词（可选，仅原语言 —— 自定义曲目不支持自动翻译）",
-    add_track_submit:"添加并播放", cancel:"取消", sp_open_yt:"在 YouTube 上打开",
+    field_genre:"流派", field_mood:"心情", field_lang:"语言 / 地区", 
+    add_track_submit:"添加并播放", cancel:"取消", 
     toast_track_added:"已添加到你的队列", toast_invalid_link:"无法从该链接读取视频 ID", toast_meta_failed:"已添加，但无法获取标题/频道 —— 请手动编辑",
-    filter_none_all:"无 / 全部", opt_none:"无", toast_added_queue:"已添加到队列", toast_added_playlist:"已添加到播放列表", toast_playlist_created:"播放列表已创建", toast_removed_playlist:"已从播放列表移除", toast_deleted:"歌曲已删除", ctx_add_queue:"添加到队列", ctx_add_playlist:"添加到播放列表 / 移动", ctx_new_playlist_ph:"新播放列表名称...", ctx_create_short:"创建", ctx_add_short:"添加", ctx_remove_playlist:"从此播放列表中移除", ctx_delete:"彻底删除", pd_play_all:"▶ 播放全部", pd_rename:"✎ 重命名", pd_delete:"🗑 删除播放列表", toast_playlist_renamed:"播放列表已重命名", toast_playlist_deleted:"播放列表已删除", pm_favorite:"收藏", pm_shuffle:"随机播放", pm_repeat:"循环", pm_repeat_all:"循环：全部", pm_repeat_one:"循环：单曲", pm_lyrics:"歌词",
+    filter_none_all:"无 / 全部", opt_none:"无", toast_added_queue:"已添加到队列", toast_added_playlist:"已添加到播放列表", toast_playlist_created:"播放列表已创建", toast_removed_playlist:"已从播放列表移除", toast_deleted:"歌曲已删除", ctx_add_queue:"添加到队列", ctx_add_playlist:"添加到播放列表 / 移动", ctx_new_playlist_ph:"新播放列表名称...", ctx_create_short:"创建", ctx_add_short:"添加", ctx_remove_playlist:"从此播放列表中移除", ctx_delete:"彻底删除", pd_play_all:"▶ 播放全部", pd_rename:"✎ 重命名", pd_delete:"🗑 删除播放列表", toast_playlist_renamed:"播放列表已重命名", toast_playlist_deleted:"播放列表已删除", pm_favorite:"收藏", pm_shuffle:"随机播放", pm_repeat:"循环", pm_repeat_all:"循环：全部", pm_repeat_one:"循环：单曲", 
   },
-  es:{ nav_menu:"Menú", nav_home:"Inicio", nav_search:"Buscar y filtrar", nav_search_short:"Buscar", nav_library:"Biblioteca", nav_playlists:"Listas", nav_settings:"Ajustes",
-    foot_title:"En repetición", foot_sub:"Tus 5 mejores pistas de esta semana están dando forma al mix de mañana.",
-    topbar_title:"Descubrir", topbar_search_ph:"Busca canciones, artistas, estados de ánimo...",
-    hero_eyebrow:"Según tu estilo", hero_title:"Sesiones de oud y sintetizador a medianoche", hero_sub:"Una mezcla melancólica creada con tus últimos 30 días de escucha — con muchas cuerdas y poco ruido.",
-    sec_vibe:"Según tu estilo", sec_new:"Prueba algo nuevo", sec_moods:"Estados de ánimo y géneros", sec_onrepeat:"En repetición", sec_mostplayed:"Más reproducidas", sec_yourplaylists:"Tus listas", see_all:"Ver todo",
+  es:{ ctx_edit:"Editar datos", edit_track_title:"Editar pista", edit_track_desc:"Cambia el nombre, artista, género, estado de ánimo o idioma. El enlace de YouTube no se puede cambiar.", save_changes:"Guardar cambios", toast_track_updated:"Pista actualizada", np_empty_title:"Aún no hay canciones", np_empty_sub:"Añade un enlace de YouTube para empezar a escuchar.", no_results:"Sin resultados", unit_tracks:"pistas", toast_cloud_error:"No se pudo guardar en la nube — revisa tu conexión o permisos", nav_menu:"Menú", nav_search:"Buscar y filtrar", nav_library:"Biblioteca", nav_playlists:"Listas", nav_settings:"Ajustes",
+    
+    
+    
+    sec_yourplaylists:"Tus listas", 
     search_ph:"Busca en el índice de YouTube y Spotify...",
-    tab_fav:"Favoritas", tab_playlists:"Listas", tab_history:"Historial", tab_offline:"Caché sin conexión",
+    tab_fav:"Favoritas", tab_playlists:"Listas", tab_history:"Historial", 
     set_theme_title:"Personalizador de tema", set_theme_desc:"Elige un preset de lujo o diseña el tuyo desde cero.",
     set_custom_title:"Creador de tema personalizado", set_custom_desc:"Elige un color de acento, fondo y mezcla de degradado.",
     set_primary:"Color de acento", set_bg:"Fondo", set_gradient:"Mezcla de degradado", set_apply:"Aplicar tema",
     set_lang_title:"Idioma", set_lang_desc:"Cambia toda la interfaz entre idiomas globales.",
     set_playback_title:"Reproducción", set_autoplay:"Reproducción automática de pistas similares", set_autoplay_sub:"Mantén el ambiente al terminar una lista",
-    set_dual:"Letras duales por defecto", set_dual_sub:"Muestra siempre el original y la traducción juntos",
+    
     set_island:"Simulación de isla dinámica", set_island_sub:"Muestra una barra estilo pantalla de bloqueo",
-    sp_subgenre:"Género", sp_bpm:"BPM", sp_year:"Año de lanzamiento", sp_duration:"Duración", sp_download:"Descargar canción", sp_lyrics:"Ver letra",
-    lyr_no_translate:"Sin traducción", lyr_dual:"Letras duales",
+    
+    
     empty_fav_t:"Aún no hay favoritas", empty_fav_s:"Toca el corazón de cualquier pista para guardarla aquí.",
     empty_hist_t:"Sin historial de reproducción", empty_hist_s:"Las pistas que reproduzcas aparecerán aquí.",
-    empty_off_t:"Nada descargado", empty_off_s:"Descarga una canción para tenerla disponible sin conexión.",
-    new_playlist:"Nueva lista", toast_download:"Descarga iniciada (demo)", toast_fav_add:"Añadida a Favoritas", toast_fav_rm:"Quitada de Favoritas",
+    
+    new_playlist:"Nueva lista", toast_fav_add:"Añadida a Favoritas", toast_fav_rm:"Quitada de Favoritas",
     filter_btn:"Filtrar", filter_title:"Filtros avanzados", filter_desc:"Filtra resultados por género, estado de ánimo e idioma o región.",
     filter_genres:"Géneros", filter_moods:"Estados de ánimo", filter_lang_region:"Idioma / Región", filter_reset:"Restablecer filtros", filter_apply:"Aplicar filtros",
     reopen_player:"Reproduciendo ahora", toast_filters_applied:"Filtros aplicados", toast_filters_reset:"Filtros restablecidos", toast_player_closed:"Reproducción detenida",
     add_link_btn:"Añadir enlace", ads_notice:"La reproducción se transmite en vivo desde YouTube mediante la API oficial del reproductor — no se descarga ningún archivo. Los anuncios de YouTube controlados por el propietario del video pueden seguir apareciendo; esta app no puede eliminarlos.",
     add_track_title:"Añadir una pista de YouTube", add_track_desc:"Pega un enlace de YouTube o un ID de video — el título, el canal y la portada se obtienen automáticamente.",
     field_url:"URL de YouTube o ID de video", field_title_optional:"Título (anulación opcional)", field_artist_optional:"Artista / Canal (opcional)",
-    field_genre:"Género", field_mood:"Estado de ánimo", field_lang:"Idioma / Región", field_lyrics_optional:"Letra (opcional, solo idioma original — sin traducción automática para pistas personalizadas)",
-    add_track_submit:"Añadir y reproducir", cancel:"Cancelar", sp_open_yt:"Abrir en YouTube",
+    field_genre:"Género", field_mood:"Estado de ánimo", field_lang:"Idioma / Región", 
+    add_track_submit:"Añadir y reproducir", cancel:"Cancelar", 
     toast_track_added:"Añadida a tu cola", toast_invalid_link:"No se pudo leer un ID de video de ese enlace", toast_meta_failed:"Añadida, pero no se pudo obtener título/canal — edítalos manualmente",
-    filter_none_all:"Ninguno / Todos", opt_none:"Ninguno", toast_added_queue:"Añadida a la cola", toast_added_playlist:"Añadida a la lista", toast_playlist_created:"Lista creada", toast_removed_playlist:"Quitada de la lista", toast_deleted:"Pista eliminada", ctx_add_queue:"Añadir a la cola", ctx_add_playlist:"Añadir a lista / Mover", ctx_new_playlist_ph:"Nombre de la nueva lista...", ctx_create_short:"Crear", ctx_add_short:"Añadir", ctx_remove_playlist:"Quitar de esta lista", ctx_delete:"Eliminar definitivamente", pd_play_all:"▶ Reproducir todo", pd_rename:"✎ Renombrar", pd_delete:"🗑 Eliminar lista", toast_playlist_renamed:"Lista renombrada", toast_playlist_deleted:"Lista eliminada", pm_favorite:"Favorito", pm_shuffle:"Aleatorio", pm_repeat:"Repetir", pm_repeat_all:"Repetir: Todo", pm_repeat_one:"Repetir: Una", pm_lyrics:"Letra",
+    filter_none_all:"Ninguno / Todos", opt_none:"Ninguno", toast_added_queue:"Añadida a la cola", toast_added_playlist:"Añadida a la lista", toast_playlist_created:"Lista creada", toast_removed_playlist:"Quitada de la lista", toast_deleted:"Pista eliminada", ctx_add_queue:"Añadir a la cola", ctx_add_playlist:"Añadir a lista / Mover", ctx_new_playlist_ph:"Nombre de la nueva lista...", ctx_create_short:"Crear", ctx_add_short:"Añadir", ctx_remove_playlist:"Quitar de esta lista", ctx_delete:"Eliminar definitivamente", pd_play_all:"▶ Reproducir todo", pd_rename:"✎ Renombrar", pd_delete:"🗑 Eliminar lista", toast_playlist_renamed:"Lista renombrada", toast_playlist_deleted:"Lista eliminada", pm_favorite:"Favorito", pm_shuffle:"Aleatorio", pm_repeat:"Repetir", pm_repeat_all:"Repetir: Todo", pm_repeat_one:"Repetir: Una", 
   },
-  fr:{ nav_menu:"Menu", nav_home:"Accueil", nav_search:"Recherche et filtres", nav_search_short:"Recherche", nav_library:"Bibliothèque", nav_playlists:"Playlists", nav_settings:"Paramètres",
-    foot_title:"En boucle", foot_sub:"Vos 5 meilleurs titres de la semaine façonnent le mix de demain.",
-    topbar_title:"Découvrir", topbar_search_ph:"Rechercher titres, artistes, ambiances...",
-    hero_eyebrow:"Selon votre ambiance", hero_title:"Sessions de oud et synthé à minuit", hero_sub:"Un mélange mélancolique créé à partir de vos 30 derniers jours d'écoute — riche en cordes, peu de bruit.",
-    sec_vibe:"Selon votre ambiance", sec_new:"Essayez du nouveau", sec_moods:"Ambiances et genres", sec_onrepeat:"En boucle", sec_mostplayed:"Les plus écoutées", sec_yourplaylists:"Vos playlists", see_all:"Tout voir",
+  fr:{ ctx_edit:"Modifier les infos", edit_track_title:"Modifier le titre", edit_track_desc:"Modifiez le nom, l'artiste, le genre, l'ambiance ou la langue. Le lien YouTube ne peut pas être modifié.", save_changes:"Enregistrer", toast_track_updated:"Titre mis à jour", np_empty_title:"Aucun titre pour l'instant", np_empty_sub:"Ajoutez un lien YouTube pour commencer à écouter.", no_results:"Aucun résultat", unit_tracks:"titres", toast_cloud_error:"Impossible d'enregistrer dans le cloud — vérifiez la connexion ou les autorisations", nav_menu:"Menu", nav_search:"Recherche et filtres", nav_library:"Bibliothèque", nav_playlists:"Playlists", nav_settings:"Paramètres",
+    
+    
+    
+    sec_yourplaylists:"Vos playlists", 
     search_ph:"Rechercher dans l'index YouTube et Spotify...",
-    tab_fav:"Favoris", tab_playlists:"Playlists", tab_history:"Historique", tab_offline:"Cache hors ligne",
+    tab_fav:"Favoris", tab_playlists:"Playlists", tab_history:"Historique", 
     set_theme_title:"Personnalisation du thème", set_theme_desc:"Choisissez un préréglage de luxe ou créez le vôtre.",
     set_custom_title:"Créateur de thème personnalisé", set_custom_desc:"Choisissez une couleur d'accent, un fond et un dégradé.",
     set_primary:"Couleur d'accent", set_bg:"Arrière-plan", set_gradient:"Mélange de dégradé", set_apply:"Appliquer le thème",
     set_lang_title:"Langue", set_lang_desc:"Changez toute l'interface entre plusieurs langues.",
     set_playback_title:"Lecture", set_autoplay:"Lecture automatique de titres similaires", set_autoplay_sub:"Continuez l'ambiance à la fin d'une playlist",
-    set_dual:"Paroles bilingues par défaut", set_dual_sub:"Toujours afficher l'original et la traduction ensemble",
+    
     set_island:"Simulation d'île dynamique", set_island_sub:"Afficher une pastille façon écran verrouillé",
-    sp_subgenre:"Genre", sp_bpm:"BPM", sp_year:"Année de sortie", sp_duration:"Durée", sp_download:"Télécharger le titre", sp_lyrics:"Voir les paroles",
-    lyr_no_translate:"Aucune traduction", lyr_dual:"Paroles bilingues",
+    
+    
     empty_fav_t:"Aucun favori pour l'instant", empty_fav_s:"Touchez le cœur d'un titre pour l'enregistrer ici.",
     empty_hist_t:"Aucun historique d'écoute", empty_hist_s:"Les titres écoutés apparaîtront ici.",
-    empty_off_t:"Rien de téléchargé", empty_off_s:"Téléchargez un titre pour l'écouter hors ligne.",
-    new_playlist:"Nouvelle playlist", toast_download:"Téléchargement démarré (démo)", toast_fav_add:"Ajouté aux favoris", toast_fav_rm:"Retiré des favoris",
+    
+    new_playlist:"Nouvelle playlist", toast_fav_add:"Ajouté aux favoris", toast_fav_rm:"Retiré des favoris",
     filter_btn:"Filtrer", filter_title:"Filtres avancés", filter_desc:"Affinez les résultats par genre, ambiance et langue ou région.",
     filter_genres:"Genres", filter_moods:"Ambiances", filter_lang_region:"Langue / Région", filter_reset:"Réinitialiser", filter_apply:"Appliquer les filtres",
     reopen_player:"En cours de lecture", toast_filters_applied:"Filtres appliqués", toast_filters_reset:"Filtres réinitialisés", toast_player_closed:"Lecture arrêtée",
     add_link_btn:"Ajouter un lien", ads_notice:"La lecture est diffusée en direct depuis YouTube via l'API officielle du lecteur — aucun fichier n'est téléchargé. Les publicités YouTube contrôlées par le propriétaire de la vidéo peuvent tout de même apparaître ; cette appli ne peut pas les supprimer.",
     add_track_title:"Ajouter un titre YouTube", add_track_desc:"Collez un lien YouTube ou un ID de vidéo — le titre, la chaîne et la pochette sont récupérés automatiquement.",
     field_url:"URL YouTube ou ID de vidéo", field_title_optional:"Titre (remplacement facultatif)", field_artist_optional:"Artiste / Chaîne (facultatif)",
-    field_genre:"Genre", field_mood:"Ambiance", field_lang:"Langue / Région", field_lyrics_optional:"Paroles (facultatif, langue originale uniquement — pas de traduction automatique pour les titres personnalisés)",
-    add_track_submit:"Ajouter et lire", cancel:"Annuler", sp_open_yt:"Ouvrir sur YouTube",
+    field_genre:"Genre", field_mood:"Ambiance", field_lang:"Langue / Région", 
+    add_track_submit:"Ajouter et lire", cancel:"Annuler", 
     toast_track_added:"Ajouté à votre file d'attente", toast_invalid_link:"Impossible de lire un ID de vidéo depuis ce lien", toast_meta_failed:"Ajouté, mais impossible de récupérer le titre/la chaîne — modifiez-les manuellement",
-    filter_none_all:"Aucun / Tous", opt_none:"Aucun", toast_added_queue:"Ajouté à la file d'attente", toast_added_playlist:"Ajouté à la playlist", toast_playlist_created:"Playlist créée", toast_removed_playlist:"Retiré de la playlist", toast_deleted:"Titre supprimé", ctx_add_queue:"Ajouter à la file d'attente", ctx_add_playlist:"Ajouter à une playlist / Déplacer", ctx_new_playlist_ph:"Nom de la nouvelle playlist...", ctx_create_short:"Créer", ctx_add_short:"Ajouter", ctx_remove_playlist:"Retirer de cette playlist", ctx_delete:"Supprimer définitivement", pd_play_all:"▶ Tout lire", pd_rename:"✎ Renommer", pd_delete:"🗑 Supprimer la playlist", toast_playlist_renamed:"Playlist renommée", toast_playlist_deleted:"Playlist supprimée", pm_favorite:"Favori", pm_shuffle:"Aléatoire", pm_repeat:"Répéter", pm_repeat_all:"Répéter : Tout", pm_repeat_one:"Répéter : Un titre", pm_lyrics:"Paroles",
+    filter_none_all:"Aucun / Tous", opt_none:"Aucun", toast_added_queue:"Ajouté à la file d'attente", toast_added_playlist:"Ajouté à la playlist", toast_playlist_created:"Playlist créée", toast_removed_playlist:"Retiré de la playlist", toast_deleted:"Titre supprimé", ctx_add_queue:"Ajouter à la file d'attente", ctx_add_playlist:"Ajouter à une playlist / Déplacer", ctx_new_playlist_ph:"Nom de la nouvelle playlist...", ctx_create_short:"Créer", ctx_add_short:"Ajouter", ctx_remove_playlist:"Retirer de cette playlist", ctx_delete:"Supprimer définitivement", pd_play_all:"▶ Tout lire", pd_rename:"✎ Renommer", pd_delete:"🗑 Supprimer la playlist", toast_playlist_renamed:"Playlist renommée", toast_playlist_deleted:"Playlist supprimée", pm_favorite:"Favori", pm_shuffle:"Aléatoire", pm_repeat:"Répéter", pm_repeat_all:"Répéter : Tout", pm_repeat_one:"Répéter : Un titre", 
   },
-  de:{ nav_menu:"Menü", nav_home:"Start", nav_search:"Suche & Filter", nav_search_short:"Suche", nav_library:"Bibliothek", nav_playlists:"Playlists", nav_settings:"Einstellungen",
-    foot_title:"Wiederholt", foot_sub:"Deine Top 5 Titel dieser Woche prägen den Discover-Mix von morgen.",
-    topbar_title:"Entdecken", topbar_search_ph:"Titel, Künstler, Stimmungen suchen...",
-    hero_eyebrow:"Basierend auf deinem Stil", hero_title:"Mitternachts-Oud & Synth-Sessions", hero_sub:"Eine stimmungsvolle Mischung aus deinen letzten 30 Hörtagen — viele Saiten, wenig Lärm.",
-    sec_vibe:"Basierend auf deinem Stil", sec_new:"Probier etwas Neues", sec_moods:"Stimmungen & Genres", sec_onrepeat:"Wiederholt", sec_mostplayed:"Meistgehört", sec_yourplaylists:"Deine Playlists", see_all:"Alle anzeigen",
+  de:{ ctx_edit:"Details bearbeiten", edit_track_title:"Titel bearbeiten", edit_track_desc:"Ändere Name, Künstler, Genre, Stimmung oder Sprache. Der YouTube-Link kann nicht geändert werden.", save_changes:"Änderungen speichern", toast_track_updated:"Titel aktualisiert", np_empty_title:"Noch keine Songs", np_empty_sub:"Füge einen YouTube-Link hinzu, um loszulegen.", no_results:"Keine Ergebnisse", unit_tracks:"Titel", toast_cloud_error:"Cloud-Speichern fehlgeschlagen — Verbindung oder Berechtigungen prüfen", nav_menu:"Menü", nav_search:"Suche & Filter", nav_library:"Bibliothek", nav_playlists:"Playlists", nav_settings:"Einstellungen",
+    
+    
+    
+    sec_yourplaylists:"Deine Playlists", 
     search_ph:"YouTube- und Spotify-Index durchsuchen...",
-    tab_fav:"Favoriten", tab_playlists:"Playlists", tab_history:"Verlauf", tab_offline:"Offline-Cache",
+    tab_fav:"Favoriten", tab_playlists:"Playlists", tab_history:"Verlauf", 
     set_theme_title:"Theme-Anpassung", set_theme_desc:"Wähle ein luxuriöses Preset oder gestalte dein eigenes.",
     set_custom_title:"Eigener Theme-Builder", set_custom_desc:"Wähle Akzentfarbe, Hintergrund und Farbverlauf.",
     set_primary:"Akzentfarbe", set_bg:"Hintergrund", set_gradient:"Farbverlauf", set_apply:"Theme anwenden",
     set_lang_title:"Sprache", set_lang_desc:"Wechsle die gesamte Oberfläche zwischen globalen Sprachen.",
     set_playback_title:"Wiedergabe", set_autoplay:"Ähnliche Titel automatisch abspielen", set_autoplay_sub:"Stimmung nach Ende der Playlist fortsetzen",
-    set_dual:"Standardmäßig zweisprachige Lyrics", set_dual_sub:"Original und Übersetzung immer gemeinsam anzeigen",
+    
     set_island:"Dynamic-Island-Simulation", set_island_sub:"Sperrbildschirm-ähnliche Now-Playing-Anzeige",
-    sp_subgenre:"Genre", sp_bpm:"BPM", sp_year:"Erscheinungsjahr", sp_duration:"Dauer", sp_download:"Titel herunterladen", sp_lyrics:"Lyrics ansehen",
-    lyr_no_translate:"Keine Übersetzung", lyr_dual:"Zweisprachige Lyrics",
+    
+    
     empty_fav_t:"Noch keine Favoriten", empty_fav_s:"Tippe auf das Herz eines Titels, um ihn hier zu speichern.",
     empty_hist_t:"Kein Wiedergabeverlauf", empty_hist_s:"Abgespielte Titel erscheinen hier.",
-    empty_off_t:"Nichts heruntergeladen", empty_off_s:"Lade einen Song herunter, um ihn offline zu nutzen.",
-    new_playlist:"Neue Playlist", toast_download:"Download gestartet (Demo)", toast_fav_add:"Zu Favoriten hinzugefügt", toast_fav_rm:"Aus Favoriten entfernt",
+    
+    new_playlist:"Neue Playlist", toast_fav_add:"Zu Favoriten hinzugefügt", toast_fav_rm:"Aus Favoriten entfernt",
     filter_btn:"Filter", filter_title:"Erweiterte Filter", filter_desc:"Ergebnisse nach Genre, Stimmung und Sprache oder Region eingrenzen.",
     filter_genres:"Genres", filter_moods:"Stimmungen", filter_lang_region:"Sprache / Region", filter_reset:"Filter zurücksetzen", filter_apply:"Filter anwenden",
     reopen_player:"Läuft gerade", toast_filters_applied:"Filter angewendet", toast_filters_reset:"Filter zurückgesetzt", toast_player_closed:"Wiedergabe gestoppt",
     add_link_btn:"Link hinzufügen", ads_notice:"Die Wiedergabe wird live von YouTube über die offizielle Player-API gestreamt — es werden keine Dateien heruntergeladen. Von YouTube bzw. dem Video-Ersteller gesteuerte Werbung kann trotzdem erscheinen; diese App kann sie nicht entfernen.",
     add_track_title:"YouTube-Titel hinzufügen", add_track_desc:"Füge einen YouTube-Link oder eine Video-ID ein — Titel, Kanal und Cover werden automatisch abgerufen.",
     field_url:"YouTube-URL oder Video-ID", field_title_optional:"Titel (optionale Überschreibung)", field_artist_optional:"Künstler / Kanal (optional)",
-    field_genre:"Genre", field_mood:"Stimmung", field_lang:"Sprache / Region", field_lyrics_optional:"Songtext (optional, nur Originalsprache — keine automatische Übersetzung für eigene Titel)",
-    add_track_submit:"Hinzufügen & Abspielen", cancel:"Abbrechen", sp_open_yt:"Auf YouTube öffnen",
+    field_genre:"Genre", field_mood:"Stimmung", field_lang:"Sprache / Region", 
+    add_track_submit:"Hinzufügen & Abspielen", cancel:"Abbrechen", 
     toast_track_added:"Zur Warteschlange hinzugefügt", toast_invalid_link:"Aus diesem Link konnte keine Video-ID gelesen werden", toast_meta_failed:"Hinzugefügt, aber Titel/Kanal konnten nicht abgerufen werden — bitte manuell bearbeiten",
-    filter_none_all:"Keine / Alle", opt_none:"Keine", toast_added_queue:"Zur Warteschlange hinzugefügt", toast_added_playlist:"Zur Playlist hinzugefügt", toast_playlist_created:"Playlist erstellt", toast_removed_playlist:"Aus Playlist entfernt", toast_deleted:"Titel gelöscht", ctx_add_queue:"Zur Warteschlange hinzufügen", ctx_add_playlist:"Zu Playlist hinzufügen / Verschieben", ctx_new_playlist_ph:"Name der neuen Playlist...", ctx_create_short:"Erstellen", ctx_add_short:"Hinzufügen", ctx_remove_playlist:"Aus dieser Playlist entfernen", ctx_delete:"Endgültig löschen", pd_play_all:"▶ Alle abspielen", pd_rename:"✎ Umbenennen", pd_delete:"🗑 Playlist löschen", toast_playlist_renamed:"Playlist umbenannt", toast_playlist_deleted:"Playlist gelöscht", pm_favorite:"Favorit", pm_shuffle:"Zufall", pm_repeat:"Wiederholen", pm_repeat_all:"Wiederholen: Alle", pm_repeat_one:"Wiederholen: Einen", pm_lyrics:"Lyrics",
+    filter_none_all:"Keine / Alle", opt_none:"Keine", toast_added_queue:"Zur Warteschlange hinzugefügt", toast_added_playlist:"Zur Playlist hinzugefügt", toast_playlist_created:"Playlist erstellt", toast_removed_playlist:"Aus Playlist entfernt", toast_deleted:"Titel gelöscht", ctx_add_queue:"Zur Warteschlange hinzufügen", ctx_add_playlist:"Zu Playlist hinzufügen / Verschieben", ctx_new_playlist_ph:"Name der neuen Playlist...", ctx_create_short:"Erstellen", ctx_add_short:"Hinzufügen", ctx_remove_playlist:"Aus dieser Playlist entfernen", ctx_delete:"Endgültig löschen", pd_play_all:"▶ Alle abspielen", pd_rename:"✎ Umbenennen", pd_delete:"🗑 Playlist löschen", toast_playlist_renamed:"Playlist umbenannt", toast_playlist_deleted:"Playlist gelöscht", pm_favorite:"Favorit", pm_shuffle:"Zufall", pm_repeat:"Wiederholen", pm_repeat_all:"Wiederholen: Alle", pm_repeat_one:"Wiederholen: Einen", 
   },
-  ko:{ nav_menu:"메뉴", nav_home:"홈", nav_search:"검색 및 필터", nav_search_short:"검색", nav_library:"보관함", nav_playlists:"플레이리스트", nav_settings:"설정",
-    foot_title:"반복 재생 중", foot_sub:"이번 주 가장 많이 들은 상위 5곡이 내일의 추천을 만들어갑니다.",
-    topbar_title:"둘러보기", topbar_search_ph:"곡, 아티스트, 분위기 검색...",
-    hero_eyebrow:"당신의 취향 기반", hero_title:"한밤중의 우드와 신스 세션", hero_sub:"지난 30일간의 청취 기록으로 만든 잔잔한 믹스 — 현악기는 풍부하게, 소음은 적게.",
-    sec_vibe:"당신의 취향 기반", sec_new:"새로운 시도", sec_moods:"분위기 & 장르", sec_onrepeat:"반복 재생 중", sec_mostplayed:"가장 많이 재생됨", sec_yourplaylists:"내 플레이리스트", see_all:"전체 보기",
+  ko:{ ctx_edit:"정보 편집", edit_track_title:"트랙 편집", edit_track_desc:"이름, 아티스트, 장르, 분위기, 언어를 변경할 수 있습니다. YouTube 링크는 변경할 수 없습니다.", save_changes:"변경 사항 저장", toast_track_updated:"트랙이 업데이트되었습니다", np_empty_title:"아직 곡이 없습니다", np_empty_sub:"YouTube 링크를 추가해 들어보세요.", no_results:"결과 없음", unit_tracks:"곡", toast_cloud_error:"클라우드에 저장하지 못했습니다 — 연결 또는 권한을 확인하세요", nav_menu:"메뉴", nav_search:"검색 및 필터", nav_library:"보관함", nav_playlists:"플레이리스트", nav_settings:"설정",
+    
+    
+    
+    sec_yourplaylists:"내 플레이리스트", 
     search_ph:"YouTube 및 Spotify 색인 검색...",
-    tab_fav:"즐겨찾기", tab_playlists:"플레이리스트", tab_history:"기록", tab_offline:"오프라인 캐시",
+    tab_fav:"즐겨찾기", tab_playlists:"플레이리스트", tab_history:"기록", 
     set_theme_title:"테마 커스터마이저", set_theme_desc:"고급 프리셋을 선택하거나 직접 디자인하세요.",
     set_custom_title:"커스텀 테마 빌더", set_custom_desc:"강조 색상, 배경, 그라디언트를 선택하세요.",
     set_primary:"강조 색상", set_bg:"배경", set_gradient:"그라디언트", set_apply:"테마 적용",
     set_lang_title:"언어", set_lang_desc:"전체 인터페이스를 여러 언어 간에 전환합니다.",
     set_playback_title:"재생", set_autoplay:"유사한 곡 자동 재생", set_autoplay_sub:"플레이리스트가 끝나도 분위기 유지",
-    set_dual:"기본적으로 이중 가사 표시", set_dual_sub:"원문과 번역을 항상 함께 표시",
+    
     set_island:"다이나믹 아일랜드 시뮬레이션", set_island_sub:"잠금화면 스타일의 재생 중 알약 표시",
-    sp_subgenre:"장르", sp_bpm:"BPM", sp_year:"발매 연도", sp_duration:"재생 시간", sp_download:"곡 다운로드", sp_lyrics:"가사 보기",
-    lyr_no_translate:"번역 없음", lyr_dual:"이중 가사",
+    
+    
     empty_fav_t:"즐겨찾기가 없습니다", empty_fav_s:"곡의 하트를 눌러 여기에 저장하세요.",
     empty_hist_t:"재생 기록이 없습니다", empty_hist_s:"재생한 곡이 여기에 표시됩니다.",
-    empty_off_t:"다운로드된 항목이 없습니다", empty_off_s:"곡을 다운로드하면 오프라인에서 이용할 수 있습니다.",
-    new_playlist:"새 플레이리스트", toast_download:"다운로드가 시작되었습니다 (데모)", toast_fav_add:"즐겨찾기에 추가됨", toast_fav_rm:"즐겨찾기에서 제거됨",
+    
+    new_playlist:"새 플레이리스트", toast_fav_add:"즐겨찾기에 추가됨", toast_fav_rm:"즐겨찾기에서 제거됨",
     filter_btn:"필터", filter_title:"고급 필터", filter_desc:"장르, 분위기, 언어/지역별로 결과를 좁혀보세요.",
     filter_genres:"장르", filter_moods:"분위기", filter_lang_region:"언어 / 지역", filter_reset:"필터 초기화", filter_apply:"필터 적용",
     reopen_player:"지금 재생 중", toast_filters_applied:"필터가 적용되었습니다", toast_filters_reset:"필터가 초기화되었습니다", toast_player_closed:"재생이 중지되었습니다",
     add_link_btn:"링크 추가", ads_notice:"재생은 공식 Player API를 통해 YouTube에서 실시간으로 스트리밍됩니다 — 파일은 다운로드되지 않습니다. 동영상 소유자가 설정한 YouTube 광고가 표시될 수 있으며, 이 앱은 이를 제거할 수 없습니다.",
     add_track_title:"YouTube 트랙 추가", add_track_desc:"YouTube 링크나 동영상 ID를 붙여넣으면 제목, 채널, 커버 아트가 자동으로 가져와집니다.",
     field_url:"YouTube URL 또는 동영상 ID", field_title_optional:"제목 (선택 사항)", field_artist_optional:"아티스트 / 채널 (선택 사항)",
-    field_genre:"장르", field_mood:"분위기", field_lang:"언어 / 지역", field_lyrics_optional:"가사 (선택 사항, 원어만 — 커스텀 트랙은 자동 번역되지 않음)",
-    add_track_submit:"추가 후 재생", cancel:"취소", sp_open_yt:"YouTube에서 열기",
+    field_genre:"장르", field_mood:"분위기", field_lang:"언어 / 지역", 
+    add_track_submit:"추가 후 재생", cancel:"취소", 
     toast_track_added:"대기열에 추가되었습니다", toast_invalid_link:"이 링크에서 동영상 ID를 읽을 수 없습니다", toast_meta_failed:"추가되었지만 제목/채널을 가져오지 못했습니다 — 직접 수정하세요",
-    filter_none_all:"없음 / 전체", opt_none:"없음", toast_added_queue:"대기열에 추가되었습니다", toast_added_playlist:"플레이리스트에 추가되었습니다", toast_playlist_created:"플레이리스트가 생성되었습니다", toast_removed_playlist:"플레이리스트에서 제거되었습니다", toast_deleted:"트랙이 삭제되었습니다", ctx_add_queue:"대기열에 추가", ctx_add_playlist:"플레이리스트에 추가 / 이동", ctx_new_playlist_ph:"새 플레이리스트 이름...", ctx_create_short:"만들기", ctx_add_short:"추가", ctx_remove_playlist:"이 플레이리스트에서 제거", ctx_delete:"완전히 삭제", pd_play_all:"▶ 전체 재생", pd_rename:"✎ 이름 변경", pd_delete:"🗑 플레이리스트 삭제", toast_playlist_renamed:"플레이리스트 이름이 변경되었습니다", toast_playlist_deleted:"플레이리스트가 삭제되었습니다", pm_favorite:"즐겨찾기", pm_shuffle:"셔플", pm_repeat:"반복", pm_repeat_all:"반복: 전체", pm_repeat_one:"반복: 한 곡", pm_lyrics:"가사",
+    filter_none_all:"없음 / 전체", opt_none:"없음", toast_added_queue:"대기열에 추가되었습니다", toast_added_playlist:"플레이리스트에 추가되었습니다", toast_playlist_created:"플레이리스트가 생성되었습니다", toast_removed_playlist:"플레이리스트에서 제거되었습니다", toast_deleted:"트랙이 삭제되었습니다", ctx_add_queue:"대기열에 추가", ctx_add_playlist:"플레이리스트에 추가 / 이동", ctx_new_playlist_ph:"새 플레이리스트 이름...", ctx_create_short:"만들기", ctx_add_short:"추가", ctx_remove_playlist:"이 플레이리스트에서 제거", ctx_delete:"완전히 삭제", pd_play_all:"▶ 전체 재생", pd_rename:"✎ 이름 변경", pd_delete:"🗑 플레이리스트 삭제", toast_playlist_renamed:"플레이리스트 이름이 변경되었습니다", toast_playlist_deleted:"플레이리스트가 삭제되었습니다", pm_favorite:"즐겨찾기", pm_shuffle:"셔플", pm_repeat:"반복", pm_repeat_all:"반복: 전체", pm_repeat_one:"반복: 한 곡", 
   },
-  ru:{ nav_menu:"Меню", nav_home:"Главная", nav_search:"Поиск и фильтры", nav_search_short:"Поиск", nav_library:"Медиатека", nav_playlists:"Плейлисты", nav_settings:"Настройки",
-    foot_title:"На повторе", foot_sub:"Ваши 5 любимых треков этой недели формируют завтрашнюю подборку.",
-    topbar_title:"Обзор", topbar_search_ph:"Поиск треков, исполнителей, настроений...",
-    hero_eyebrow:"По вашему настроению", hero_title:"Полуночные сессии уда и синтезатора", hero_sub:"Атмосферный микс на основе ваших последних 30 дней прослушивания — много струнных, минимум шума.",
-    sec_vibe:"По вашему настроению", sec_new:"Попробуйте новое", sec_moods:"Настроения и жанры", sec_onrepeat:"На повторе", sec_mostplayed:"Самые прослушиваемые", sec_yourplaylists:"Ваши плейлисты", see_all:"Смотреть все",
+  ru:{ ctx_edit:"Редактировать", edit_track_title:"Редактировать трек", edit_track_desc:"Измените название, исполнителя, жанр, настроение или язык. Ссылку на YouTube изменить нельзя.", save_changes:"Сохранить", toast_track_updated:"Трек обновлён", np_empty_title:"Пока нет песен", np_empty_sub:"Добавьте ссылку на YouTube, чтобы начать слушать.", no_results:"Нет результатов", unit_tracks:"треков", toast_cloud_error:"Не удалось сохранить в облако — проверьте соединение или права", nav_menu:"Меню", nav_search:"Поиск и фильтры", nav_library:"Медиатека", nav_playlists:"Плейлисты", nav_settings:"Настройки",
+    
+    
+    
+    sec_yourplaylists:"Ваши плейлисты", 
     search_ph:"Поиск по индексу YouTube и Spotify...",
-    tab_fav:"Избранное", tab_playlists:"Плейлисты", tab_history:"История", tab_offline:"Офлайн-кэш",
+    tab_fav:"Избранное", tab_playlists:"Плейлисты", tab_history:"История", 
     set_theme_title:"Настройка темы", set_theme_desc:"Выберите люксовый пресет или создайте свой.",
     set_custom_title:"Конструктор темы", set_custom_desc:"Выберите акцентный цвет, фон и градиент.",
     set_primary:"Акцентный цвет", set_bg:"Фон", set_gradient:"Градиент", set_apply:"Применить тему",
     set_lang_title:"Язык", set_lang_desc:"Переключайте весь интерфейс между языками мира.",
     set_playback_title:"Воспроизведение", set_autoplay:"Автовоспроизведение похожих треков", set_autoplay_sub:"Продолжать атмосферу после окончания плейлиста",
-    set_dual:"Двойной текст песни по умолчанию", set_dual_sub:"Всегда показывать оригинал и перевод вместе",
+    
     set_island:"Симуляция Dynamic Island", set_island_sub:"Показывать плашку в стиле экрана блокировки",
-    sp_subgenre:"Жанр", sp_bpm:"BPM", sp_year:"Год выпуска", sp_duration:"Длительность", sp_download:"Скачать трек", sp_lyrics:"Показать текст",
-    lyr_no_translate:"Без перевода", lyr_dual:"Двойной текст",
+    
+    
     empty_fav_t:"Пока нет избранного", empty_fav_s:"Нажмите на сердечко у трека, чтобы сохранить его здесь.",
     empty_hist_t:"Нет истории прослушивания", empty_hist_s:"Прослушанные треки появятся здесь.",
-    empty_off_t:"Ничего не скачано", empty_off_s:"Скачайте трек, чтобы слушать его офлайн.",
-    new_playlist:"Новый плейлист", toast_download:"Загрузка начата (демо)", toast_fav_add:"Добавлено в избранное", toast_fav_rm:"Удалено из избранного",
+    
+    new_playlist:"Новый плейлист", toast_fav_add:"Добавлено в избранное", toast_fav_rm:"Удалено из избранного",
     filter_btn:"Фильтр", filter_title:"Расширенные фильтры", filter_desc:"Уточните результаты по жанру, настроению и языку или региону.",
     filter_genres:"Жанры", filter_moods:"Настроения", filter_lang_region:"Язык / Регион", filter_reset:"Сбросить фильтры", filter_apply:"Применить фильтры",
     reopen_player:"Сейчас играет", toast_filters_applied:"Фильтры применены", toast_filters_reset:"Фильтры сброшены", toast_player_closed:"Воспроизведение остановлено",
     add_link_btn:"Добавить ссылку", ads_notice:"Воспроизведение транслируется напрямую с YouTube через официальный Player API — файлы не скачиваются. Реклама YouTube, которую контролирует владелец видео, всё же может показываться; приложение не может её убрать.",
     add_track_title:"Добавить трек с YouTube", add_track_desc:"Вставьте ссылку на YouTube или ID видео — название, канал и обложка будут получены автоматически.",
     field_url:"Ссылка на YouTube или ID видео", field_title_optional:"Название (необязательно)", field_artist_optional:"Исполнитель / Канал (необязательно)",
-    field_genre:"Жанр", field_mood:"Настроение", field_lang:"Язык / Регион", field_lyrics_optional:"Текст песни (необязательно, только на языке оригинала — без автоперевода для пользовательских треков)",
-    add_track_submit:"Добавить и воспроизвести", cancel:"Отмена", sp_open_yt:"Открыть на YouTube",
+    field_genre:"Жанр", field_mood:"Настроение", field_lang:"Язык / Регион", 
+    add_track_submit:"Добавить и воспроизвести", cancel:"Отмена", 
     toast_track_added:"Добавлено в очередь", toast_invalid_link:"Не удалось определить ID видео по этой ссылке", toast_meta_failed:"Добавлено, но не удалось получить название/канал — отредактируйте вручную",
-    filter_none_all:"Нет / Все", opt_none:"Нет", toast_added_queue:"Добавлено в очередь", toast_added_playlist:"Добавлено в плейлист", toast_playlist_created:"Плейлист создан", toast_removed_playlist:"Удалено из плейлиста", toast_deleted:"Трек удалён", ctx_add_queue:"Добавить в очередь", ctx_add_playlist:"Добавить в плейлист / Переместить", ctx_new_playlist_ph:"Название нового плейлиста...", ctx_create_short:"Создать", ctx_add_short:"Добавить", ctx_remove_playlist:"Удалить из этого плейлиста", ctx_delete:"Удалить навсегда", pd_play_all:"▶ Воспроизвести всё", pd_rename:"✎ Переименовать", pd_delete:"🗑 Удалить плейлист", toast_playlist_renamed:"Плейлист переименован", toast_playlist_deleted:"Плейлист удалён", pm_favorite:"Избранное", pm_shuffle:"Перемешать", pm_repeat:"Повтор", pm_repeat_all:"Повтор: Все", pm_repeat_one:"Повтор: Один", pm_lyrics:"Текст песни",
+    filter_none_all:"Нет / Все", opt_none:"Нет", toast_added_queue:"Добавлено в очередь", toast_added_playlist:"Добавлено в плейлист", toast_playlist_created:"Плейлист создан", toast_removed_playlist:"Удалено из плейлиста", toast_deleted:"Трек удалён", ctx_add_queue:"Добавить в очередь", ctx_add_playlist:"Добавить в плейлист / Переместить", ctx_new_playlist_ph:"Название нового плейлиста...", ctx_create_short:"Создать", ctx_add_short:"Добавить", ctx_remove_playlist:"Удалить из этого плейлиста", ctx_delete:"Удалить навсегда", pd_play_all:"▶ Воспроизвести всё", pd_rename:"✎ Переименовать", pd_delete:"🗑 Удалить плейлист", toast_playlist_renamed:"Плейлист переименован", toast_playlist_deleted:"Плейлист удалён", pm_favorite:"Избранное", pm_shuffle:"Перемешать", pm_repeat:"Повтор", pm_repeat_all:"Повтор: Все", pm_repeat_one:"Повтор: Один", 
   },
-  tr:{ nav_menu:"Menü", nav_home:"Ana Sayfa", nav_search:"Arama ve Filtreler", nav_search_short:"Ara", nav_library:"Kitaplık", nav_playlists:"Çalma Listeleri", nav_settings:"Ayarlar",
-    foot_title:"Tekrarda", foot_sub:"Bu haftanın en iyi 5 parçası yarının önerilerini şekillendiriyor.",
-    topbar_title:"Keşfet", topbar_search_ph:"Parça, sanatçı, ruh hali ara...",
-    hero_eyebrow:"Tarzına Göre", hero_title:"Gece Yarısı Ud ve Synth Seansları", hero_sub:"Son 30 günlük dinleme geçmişinden oluşan, tellerin ağır bastığı, gürültüsü az bir karışım.",
-    sec_vibe:"Tarzına Göre", sec_new:"Yeni Bir Şey Dene", sec_moods:"Ruh Halleri ve Türler", sec_onrepeat:"Tekrarda", sec_mostplayed:"En Çok Çalınanlar", sec_yourplaylists:"Çalma Listelerin", see_all:"Tümünü gör",
+  tr:{ ctx_edit:"Bilgileri düzenle", edit_track_title:"Parçayı düzenle", edit_track_desc:"Adı, sanatçıyı, türü, ruh halini veya dili değiştirin. YouTube bağlantısı değiştirilemez.", save_changes:"Değişiklikleri kaydet", toast_track_updated:"Parça güncellendi", np_empty_title:"Henüz şarkı yok", np_empty_sub:"Dinlemeye başlamak için bir YouTube bağlantısı ekleyin.", no_results:"Sonuç yok", unit_tracks:"parça", toast_cloud_error:"Buluta kaydedilemedi — bağlantıyı veya izinleri kontrol edin", nav_menu:"Menü", nav_search:"Arama ve Filtreler", nav_library:"Kitaplık", nav_playlists:"Çalma Listeleri", nav_settings:"Ayarlar",
+    
+    
+    
+    sec_yourplaylists:"Çalma Listelerin", 
     search_ph:"YouTube ve Spotify dizininde ara...",
-    tab_fav:"Favoriler", tab_playlists:"Çalma Listeleri", tab_history:"Geçmiş", tab_offline:"Çevrimdışı Önbellek",
+    tab_fav:"Favoriler", tab_playlists:"Çalma Listeleri", tab_history:"Geçmiş", 
     set_theme_title:"Tema Özelleştirici", set_theme_desc:"Lüks bir hazır tema seç ya da sıfırdan tasarla.",
     set_custom_title:"Özel Tema Oluşturucu", set_custom_desc:"Ana vurgu rengi, arka plan ve gradyan karışımı seç.",
     set_primary:"Ana Vurgu Rengi", set_bg:"Arka Plan", set_gradient:"Gradyan Karışımı", set_apply:"Temayı Uygula",
     set_lang_title:"Dil", set_lang_desc:"Tüm arayüzü küresel diller arasında değiştir.",
     set_playback_title:"Oynatma", set_autoplay:"Benzer parçaları otomatik çal", set_autoplay_sub:"Liste bitince atmosferi sürdür",
-    set_dual:"Varsayılan olarak çift dilli sözler", set_dual_sub:"Orijinali ve çeviriyi her zaman birlikte göster",
+    
     set_island:"Dynamic Island Simülasyonu", set_island_sub:"Kilit ekranı tarzında şimdi çalıyor kapsülü göster",
-    sp_subgenre:"Tür", sp_bpm:"BPM", sp_year:"Çıkış Yılı", sp_duration:"Süre", sp_download:"Şarkıyı İndir", sp_lyrics:"Sözleri Görüntüle",
-    lyr_no_translate:"Çeviri yok", lyr_dual:"Çift Dilli Sözler",
+    
+    
     empty_fav_t:"Henüz favori yok", empty_fav_s:"Bir parçanın kalbine dokunarak burada sakla.",
     empty_hist_t:"Dinleme geçmişi yok", empty_hist_s:"Çaldığın parçalar burada görünecek.",
-    empty_off_t:"İndirilen bir şey yok", empty_off_s:"Çevrimdışı dinlemek için bir şarkı indir.",
-    new_playlist:"Yeni Çalma Listesi", toast_download:"İndirme başladı (demo)", toast_fav_add:"Favorilere eklendi", toast_fav_rm:"Favorilerden kaldırıldı",
+    
+    new_playlist:"Yeni Çalma Listesi", toast_fav_add:"Favorilere eklendi", toast_fav_rm:"Favorilerden kaldırıldı",
     filter_btn:"Filtre", filter_title:"Gelişmiş Filtreler", filter_desc:"Sonuçları tür, ruh hali ve dil/bölgeye göre daraltın.",
     filter_genres:"Türler", filter_moods:"Ruh Halleri", filter_lang_region:"Dil / Bölge", filter_reset:"Filtreleri Sıfırla", filter_apply:"Filtreleri Uygula",
     reopen_player:"Şimdi Çalıyor", toast_filters_applied:"Filtreler uygulandı", toast_filters_reset:"Filtreler sıfırlandı", toast_player_closed:"Oynatma durduruldu",
     add_link_btn:"Bağlantı Ekle", ads_notice:"Oynatma, resmi Player API üzerinden doğrudan YouTube'dan akış olarak yapılır — hiçbir dosya indirilmez. Video sahibinin kontrol ettiği YouTube reklamları yine de görünebilir; bu uygulama bunları kaldıramaz.",
     add_track_title:"YouTube Parçası Ekle", add_track_desc:"Bir YouTube bağlantısı veya video kimliği yapıştırın — başlık, kanal ve kapak görseli otomatik olarak alınır.",
     field_url:"YouTube URL'si veya Video Kimliği", field_title_optional:"Başlık (isteğe bağlı geçersiz kılma)", field_artist_optional:"Sanatçı / Kanal (isteğe bağlı)",
-    field_genre:"Tür", field_mood:"Ruh Hali", field_lang:"Dil / Bölge", field_lyrics_optional:"Sözler (isteğe bağlı, yalnızca orijinal dil — özel parçalar için otomatik çeviri yok)",
-    add_track_submit:"Ekle ve Çal", cancel:"İptal", sp_open_yt:"YouTube'da Aç",
+    field_genre:"Tür", field_mood:"Ruh Hali", field_lang:"Dil / Bölge", 
+    add_track_submit:"Ekle ve Çal", cancel:"İptal", 
     toast_track_added:"Kuyruğuna eklendi", toast_invalid_link:"Bu bağlantıdan bir video kimliği okunamadı", toast_meta_failed:"Eklendi, ancak başlık/kanal alınamadı — elle düzenleyin",
-    filter_none_all:"Yok / Tümü", opt_none:"Yok", toast_added_queue:"Kuyruğa eklendi", toast_added_playlist:"Çalma listesine eklendi", toast_playlist_created:"Çalma listesi oluşturuldu", toast_removed_playlist:"Çalma listesinden kaldırıldı", toast_deleted:"Parça silindi", ctx_add_queue:"Kuyruğa ekle", ctx_add_playlist:"Çalma listesine ekle / Taşı", ctx_new_playlist_ph:"Yeni çalma listesi adı...", ctx_create_short:"Oluştur", ctx_add_short:"Ekle", ctx_remove_playlist:"Bu çalma listesinden kaldır", ctx_delete:"Kalıcı olarak sil", pd_play_all:"▶ Tümünü Çal", pd_rename:"✎ Yeniden Adlandır", pd_delete:"🗑 Çalma Listesini Sil", toast_playlist_renamed:"Çalma listesi yeniden adlandırıldı", toast_playlist_deleted:"Çalma listesi silindi", pm_favorite:"Favori", pm_shuffle:"Karıştır", pm_repeat:"Tekrarla", pm_repeat_all:"Tekrarla: Tümü", pm_repeat_one:"Tekrarla: Biri", pm_lyrics:"Sözler",
+    filter_none_all:"Yok / Tümü", opt_none:"Yok", toast_added_queue:"Kuyruğa eklendi", toast_added_playlist:"Çalma listesine eklendi", toast_playlist_created:"Çalma listesi oluşturuldu", toast_removed_playlist:"Çalma listesinden kaldırıldı", toast_deleted:"Parça silindi", ctx_add_queue:"Kuyruğa ekle", ctx_add_playlist:"Çalma listesine ekle / Taşı", ctx_new_playlist_ph:"Yeni çalma listesi adı...", ctx_create_short:"Oluştur", ctx_add_short:"Ekle", ctx_remove_playlist:"Bu çalma listesinden kaldır", ctx_delete:"Kalıcı olarak sil", pd_play_all:"▶ Tümünü Çal", pd_rename:"✎ Yeniden Adlandır", pd_delete:"🗑 Çalma Listesini Sil", toast_playlist_renamed:"Çalma listesi yeniden adlandırıldı", toast_playlist_deleted:"Çalma listesi silindi", pm_favorite:"Favori", pm_shuffle:"Karıştır", pm_repeat:"Tekrarla", pm_repeat_all:"Tekrarla: Tümü", pm_repeat_one:"Tekrarla: Biri", 
   },
 };
 let curLang = 'en';
@@ -1372,6 +1235,7 @@ function setLang(code){
   });
   document.getElementById('langQuickLabel').textContent = code.toUpperCase();
   renderLangUI();
+  updateTopbarTitle();
   renderAll();
 }
 function renderLangUI(){
@@ -1445,64 +1309,115 @@ function renderThemeGrid(){
   `).join('');
 }
 
-/* ================= YOUTUBE-BACKED QUEUE ================= */
-// Every track plays live from YouTube via the IFrame Player API — nothing is downloaded or stored as media.
-// title / artist / cover are auto-fetched from YouTube's public oEmbed endpoint when a track is added.
-function ytThumb(id){ return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`; }
-let seedCoverIdx = 0;
-function seedTrack(id, title, artist, genre, mood, language, extra){
-  return Object.assign({
-    id, videoId:id, title, titleAr:title, artist, artistAr:artist,
-    genre, mood, language, duration:0,
-    cover: ytThumb(id), coverFallback: svgCover(title.charAt(0), seedCoverIdx++),
-  }, extra||{});
-}
-let tracks = [
-  seedTrack('dQw4w9WgXcQ', "Never Gonna Give You Up", "Rick Astley", "Upbeat Foreign", "Energetic", "English"),
-  seedTrack('9bZkp7q19f0', "Gangnam Style", "PSY", "Upbeat Foreign", "Energetic", "Korean", {
-    isDemoLyrics:true, lyricsLang:'ar',
-    lyrics:["في عيونك الليل يهدا","والقلب يحكي بلا صوت","أسهر معك بلا مدى","وأنساك وأنت قدّي","كل نجمة فوق تحكي","حكاية ما بتنقال","سهر سهر يا ليالي","وقلبي دايم بحوال"],
-    translations:{
-      en:["In your eyes, the night grows calm","And the heart speaks without a sound","I stay awake with you, boundless","And I forget you while you're near","Every star above tells","A story that's never told","Stay up, stay up, oh nights","And my heart keeps turning still"],
-      es:["En tus ojos, la noche se calma","Y el corazón habla sin voz","Me desvelo contigo, sin límites","Y te olvido mientras estás cerca","Cada estrella arriba cuenta","Una historia jamás contada","Desvélate, oh noches","Y mi corazón sigue girando"],
-      fr:["Dans tes yeux, la nuit s'apaise","Et le cœur parle sans un son","Je veille avec toi, sans limites","Et je t'oublie quand tu es près","Chaque étoile là-haut raconte","Une histoire jamais dite","Veille, veille, ô nuits","Et mon cœur tourne encore"],
-      ja:["君の瞳の中で夜は静まる","心は声もなく語る","果てしなく君と夜を明かす","近くにいる君を忘れる","空の星々が語るのは","誰も知らない物語","夜よ、夜よ、明けないで","僕の心は回り続ける"],
-      zh:["在你眼中 夜渐渐平静","心无声地诉说着","与你彻夜不眠 没有尽头","你在身边时却将你遗忘","天上的每颗星都在诉说","一个从未被讲述的故事","夜啊 夜啊 请继续","我的心仍在转动"]
-    }
-  }),
-  seedTrack('jNQXAC9IVRw', "Me at the zoo", "jawed", "Lo-Fi", "Chill", "Global", {
-    isDemoLyrics:true, lyricsLang:'en',
-    lyrics:["We are neon ghosts in the rain","Chasing shadows down the drain","City lights won't say your name","Static love, we play the same","Underneath a violet sky","We forgot the reason why","Hearts on fire, hands too cold","Every secret left untold"],
-    translations:{
-      ar:["نحن أشباح نيون في المطر","نطارد الظلال في المصرف","أضواء المدينة لن تقول اسمك","حب ثابت، نلعب نفس اللعبة","تحت سماء بنفسجية","نسينا السبب","قلوب مشتعلة، أيادٍ باردة جداً","كل سر تُرك بلا حكاية"],
-      es:["Somos fantasmas de neón bajo la lluvia","Persiguiendo sombras por el desagüe","Las luces no dirán tu nombre","Amor estático, jugamos igual","Bajo un cielo violeta","Olvidamos la razón","Corazones en llamas, manos tan frías","Cada secreto quedó sin contar"],
-      ja:["雨の中のネオンの幽霊たち","排水溝へ影を追いかける","街の光は君の名を呼ばない","静的な愛、同じことを繰り返す","紫の空の下で","理由さえ忘れてしまった","燃える心、冷たすぎる手","語られぬ秘密ばかり"],
-      zh:["我们是雨中的霓虹幽灵","沿着排水沟追逐影子","城市的灯光不会说出你的名字","静止的爱 我们重复着同样的戏","在紫色的天空下","我们忘记了原因","心在燃烧 手却冰冷","每个秘密都未曾说出"]
-    }
-  }),
-];
-// Fetch real metadata for the seed tracks so titles/channels reflect YouTube, not hardcoded guesses.
-tracks.forEach(t=>{
-  fetchOEmbed(t.videoId).then(meta=>{
-    if(!meta) return;
-    t.title = meta.title; t.titleAr = meta.title;
-    t.artist = meta.author_name; t.artistAr = meta.author_name;
-    t.coverFallback = svgCover(meta.title.charAt(0), tracks.indexOf(t));
-    renderAll();
+/* ================= HELPERS ================= */
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
   });
-});
-function fmtTime(s){ s = Math.max(0, Math.floor(s||0)); const m=Math.floor(s/60), sec=s%60; return m+':'+String(sec).padStart(2,'0'); }
-function tName(t){ return curLang==='ar' ? t.titleAr : t.title; }
-function aName(t){ return curLang==='ar' ? t.artistAr : t.artist; }
-function coverImg(t, extraAttrs){ return `<img src="${t.cover}" onerror="this.onerror=null;this.src='${t.coverFallback}'" ${extraAttrs||''}>`; }
+}
+function idHash(s){ let h = 0; for(let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return h; }
+function ytThumb(id){ return 'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg'; }
+function makeFallback(title, id){ return svgCover(Array.from(String(title || '?'))[0] || '?', idHash(String(id))); }
+function fmtTime(s){ s = Math.max(0, Math.floor(s || 0)); const m = Math.floor(s / 60), sec = s % 60; return m + ':' + String(sec).padStart(2, '0'); }
+function toArr(x){
+  if(Array.isArray(x)) return x.filter(Boolean).map(String);
+  if(x && typeof x === 'object') return Object.values(x).filter(Boolean).map(String);
+  return [];
+}
 
-/* ================= 🔥 FIREBASE — your project keys ================= */
+/* ================= LIBRARY DATA (Firebase is the single source of truth) ================= */
+let tracks = [];          // newest-added first
+let playlists = [];       // newest-created first
+const durationCache = {}; // id -> seconds, learned while playing
+
+function hydrateTrack(r){
+  const id = String(r.id);
+  const title = String(r.title || id);
+  return {
+    id: id, videoId: String(r.videoId || id),
+    title: title, artist: String(r.artist || ''),
+    genre: r.genre || 'None', mood: r.mood || 'None', language: r.language || 'None',
+    favorite: !!r.favorite, addedAt: Number(r.addedAt) || 0,
+    duration: durationCache[id] || Number(r.duration) || 0,
+    cover: ytThumb(id), coverFallback: makeFallback(title, id)
+  };
+}
+// Firebase rejects `undefined`, so every field is written explicitly.
+function serializeTrack(t){
+  return {
+    id: t.id, videoId: t.videoId || t.id, title: t.title, artist: t.artist || '',
+    genre: t.genre || 'None', mood: t.mood || 'None', language: t.language || 'None',
+    favorite: !!t.favorite, addedAt: t.addedAt || 0, duration: Math.round(t.duration || 0)
+  };
+}
+function sortTracks(list){
+  return list.sort(function(a, b){ return (b.addedAt - a.addedAt) || (a.id < b.id ? -1 : 1); });
+}
+function parseTrackSnapshot(val){
+  return sortTracks(Object.values(val || {}).filter(function(r){ return r && r.id; }).map(hydrateTrack));
+}
+// Firebase silently drops empty arrays, so a playlist with no songs comes back WITHOUT `trackIds`.
+// Always normalise it back to an array or the UI crashes on `.map` and the playlist never shows up.
+function normalizePlaylist(raw, id){
+  return {
+    id: id,
+    name: String(raw.name || raw.nameAr || 'Playlist'),
+    trackIds: toArr(raw.trackIds || raw.tracks),
+    createdAt: Number(raw.createdAt) || 0
+  };
+}
+function serializePlaylist(p){
+  return { id: p.id, name: p.name, createdAt: p.createdAt || 0, trackIds: p.trackIds.slice() };
+}
+// Handles both the old array-style storage (keys 0,1,2…) and the new one keyed by playlist id.
+function parsePlaylistSnapshot(val){
+  const byId = new Map(), stale = [];
+  Object.entries(val || {}).forEach(function(entry){
+    const key = entry[0], p = entry[1];
+    if(!p || typeof p !== 'object') return;
+    const id = String(p.id || key);
+    if(key !== id) stale.push(key);
+    if(!byId.has(id) || key === id) byId.set(id, p);
+  });
+  const list = Array.from(byId.entries()).map(function(e){ return normalizePlaylist(e[1], e[0]); });
+  list.sort(function(a, b){ return (b.createdAt - a.createdAt) || (a.name < b.name ? -1 : 1); });
+  return { list: list, stale: stale };
+}
+function currentTrack(){ return tracks.find(function(t){ return t.id === currentTrackId; }) || null; }
+function tName(t){ return t.title; }
+function aName(t){ return t.artist; }
+function coverImg(t, extraAttrs){
+  return '<img src="' + esc(t.cover) + '" onerror="this.onerror=null;this.src=\'' + t.coverFallback + '\'" ' + (extraAttrs || '') + '>';
+}
+
+const filterGenres = ["Dark Pop","Metal","Rock","Synthwave","Lo-Fi","Hip-Hop","Indie","Classical","Sheilat","Folk","Jazz","EDM","Acoustic"];
+const filterMoods = ["Chill","Sad","Energetic","Focus","Cinematic","Dark"];
+const filterLangs = ["Arabic","English","Japanese","Korean","Global"];
+
+/* ================= STATE ================= */
+let history = [];
+let currentTrackId = null;
+let queueIds = [];           // the active, scoped playback queue (play-from-here context)
+let isPlaying = false;
+let isShuffled = false;
+let repeatMode = 0;          // 0 off, 1 repeat-all(queue), 2 repeat-one
+let progress = 0;
+let playerVisible = true;
+let seekDragging = false;
+let volume = 70;
+let islandEnabled = true;
+let currentView = 'home';
+let editTrackId = null;
+let addBusy = false;
+let ytPlayer = null, ytReady = false, pendingPlayId = null, loadedVideoId = null;
+let activeFilters = { genres:new Set(), moods:new Set(), langs:new Set() };
+let draftFilters = { genres:new Set(), moods:new Set(), langs:new Set() };
+
+/* ================= FIREBASE ================= */
 const firebaseConfig = {
   apiKey: "AIzaSyAk0_JeX9u_yypyin1skvanDNfRs7h-HVc",
   authDomain: "music-dashboard-a453d.firebaseapp.com",
-  // ⚠️ You didn't include a databaseURL — this is the standard default pattern for your project ID,
-  // but please verify it in Firebase Console → Realtime Database → Data tab (the URL shown at the top).
-  // If your database was created in a non-us region, this guess will be wrong and cloud sync will silently fail.
+  // ⚠️ Verify this in Firebase Console → Realtime Database → Data (the URL shown at the top of the tab).
   databaseURL: "https://music-dashboard-a453d-default-rtdb.firebaseio.com",
   projectId: "music-dashboard-a453d",
   storageBucket: "music-dashboard-a453d.firebasestorage.app",
@@ -1510,171 +1425,169 @@ const firebaseConfig = {
   appId: "1:924493048567:web:b887fb640dbc67a255c1f2",
   measurementId: "G-668H45D1MX"
 };
-let fbDb = null, firebaseEnabled = false;
+let fbDb = null, firebaseEnabled = false, fbListening = false, fbRefs = [];
 try{
   firebase.initializeApp(firebaseConfig);
   fbDb = firebase.database();
   firebaseEnabled = true;
 }catch(e){ console.warn('Firebase not initialized — check firebaseConfig.', e); firebaseEnabled = false; }
 
-// Security: every write in this app is gated behind this check (matches your Realtime Database
-// rule ".write": "auth != null" — the rule is what actually enforces it server-side; this is a
-// client-side mirror so the UI doesn't even attempt writes while logged out).
+// Mirrors your ".write": "auth != null" rule on the client (the rule itself is what enforces it server-side).
 function isAuthed(){ return firebaseEnabled && firebase.auth().currentUser != null; }
+function fbFail(err){
+  console.warn('Firebase error:', err);
+  showToast(i18n[curLang].toast_cloud_error + (err && err.code ? ' (' + err.code + ')' : ''));
+}
 
-// Personal login screen — blocks the whole app until signed in.
-firebase.auth().onAuthStateChanged((user)=>{
-  const overlay = document.getElementById('login-overlay');
-  if(user){ overlay.style.display = 'none'; console.log('Signed in as', user.email); }
-  else{ overlay.style.display = 'flex'; }
-});
-document.getElementById('login-form').addEventListener('submit', (e)=>{
-  e.preventDefault();
-  const usernameInput = document.getElementById('username').value.trim();
-  const password = document.getElementById('password').value;
-  const errorMsg = document.getElementById('error-msg');
-  const fakeEmail = `${usernameInput}@mycustomapp.local`;
-  firebase.auth().signInWithEmailAndPassword(fakeEmail, password).catch(()=>{
-    errorMsg.style.display = 'block';
-    errorMsg.innerText = "اسم المستخدم أو كلمة المرور غير صحيحة!";
+// Personal login screen — fails closed: if Firebase can't load, the overlay simply stays up.
+if(firebaseEnabled){
+  firebase.auth().onAuthStateChanged(function(user){
+    const overlay = document.getElementById('login-overlay');
+    if(user){ overlay.style.display = 'none'; console.log('Signed in as', user.email); fbListen(); }
+    else { overlay.style.display = 'flex'; fbUnlisten(); }
   });
-});
+  document.getElementById('login-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    const usernameInput = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const errorMsg = document.getElementById('error-msg');
+    const fakeEmail = usernameInput + '@mycustomapp.local';
+    firebase.auth().signInWithEmailAndPassword(fakeEmail, password).catch(function(){
+      errorMsg.style.display = 'block';
+      errorMsg.innerText = "اسم المستخدم أو كلمة المرور غير صحيحة!";
+    });
+  });
+}
 
 function fbSaveTrack(t){
   if(!isAuthed()) return;
-  const { coverFallback, ...clean } = t; // don't store the generated placeholder data-URI, it's regenerated locally
-  fbDb.ref('sawt/tracks/'+t.id).set(clean).catch(err=>console.warn('Firebase save track failed', err));
+  fbDb.ref('sawt/tracks/' + t.id).set(serializeTrack(t)).catch(fbFail);
 }
 function fbDeleteTrack(id){
   if(!isAuthed()) return;
-  fbDb.ref('sawt/tracks/'+id).remove().catch(err=>console.warn('Firebase delete track failed', err));
+  fbDb.ref('sawt/tracks/' + id).remove().catch(fbFail);
 }
-function fbSavePlaylists(){
+function fbSavePlaylist(p){
   if(!isAuthed()) return;
-  fbDb.ref('sawt/playlists').set(playlists).catch(err=>console.warn('Firebase save playlists failed', err));
+  fbDb.ref('sawt/playlists/' + p.id).set(serializePlaylist(p)).catch(fbFail);
 }
+function fbDeletePlaylist(id){
+  if(!isAuthed()) return;
+  fbDb.ref('sawt/playlists/' + id).remove().catch(fbFail);
+}
+
+// Listeners are attached only AFTER sign-in (attaching earlier gets cancelled by the auth rule and never recovers).
 function fbListen(){
-  if(!firebaseEnabled) return;
-  fbDb.ref('sawt/tracks').on('value', snap=>{
-    const val = snap.val() || {};
-    Object.values(val).forEach(remote=>{
-      const local = tracks.find(t=>t.id===remote.id);
-      if(local){ Object.assign(local, remote); if(!local.coverFallback) local.coverFallback = svgCover((remote.title||'?').charAt(0), seedCoverIdx++); }
-      else { remote.coverFallback = svgCover((remote.title||'?').charAt(0), seedCoverIdx++); tracks.unshift(remote); }
-    });
+  if(!firebaseEnabled || fbListening) return;
+  fbListening = true;
+  const tRef = fbDb.ref('sawt/tracks');
+  const pRef = fbDb.ref('sawt/playlists');
+  fbRefs = [tRef, pRef];
+  tRef.on('value', function(snap){
+    tracks = parseTrackSnapshot(snap.val());
+    ensureCurrentTrack();
     renderAll();
-  });
-  fbDb.ref('sawt/playlists').on('value', snap=>{
-    const val = snap.val();
-    if(val){ playlists = Array.isArray(val) ? val.filter(Boolean) : Object.values(val); renderPlaylistsView(); renderLibrary(); }
-  });
+    refreshOpenPlaylist();
+  }, fbFail);
+  pRef.on('value', function(snap){
+    const parsed = parsePlaylistSnapshot(snap.val());
+    playlists = parsed.list;
+    // one-time cleanup of the old array-style entries (stored under 0,1,2… instead of the playlist id)
+    if(parsed.stale.length && isAuthed()){
+      const updates = {};
+      parsed.stale.forEach(function(k){ updates['sawt/playlists/' + k] = null; });
+      playlists.forEach(function(p){ updates['sawt/playlists/' + p.id] = serializePlaylist(p); });
+      fbDb.ref().update(updates).catch(fbFail);
+    }
+    renderPlaylistsView(); renderLibrary(); refreshOpenPlaylist();
+  }, fbFail);
+}
+function fbUnlisten(){
+  fbRefs.forEach(function(r){ r.off(); });
+  fbRefs = []; fbListening = false;
+  if(ytReady) ytPlayer.pauseVideo();
+  tracks = []; playlists = []; history = []; queueIds = [];
+  currentTrackId = null; isPlaying = false; loadedVideoId = null;
+  renderAll();
+}
+function ensureCurrentTrack(){
+  const exists = tracks.some(function(t){ return t.id === currentTrackId; });
+  if(!exists){
+    if(ytReady && currentTrackId) ytPlayer.stopVideo();
+    currentTrackId = tracks.length ? tracks[0].id : null;
+    isPlaying = false; progress = 0; loadedVideoId = null;
+  }
+  queueIds = queueIds.filter(function(id){ return tracks.some(function(t){ return t.id === id; }); });
+  if(!queueIds.length) queueIds = tracks.map(function(t){ return t.id; });
 }
 
-const moods = [
-  {name:"Chill Arabic", nameAr:"شرقي هادئ", c1:'#8B5E34', c2:'#0B0D12'},
-  {name:"Sad Arabic", nameAr:"شرقي حزين", c1:'#4C6E9B', c2:'#0B0D12'},
-  {name:"Upbeat Foreign", nameAr:"أجنبي حيوي", c1:'#D4A853', c2:'#5C3A0F'},
-  {name:"Sheilat", nameAr:"شيلات", c1:'#7A4B2A', c2:'#1A0E06'},
-  {name:"Dark Pop", nameAr:"دارك بوب", c1:'#6B2C6E', c2:'#100816'},
-  {name:"Rock/Metal", nameAr:"روك/ميتال", c1:'#5A5A5A', c2:'#0D0D0D'},
-];
-const filterGenres = ["Dark Pop","Metal","Rock","Synthwave","Lo-Fi","Hip-Hop","Indie","Classical","Sheilat","Folk","Jazz","EDM","Acoustic"];
-const filterMoods = ["Chill","Sad","Energetic","Focus","Cinematic","Dark"];
-const filterLangs = ["Arabic","English","Japanese","Korean","Global"];
-
-/* ================= STATE ================= */
-let history = [];
-let playlists = [
-  {id:'pl_seed_queue', name:"My Queue", nameAr:"قائمتي", trackIds:['dQw4w9WgXcQ','9bZkp7q19f0','jNQXAC9IVRw']},
-];
-let currentTrackId = 'dQw4w9WgXcQ';
-let queueIds = [];           // the active, scoped playback queue (Spotify-style: play-from-here context)
-let isPlaying = false;
-let isShuffled = false;
-let repeatMode = 0;          // 0 off, 1 repeat-all(queue), 2 repeat-one
-let progress = 0;
-let playerVisible = true;
-let seekDragging = false;
-
-let activeFilters = { genres:new Set(), moods:new Set(), langs:new Set() };
-let draftFilters = { genres:new Set(), moods:new Set(), langs:new Set() };
-
-/* ================= RENDER: HOME/CARDS ================= */
-function trackCardHTML(t, queueStr){
-  const q = queueStr ? `,'${queueStr}'` : '';
-  return `<div class="track-card">
-    <div class="art-wrap" onclick="playTrackById('${t.id}'${q})">${coverImg(t, `alt="${t.title}"`)}
-      <div class="play-overlay"><div class="mini-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="tt" onclick="playTrackById('${t.id}'${q})">${tName(t)}</div>
-    <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
-      <div class="ta">${aName(t)}</div>
-      <button class="more-btn" onclick="event.stopPropagation();openContextMenu('${t.id}')"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
-    </div>
-  </div>`;
+/* ================= RENDER ================= */
+function emptyHTML(title, sub){
+  return '<div class="empty-state"><div class="e-t">' + esc(title) + '</div>' + (sub ? '<div class="e-s">' + esc(sub) + '</div>' : '') + '</div>';
 }
-function renderRows(){
-  const vibeList = tracks.slice(0,6);
-  document.getElementById('rowVibe').innerHTML = vibeList.map(t=>trackCardHTML(t, vibeList.map(x=>x.id).join(','))).join('');
-  const newList = [...tracks].reverse().slice(0,6);
-  document.getElementById('rowNew').innerHTML = newList.map(t=>trackCardHTML(t, newList.map(x=>x.id).join(','))).join('');
-  const repeatList = tracks.filter(t=>history.includes(t.id));
-  const repeatFinal = repeatList.length ? repeatList : tracks.slice(0,4);
-  document.getElementById('rowRepeat').innerHTML = repeatFinal.map(t=>trackCardHTML(t, repeatFinal.map(x=>x.id).join(','))).join('');
-  const mostList = tracks.length>3 ? tracks.slice(3,9) : tracks;
-  document.getElementById('rowMost').innerHTML = mostList.map(t=>trackCardHTML(t, mostList.map(x=>x.id).join(','))).join('');
-}
-function renderMoods(){
-  document.getElementById('moodGrid').innerHTML = moods.map(m=>`
-    <div class="mood-card" onclick="quickGenreSearch('${m.name}')" style="background:linear-gradient(135deg, ${m.c1}, ${m.c2});">
-      <span>${curLang==='ar'?m.nameAr:m.name}</span>
-    </div>`).join('');
-}
-function quickGenreSearch(g){
-  activeFilters.genres = new Set([g]);
-  goView('search');
-  renderSearchResults();
+const HEART_PATH = 'M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z';
+const DOTS_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>';
+
+// One row layout shared by Search, Favorites, History and the playlist detail view.
+function trackRowHTML(t, queueStr, playlistId){
+  const q = queueStr ? ",'" + queueStr + "'" : '';
+  const play = "playTrackById('" + t.id + "'" + q + ")";
+  const tag = (t.genre && t.genre !== 'None') ? '<span class="genre-tag">' + esc(t.genre) + '</span>' : '';
+  const dur = t.duration ? '<span class="meta">' + fmtTime(t.duration) + '</span>' : '';
+  const heart = playlistId ? '' :
+    '<button class="icon-btn" style="width:32px;height:32px;" onclick="toggleFavorite(\'' + t.id + '\')">' +
+    '<svg viewBox="0 0 24 24" fill="' + (t.favorite ? 'var(--accent)' : 'none') + '" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="' + HEART_PATH + '"/></svg></button>';
+  const more = '<button class="more-btn" onclick="openContextMenu(\'' + t.id + '\'' + (playlistId ? ",'" + playlistId + "'" : '') + ')">' + DOTS_SVG + '</button>';
+  return '<div class="result-row">' +
+    coverImg(t, 'alt="" onclick="' + play + '"') +
+    '<div class="info" onclick="' + play + '"><div class="tt">' + esc(tName(t)) + '</div><div class="ta">' + esc(aName(t)) + '</div></div>' +
+    tag + dur + '<div class="row-actions">' + heart + more + '</div></div>';
 }
 
-/* ================= SEARCH + FILTERS ================= */
+function renderNowPlaying(){
+  const t = currentTrack();
+  document.getElementById('npWrap').style.display = t ? 'flex' : 'none';
+  document.getElementById('npEmpty').style.display = t ? 'none' : 'block';
+  if(!t) return;
+  const img = document.getElementById('npCover');
+  if(img.getAttribute('data-id') !== t.id){
+    img.setAttribute('data-id', t.id);
+    img.src = t.cover;
+    img.onerror = function(){ this.onerror = null; this.src = t.coverFallback; };
+  }
+  img.alt = t.title;
+  document.getElementById('npTitle').textContent = tName(t);
+  document.getElementById('npArtist').textContent = aName(t);
+  document.getElementById('npCoverWrap').classList.toggle('playing', isPlaying);
+}
+
 function renderSearchResults(){
-  const q = (document.getElementById('searchInput').value||'').toLowerCase();
-  let list = tracks.filter(t=>{
-    const matchesQ = !q || t.title.toLowerCase().includes(q) || t.artist.toLowerCase().includes(q) || t.titleAr.includes(q);
-    const matchesGenre = activeFilters.genres.size===0 || activeFilters.genres.has(t.genre);
-    const matchesMood = activeFilters.moods.size===0 || activeFilters.moods.has(t.mood);
-    const matchesLang = activeFilters.langs.size===0 || activeFilters.langs.has(t.language);
+  const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+  const list = tracks.filter(function(t){
+    const matchesQ = !q || t.title.toLowerCase().includes(q) || t.artist.toLowerCase().includes(q);
+    const matchesGenre = activeFilters.genres.size === 0 || activeFilters.genres.has(t.genre);
+    const matchesMood = activeFilters.moods.size === 0 || activeFilters.moods.has(t.mood);
+    const matchesLang = activeFilters.langs.size === 0 || activeFilters.langs.has(t.language);
     return matchesQ && matchesGenre && matchesMood && matchesLang;
   });
-  const queueStr = list.map(t=>t.id).join(',');
-  document.getElementById('resultList').innerHTML = list.map(t=>`
-    <div class="result-row">
-      ${coverImg(t, `alt="" onclick="playTrackById('${t.id}','${queueStr}')"`)}
-      <div class="info" onclick="playTrackById('${t.id}','${queueStr}')"><div class="tt">${tName(t)}</div><div class="ta">${aName(t)}</div></div>
-      <span class="genre-tag">${t.genre==='None'?(curLang==='ar'?'غير مصنّف':'Unclassified'):t.genre}</span>
-      <span class="meta">${fmtTime(t.duration)}</span>
-      <div class="row-actions">
-        <button class="icon-btn" style="width:32px;height:32px;" onclick="event.stopPropagation();toggleFavorite('${t.id}')" title="Favorite">
-          <svg viewBox="0 0 24 24" fill="${t.favorite?'var(--accent)':'none'}" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z"/></svg>
-        </button>
-        <button class="more-btn" onclick="event.stopPropagation();openContextMenu('${t.id}')" title="More">
-          <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
-        </button>
-      </div>
-    </div>`).join('') || `<div class="empty-state"><div class="e-t">No results</div></div>`;
+  const queueStr = list.map(function(t){ return t.id; }).join(',');
+  const L = i18n[curLang];
+  document.getElementById('resultList').innerHTML = list.length
+    ? list.map(function(t){ return trackRowHTML(t, queueStr); }).join('')
+    : (tracks.length ? emptyHTML(L.no_results) : emptyHTML(L.np_empty_title, L.np_empty_sub));
   renderActivePills();
 }
 function renderActivePills(){
   const pills = [];
-  activeFilters.genres.forEach(g=>pills.push({type:'genres', val:g}));
-  activeFilters.moods.forEach(g=>pills.push({type:'moods', val:g}));
-  activeFilters.langs.forEach(g=>pills.push({type:'langs', val:g}));
-  document.getElementById('activePills').innerHTML = pills.map(p=>`
-    <div class="pill">${p.val}<button onclick="removeFilter('${p.type}','${p.val}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
-  `).join('');
+  activeFilters.genres.forEach(function(g){ pills.push({type:'genres', val:g}); });
+  activeFilters.moods.forEach(function(g){ pills.push({type:'moods', val:g}); });
+  activeFilters.langs.forEach(function(g){ pills.push({type:'langs', val:g}); });
+  document.getElementById('activePills').innerHTML = pills.map(function(p){
+    return '<div class="pill">' + esc(p.val) + '<button onclick="removeFilter(\'' + p.type + '\',\'' + p.val + '\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>';
+  }).join('');
   const count = activeFilters.genres.size + activeFilters.moods.size + activeFilters.langs.size;
   const badge = document.getElementById('filterBadge');
-  badge.style.display = count>0 ? 'flex' : 'none';
+  badge.style.display = count > 0 ? 'flex' : 'none';
   badge.textContent = count;
 }
 function removeFilter(type, val){
@@ -1690,15 +1603,15 @@ function openFilterModal(){
 }
 function renderFilterModal(){
   const noneLabel = i18n[curLang].filter_none_all;
-  document.getElementById('filterGenreRow').innerHTML =
-    `<button class="filter-chip ${draftFilters.genres.size===0?'active':''}" onclick="clearDraftGroup('genres')">${noneLabel}</button>` +
-    filterGenres.map(g=>`<button class="filter-chip ${draftFilters.genres.has(g)?'active':''}" onclick="toggleDraft('genres','${g}')">${g}</button>`).join('');
-  document.getElementById('filterMoodRow').innerHTML =
-    `<button class="filter-chip ${draftFilters.moods.size===0?'active':''}" onclick="clearDraftGroup('moods')">${noneLabel}</button>` +
-    filterMoods.map(m=>`<button class="filter-chip ${draftFilters.moods.has(m)?'active':''}" onclick="toggleDraft('moods','${m}')">${m}</button>`).join('');
-  document.getElementById('filterLangRow').innerHTML =
-    `<button class="filter-chip ${draftFilters.langs.size===0?'active':''}" onclick="clearDraftGroup('langs')">${noneLabel}</button>` +
-    filterLangs.map(l=>`<button class="filter-chip ${draftFilters.langs.has(l)?'active':''}" onclick="toggleDraft('langs','${l}')">${l}</button>`).join('');
+  function row(type, values){
+    return '<button class="filter-chip ' + (draftFilters[type].size === 0 ? 'active' : '') + '" onclick="clearDraftGroup(\'' + type + '\')">' + esc(noneLabel) + '</button>' +
+      values.map(function(v){
+        return '<button class="filter-chip ' + (draftFilters[type].has(v) ? 'active' : '') + '" onclick="toggleDraft(\'' + type + '\',\'' + v + '\')">' + esc(v) + '</button>';
+      }).join('');
+  }
+  document.getElementById('filterGenreRow').innerHTML = row('genres', filterGenres);
+  document.getElementById('filterMoodRow').innerHTML = row('moods', filterMoods);
+  document.getElementById('filterLangRow').innerHTML = row('langs', filterLangs);
 }
 function toggleDraft(type, val){
   if(draftFilters[type].has(val)) draftFilters[type].delete(val); else draftFilters[type].add(val);
@@ -1720,91 +1633,81 @@ function applyFilters(){
   showToast(i18n[curLang].toast_filters_applied);
 }
 
-/* ================= LIBRARY ================= */
+/* ================= LIBRARY / PLAYLISTS ================= */
 function renderLibrary(){
-  const favT = tracks.filter(t=>t.favorite);
-  const favQueue = favT.map(t=>t.id).join(',');
-  document.getElementById('lib-fav').innerHTML = favT.length ? favT.map(t=>trackRowSimple(t, favQueue)).join('') :
-    `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z"/></svg><div class="e-t">${i18n[curLang].empty_fav_t}</div><div class="e-s">${i18n[curLang].empty_fav_s}</div></div>`;
-  document.getElementById('lib-playlists').innerHTML = `<div class="playlist-grid">${playlists.map(p=>playlistCardHTML(p)).join('')}${newPlaylistCardHTML()}</div>`;
-  const histT = history.map(id=>tracks.find(t=>t.id===id)).filter(Boolean);
-  const histQueue = histT.map(t=>t.id).join(',');
-  document.getElementById('lib-history').innerHTML = histT.length ? histT.map(t=>trackRowSimple(t, histQueue)).join('') :
-    `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><div class="e-t">${i18n[curLang].empty_hist_t}</div><div class="e-s">${i18n[curLang].empty_hist_s}</div></div>`;
-}
-function trackRowSimple(t, queueStr){
-  const q = queueStr ? `,'${queueStr}'` : '';
-  return `<div class="result-row">
-    ${coverImg(t, `alt="" onclick="playTrackById('${t.id}'${q})"`)}
-    <div class="info" onclick="playTrackById('${t.id}'${q})"><div class="tt">${tName(t)}</div><div class="ta">${aName(t)}</div></div>
-    <span class="meta">${fmtTime(t.duration)}</span>
-    <div class="row-actions">
-      <button class="icon-btn" style="width:32px;height:32px;" onclick="toggleFavorite('${t.id}')">
-        <svg viewBox="0 0 24 24" fill="${t.favorite?'var(--accent)':'none'}" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z"/></svg>
-      </button>
-      <button class="more-btn" onclick="openContextMenu('${t.id}')"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
-    </div>
-  </div>`;
+  const L = i18n[curLang];
+  const favT = tracks.filter(function(t){ return t.favorite; });
+  const favQueue = favT.map(function(t){ return t.id; }).join(',');
+  document.getElementById('lib-fav').innerHTML = favT.length
+    ? favT.map(function(t){ return trackRowHTML(t, favQueue); }).join('')
+    : emptyHTML(L.empty_fav_t, L.empty_fav_s);
+  document.getElementById('lib-playlists').innerHTML =
+    '<div class="playlist-grid">' + playlists.map(playlistCardHTML).join('') + newPlaylistCardHTML() + '</div>';
+  const histT = history.map(function(id){ return tracks.find(function(t){ return t.id === id; }); }).filter(Boolean);
+  const histQueue = histT.map(function(t){ return t.id; }).join(',');
+  document.getElementById('lib-history').innerHTML = histT.length
+    ? histT.map(function(t){ return trackRowHTML(t, histQueue); }).join('')
+    : emptyHTML(L.empty_hist_t, L.empty_hist_s);
 }
 function playlistCardHTML(p){
-  const items = p.trackIds.map(id=>tracks.find(t=>t.id===id)).filter(Boolean);
-  return `<div class="playlist-card" onclick="openPlaylistDetail('${p.id}')">
-    <div class="art-wrap"><div class="playlist-collage">${items.slice(0,4).map(t=>coverImg(t)).join('') || '<div style="background:var(--elevated); width:100%; height:100%;"></div>'}</div></div>
-    <div class="tt">${curLang==='ar'?p.nameAr:p.name}</div>
-    <div class="ta">${p.trackIds.length} tracks</div>
-  </div>`;
+  const items = p.trackIds.map(function(id){ return tracks.find(function(t){ return t.id === id; }); }).filter(Boolean);
+  const art = items.length >= 4
+    ? '<div class="playlist-collage">' + items.slice(0,4).map(function(t){ return coverImg(t); }).join('') + '</div>'
+    : (items[0] ? coverImg(items[0]) : '<div style="background:var(--elevated); width:100%; height:100%;"></div>');
+  return '<div class="playlist-card" onclick="openPlaylistDetail(\'' + p.id + '\')">' +
+    '<div class="art-wrap">' + art + '</div>' +
+    '<div class="tt">' + esc(p.name) + '</div>' +
+    '<div class="ta">' + items.length + ' ' + esc(i18n[curLang].unit_tracks) + '</div></div>';
 }
 function newPlaylistCardHTML(){
-  return `<div class="playlist-card new-playlist-card" onclick="createPlaylistPrompt()">
-    <div class="art-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></div>
-    <div class="tt">${i18n[curLang].new_playlist}</div>
-  </div>`;
+  return '<div class="playlist-card new-playlist-card" onclick="createPlaylistPrompt()">' +
+    '<div class="art-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></div>' +
+    '<div class="tt">' + esc(i18n[curLang].new_playlist) + '</div></div>';
 }
 function renderPlaylistsView(){
-  document.getElementById('playlistGrid').innerHTML = playlists.map(p=>playlistCardHTML(p)).join('') + newPlaylistCardHTML();
+  document.getElementById('playlistGrid').innerHTML = playlists.map(playlistCardHTML).join('') + newPlaylistCardHTML();
 }
 function renderAll(){
-  renderRows(); renderMoods(); renderSearchResults(); renderLibrary(); renderPlaylistsView(); renderThemeGrid();
+  renderSearchResults(); renderLibrary(); renderPlaylistsView(); renderThemeGrid();
   updatePlayerUI();
 }
 
 /* ================= NAVIGATION / DRAWER ================= */
+const viewTitleKeys = { home:'reopen_player', search:'nav_search', library:'nav_library', playlists:'nav_playlists', settings:'nav_settings' };
+function updateTopbarTitle(){
+  document.getElementById('topbarTitle').textContent = i18n[curLang][viewTitleKeys[currentView]] || '';
+}
 function goView(name){
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.getElementById('view-'+name).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.view===name));
-  const titles = {home:'topbar_title', search:'nav_search', library:'nav_library', playlists:'nav_playlists', settings:'nav_settings'};
-  document.querySelector('.topbar h1').textContent = i18n[curLang][titles[name]] || '';
+  currentView = name;
+  document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
+  document.getElementById('view-' + name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.toggle('active', n.dataset.view === name); });
+  updateTopbarTitle();
   document.querySelector('.content').scrollTop = 0;
   closeDrawer();
 }
-document.querySelectorAll('.nav-item').forEach(el=>el.addEventListener('click', ()=>goView(el.dataset.view)));
+document.querySelectorAll('.nav-item').forEach(function(el){ el.addEventListener('click', function(){ goView(el.dataset.view); }); });
 document.getElementById('searchInput').addEventListener('input', renderSearchResults);
 
 function openDrawer(){ document.getElementById('drawer').classList.add('open'); document.getElementById('drawerBackdrop').classList.add('open'); }
 function closeDrawer(){ document.getElementById('drawer').classList.remove('open'); document.getElementById('drawerBackdrop').classList.remove('open'); }
 
-/* Library tabs */
-document.getElementById('libTabs').addEventListener('click', (e)=>{
+document.getElementById('libTabs').addEventListener('click', function(e){
   const btn = e.target.closest('.tab-btn'); if(!btn) return;
-  document.querySelectorAll('#libTabs .tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#libTabs .tab-btn').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
-  document.querySelectorAll('.lib-panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('lib-'+btn.dataset.tab).classList.add('active');
+  document.querySelectorAll('.lib-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('lib-' + btn.dataset.tab).classList.add('active');
 });
 
-/* ================= PLAYER LOGIC (real YouTube IFrame Player API, queue-scoped) ================= */
-let ytPlayer = null;
-let ytReady = false;
-let pendingPlayId = null;
-
-// Loaded by the https://www.youtube.com/iframe_api script tag once it finishes loading.
+/* ================= PLAYER (real YouTube IFrame Player API, queue-scoped) ================= */
+// Called by the https://www.youtube.com/iframe_api script once it has loaded.
 function onYouTubeIframeAPIReady(){
   ytPlayer = new YT.Player('ytPlayerMount', {
     height: '1', width: '1',
     playerVars: {
-      // These trim YouTube's own chrome/branding/related-video clutter; they cannot remove
-      // ads inserted by YouTube on monetized videos — that's controlled by the video owner.
+      // These trim YouTube's own chrome/related-video clutter; they cannot remove ads that
+      // YouTube inserts on monetized videos — that's controlled by the video owner.
       autoplay: 0, controls: 0, rel: 0, modestbranding: 1, iv_load_policy: 3, fs: 0, disablekb: 1, playsinline: 1,
       enablejsapi: 1, origin: window.location.origin
     },
@@ -1821,10 +1724,10 @@ function onPlayerStateChange(e){
   else if(e.data === YT.PlayerState.PAUSED){ isPlaying = false; updatePlayerUI(); }
   else if(e.data === YT.PlayerState.ENDED){ handleTrackEnd(); }
 }
-function onPlayerError(){ showToast(curLang==='ar' ? 'تعذّر تشغيل هذا الفيديو' : "This video can't be played"); }
+function onPlayerError(){ showToast(curLang === 'ar' ? 'تعذّر تشغيل هذا الفيديو' : "This video can't be played"); }
 
-// End-of-queue behavior: repeat-one replays; otherwise advance within the CURRENT queue only —
-// never falls back to the whole library, per the "don't shuffle into the general catalog" requirement.
+// End of a song: repeat-one replays; otherwise advance inside the CURRENT queue only —
+// it never falls back to the whole library.
 function handleTrackEnd(){
   if(repeatMode === 2){ ytPlayer.seekTo(0, true); ytPlayer.playVideo(); return; }
   const idx = queueIds.indexOf(currentTrackId);
@@ -1834,70 +1737,70 @@ function handleTrackEnd(){
 }
 function loadAndPlay(videoId){
   if(!ytReady){ pendingPlayId = videoId; return; }
+  loadedVideoId = videoId;
   ytPlayer.loadVideoById(videoId);
   ytPlayer.playVideo();
 }
 
-// Single always-on poll that reads real playback position from the YouTube player.
-setInterval(()=>{
+// Always-on poll that reads the real playback position from the YouTube player.
+setInterval(function(){
   if(!ytReady || !isPlaying || !playerVisible) return;
   const t = currentTrack(); if(!t) return;
   if(!seekDragging) progress = ytPlayer.getCurrentTime() || 0;
   const liveDuration = ytPlayer.getDuration();
-  if(liveDuration && Math.abs(liveDuration - t.duration) > 1){ t.duration = liveDuration; }
+  if(liveDuration && Math.abs(liveDuration - t.duration) > 1){ t.duration = liveDuration; durationCache[t.id] = liveDuration; }
   updateProgressUI();
 }, 1000);
 
-function currentTrack(){ return tracks.find(t=>t.id===currentTrackId); }
-
 /**
  * Plays a track. `queue` scopes playback: pass a comma-joined id string (or array) to lock
- * next/prev/end-of-queue behavior to that list only (e.g. a playlist, Favorites, or a search result set).
- * Omit it to keep playing within whatever queue is already active, or fall back to the full library.
+ * next/prev/end-of-queue to that list only (a playlist, Favorites, a search result set…).
  */
 function playTrackById(id, queue){
+  if(!tracks.some(function(t){ return t.id === id; })) return;
   if(queue){ queueIds = (typeof queue === 'string') ? queue.split(',').filter(Boolean) : queue.slice(); }
-  else if(!queueIds.includes(id)){ queueIds = tracks.map(t=>t.id); }
+  else if(!queueIds.includes(id)){ queueIds = tracks.map(function(t){ return t.id; }); }
   currentTrackId = id;
   progress = 0;
   isPlaying = true;
-  showPlayerBar();
-  if(!history.includes(id)) history.unshift(id);
-  history = history.slice(0,12);
+  playerVisible = true;
+  history = [id].concat(history.filter(function(x){ return x !== id; })).slice(0, 12);
   updatePlayerUI();
   loadAndPlay(id);
   renderLibrary();
 }
 function togglePlay(){
-  if(!ytReady){ return; }
+  const t = currentTrack(); if(!t) return;
+  // Nothing has been loaded into the player yet (e.g. right after opening the app): start the current song.
+  if(loadedVideoId !== t.id){ playTrackById(t.id); return; }
+  if(!ytReady) return;
   if(isPlaying) ytPlayer.pauseVideo(); else ytPlayer.playVideo();
 }
 function nextTrack(){
   if(!queueIds.length) return;
   const idx = queueIds.indexOf(currentTrackId);
-  let nextIdx = isShuffled ? Math.floor(Math.random()*queueIds.length) : idx+1;
+  let nextIdx = isShuffled ? Math.floor(Math.random() * queueIds.length) : idx + 1;
   if(nextIdx >= queueIds.length){
-    if(repeatMode === 1) nextIdx = 0; else return; // stop at the end of this queue, don't wrap into the library
+    if(repeatMode === 1) nextIdx = 0; else return; // stop at the end of this queue
   }
   playTrackById(queueIds[nextIdx]);
 }
 function prevTrack(){
   if(!queueIds.length) return;
   const idx = queueIds.indexOf(currentTrackId);
-  let prevIdx = idx-1;
-  if(prevIdx < 0) prevIdx = (repeatMode===1) ? queueIds.length-1 : 0;
+  let prevIdx = idx - 1;
+  if(prevIdx < 0) prevIdx = (repeatMode === 1) ? queueIds.length - 1 : 0;
   playTrackById(queueIds[prevIdx]);
 }
-function toggleShuffle(){ isShuffled=!isShuffled; document.getElementById('btnShuffle').classList.toggle('active', isShuffled); }
+function toggleShuffle(){ isShuffled = !isShuffled; document.getElementById('btnShuffle').classList.toggle('active', isShuffled); }
 function toggleRepeat(){
-  repeatMode = (repeatMode+1)%3;
+  repeatMode = (repeatMode + 1) % 3;
   const btn = document.getElementById('btnRepeat');
-  btn.classList.toggle('active', repeatMode!==0);
-  btn.style.opacity = repeatMode===2 ? '0.7':'1';
+  btn.classList.toggle('active', repeatMode !== 0);
+  btn.style.opacity = repeatMode === 2 ? '0.7' : '1';
 }
 function toggleFavorite(id){
-  if(!id) return;
-  const t = tracks.find(x=>x.id===id); if(!t) return;
+  const t = tracks.find(function(x){ return x.id === id; }); if(!t) return;
   t.favorite = !t.favorite;
   fbSaveTrack(t);
   showToast(t.favorite ? i18n[curLang].toast_fav_add : i18n[curLang].toast_fav_rm);
@@ -1909,28 +1812,26 @@ function onSeekInput(el){
   seekDragging = true;
   const t = currentTrack(); if(!t) return;
   const dur = t.duration || (ytReady ? ytPlayer.getDuration() : 0) || 0;
-  const pct = el.value/1000;
-  document.getElementById('tCurrent').textContent = fmtTime(pct*dur);
-  el.style.setProperty('--pct', (pct*100)+'%');
+  const pct = el.value / 1000;
+  document.getElementById('tCurrent').textContent = fmtTime(pct * dur);
+  el.style.setProperty('--pct', (pct * 100) + '%');
 }
 function onSeekCommit(el){
   const t = currentTrack(); if(!t) return;
   const dur = t.duration || (ytReady ? ytPlayer.getDuration() : 0) || 0;
-  const pct = el.value/1000;
-  progress = pct*dur;
-  if(ytReady) ytPlayer.seekTo(progress, true);
+  progress = (el.value / 1000) * dur;
+  if(ytReady && loadedVideoId === t.id) ytPlayer.seekTo(progress, true);
   seekDragging = false;
 }
-let volume = 70;
 function onVolumeInput(el){
   volume = parseInt(el.value, 10);
-  ['volRange','volRangeSheet'].forEach(id=>{
+  ['volRange', 'volRangeSheet'].forEach(function(id){
     const r = document.getElementById(id);
     if(!r) return;
     if(r !== el) r.value = volume;
-    r.style.setProperty('--pct', volume+'%');
+    r.style.setProperty('--pct', volume + '%');
   });
-  ['volPctDesktop','volPctSheet'].forEach(id=>{
+  ['volPctDesktop', 'volPctSheet'].forEach(function(id){
     const b = document.getElementById(id);
     if(b) b.textContent = volume + '%';
   });
@@ -1940,15 +1841,23 @@ function updateProgressUI(){
   const t = currentTrack(); if(!t) return;
   document.getElementById('tCurrent').textContent = fmtTime(progress);
   document.getElementById('tTotal').textContent = fmtTime(t.duration);
-  const pct = t.duration ? (progress/t.duration) : 0;
+  const pct = t.duration ? (progress / t.duration) : 0;
   const range = document.getElementById('seekRange');
-  if(!seekDragging){ range.value = Math.round(pct*1000); }
-  range.style.setProperty('--pct', (pct*100)+'%');
+  if(!seekDragging){ range.value = Math.round(pct * 1000); }
+  range.style.setProperty('--pct', (pct * 100) + '%');
+}
+function applyPlayerVisibility(){
+  const t = currentTrack();
+  document.getElementById('playerBar').classList.toggle('hidden', !t || !playerVisible);
+  document.getElementById('reopenPill').classList.toggle('show', !!t && !playerVisible);
 }
 function updatePlayerUI(){
-  const t = currentTrack(); if(!t) return;
-  document.getElementById('pImg').src = t.cover;
-  document.getElementById('pImg').onerror = function(){ this.onerror=null; this.src=t.coverFallback; };
+  applyPlayerVisibility();
+  renderNowPlaying();
+  const t = currentTrack();
+  if(!t){ updateDynIsland(); return; }
+  const pImg = document.getElementById('pImg');
+  pImg.src = t.cover; pImg.onerror = function(){ this.onerror = null; this.src = t.coverFallback; };
   document.getElementById('pTitle').textContent = tName(t);
   document.getElementById('pArtist').textContent = aName(t);
   document.getElementById('pHeart').classList.toggle('active', !!t.favorite);
@@ -1961,29 +1870,24 @@ function updatePlayerUI(){
 }
 function updateDynIsland(){
   const island = document.getElementById('dynIsland');
-  if(!islandEnabled || !playerVisible){ island.classList.remove('show'); return; }
-  if(isPlaying){
-    const t = currentTrack(); if(!t) return;
-    const img = document.getElementById('diImg');
-    img.src = t.cover; img.onerror = function(){ this.onerror=null; this.src=t.coverFallback; };
-    document.getElementById('diText').textContent = tName(t)+' · '+aName(t);
-    island.classList.add('show');
-  } else {
-    island.classList.remove('show');
-  }
+  const t = currentTrack();
+  if(!islandEnabled || !playerVisible || !t || !isPlaying){ island.classList.remove('show'); return; }
+  const img = document.getElementById('diImg');
+  img.src = t.cover; img.onerror = function(){ this.onerror = null; this.src = t.coverFallback; };
+  document.getElementById('diText').textContent = tName(t) + ' · ' + aName(t);
+  island.classList.add('show');
 }
-let islandEnabled = true;
 function toggleIslandSetting(el){
   el.classList.toggle('on');
   islandEnabled = el.classList.contains('on');
   updateDynIsland();
 }
 
-/* Mobile "more" sheet — houses the controls that don't fit the compact mobile player bar */
+/* Mobile "more" sheet — the controls that don't fit the compact mobile player bar */
 function openPlayerMore(){
   const t = currentTrack(); if(!t) return;
   const img = document.getElementById('pmoreImg');
-  img.src = t.cover; img.onerror = function(){ this.onerror=null; this.src=t.coverFallback; };
+  img.src = t.cover; img.onerror = function(){ this.onerror = null; this.src = t.coverFallback; };
   document.getElementById('pmoreTitle').textContent = tName(t);
   document.getElementById('pmoreArtist').textContent = aName(t);
   refreshPlayerMore();
@@ -1997,15 +1901,14 @@ function refreshPlayerMore(){
   document.getElementById('pmoreShuffleBtn').style.color = isShuffled ? 'var(--accent)' : '';
   const repeatBtn = document.getElementById('pmoreRepeatBtn');
   repeatBtn.style.color = repeatMode !== 0 ? 'var(--accent)' : '';
-  const repeatLabel = repeatBtn.querySelector('span');
-  repeatLabel.textContent = repeatMode === 2
+  repeatBtn.querySelector('span').textContent = repeatMode === 2
     ? i18n[curLang].pm_repeat_one
     : (repeatMode === 1 ? i18n[curLang].pm_repeat_all : i18n[curLang].pm_repeat);
 }
 
-/* MediaSession: shows lock-screen / notification playback controls where the browser supports it.
-   Note: true continued playback while the screen is locked depends on the browser/OS treatment of
-   background iframes and isn't guaranteed on every mobile platform for an embedded YouTube player. */
+/* MediaSession: lock-screen / notification controls where the browser supports it.
+   Continued playback with the screen locked depends on the browser/OS and isn't guaranteed
+   for an embedded YouTube iframe. */
 function updateMediaSession(){
   if(!('mediaSession' in navigator)) return;
   const t = currentTrack(); if(!t) return;
@@ -2015,47 +1918,43 @@ function updateMediaSession(){
       artwork: [{ src: t.cover, sizes: '480x480', type: 'image/jpeg' }]
     });
     navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
-    navigator.mediaSession.setActionHandler('play', ()=>{ if(ytReady) ytPlayer.playVideo(); });
-    navigator.mediaSession.setActionHandler('pause', ()=>{ if(ytReady) ytPlayer.pauseVideo(); });
+    navigator.mediaSession.setActionHandler('play', function(){ if(!isPlaying) togglePlay(); });
+    navigator.mediaSession.setActionHandler('pause', function(){ if(isPlaying) togglePlay(); });
     navigator.mediaSession.setActionHandler('previoustrack', prevTrack);
     navigator.mediaSession.setActionHandler('nexttrack', nextTrack);
-    navigator.mediaSession.setActionHandler('seekto', (details)=>{
+    navigator.mediaSession.setActionHandler('seekto', function(details){
       if(ytReady && details.seekTime != null){ ytPlayer.seekTo(details.seekTime, true); progress = details.seekTime; updateProgressUI(); }
     });
   }catch(e){ /* MediaSession not fully supported in this browser */ }
 }
 
-/* Close / reopen player bar */
+/* Close / reopen the player bar */
 function closePlayerBar(){
   if(ytReady) ytPlayer.pauseVideo();
   isPlaying = false;
   playerVisible = false;
-  document.getElementById('playerBar').classList.add('hidden');
-  document.getElementById('reopenPill').classList.add('show');
-  updateDynIsland();
+  updatePlayerUI();
   showToast(i18n[curLang].toast_player_closed);
 }
-function showPlayerBar(){
-  playerVisible = true;
-  document.getElementById('playerBar').classList.remove('hidden');
-  document.getElementById('reopenPill').classList.remove('show');
-}
 function reopenPlayer(){
-  showPlayerBar();
-  if(ytReady) ytPlayer.playVideo();
-  else if(currentTrackId) loadAndPlay(currentTrackId);
+  playerVisible = true;
+  const t = currentTrack();
+  if(t){
+    if(loadedVideoId === t.id && ytReady) ytPlayer.playVideo();
+    else playTrackById(t.id);
+  }
   updatePlayerUI();
 }
 
 /* ================= CONTEXT MENU (⋮) ================= */
 let ctxTrackId = null;
-let ctxPlaylistId = null; // set when opened from inside a playlist detail view, enables "remove from this playlist"
+let ctxPlaylistId = null; // set when opened from inside a playlist, enables "remove from this playlist"
 function openContextMenu(id, playlistId){
+  const t = tracks.find(function(x){ return x.id === id; }); if(!t) return;
   ctxTrackId = id;
   ctxPlaylistId = playlistId || null;
-  const t = tracks.find(x=>x.id===id); if(!t) return;
   const img = document.getElementById('ctxImg');
-  img.src = t.cover; img.onerror = function(){ this.onerror=null; this.src=t.coverFallback; };
+  img.src = t.cover; img.onerror = function(){ this.onerror = null; this.src = t.coverFallback; };
   document.getElementById('ctxTitle').textContent = tName(t);
   document.getElementById('ctxArtist').textContent = aName(t);
   document.getElementById('ctxRemoveFromPlaylistBtn').style.display = ctxPlaylistId ? 'flex' : 'none';
@@ -2074,27 +1973,33 @@ function ctxToggleAddToPlaylistMenu(){
   document.getElementById('ctxPlaylistSubmenu').classList.toggle('open');
 }
 function renderCtxPlaylistPicker(){
-  document.getElementById('ctxPlaylistList').innerHTML = playlists.map(p=>`
-    <div class="playlist-pick-row">
-      <span>${curLang==='ar'?p.nameAr:p.name}</span>
-      <button class="btn-ghost" style="padding:5px 12px; font-size:11.5px;" onclick="ctxAddToPlaylist('${p.id}')" data-i18n="ctx_add_short">Add</button>
-    </div>`).join('');
+  const addLabel = esc(i18n[curLang].ctx_add_short);
+  document.getElementById('ctxPlaylistList').innerHTML = playlists.map(function(p){
+    const has = p.trackIds.includes(ctxTrackId);
+    return '<div class="playlist-pick-row"><span>' + esc(p.name) + '</span>' +
+      (has ? '<span style="color:var(--accent); font-weight:700;">✓</span>'
+           : '<button class="btn-ghost" style="padding:5px 12px; font-size:11.5px;" onclick="ctxAddToPlaylist(\'' + p.id + '\')">' + addLabel + '</button>') +
+      '</div>';
+  }).join('');
 }
 function ctxAddToPlaylist(playlistId){
-  const p = playlists.find(x=>x.id===playlistId); if(!p || !ctxTrackId) return;
-  if(!p.trackIds.includes(ctxTrackId)) p.trackIds.push(ctxTrackId);
-  fbSavePlaylists();
-  renderPlaylistsView(); renderLibrary();
+  const p = playlists.find(function(x){ return x.id === playlistId; }); if(!p || !ctxTrackId) return;
+  if(!p.trackIds.includes(ctxTrackId)) p.trackIds.unshift(ctxTrackId); // newest first
+  fbSavePlaylist(p);
+  renderPlaylistsView(); renderLibrary(); refreshOpenPlaylist();
   showToast(i18n[curLang].toast_added_playlist);
   closeModal('ctx');
 }
+function newPlaylistObject(name, trackIds){
+  return { id: 'pl_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7), name: name, trackIds: trackIds || [], createdAt: Date.now() };
+}
 function ctxCreatePlaylistFromMenu(){
   const input = document.getElementById('ctxNewPlaylistInput');
-  const name = (input.value||'').trim();
+  const name = (input.value || '').trim();
   if(!name) return;
-  const p = { id:'pl_'+Date.now()+'_'+Math.random().toString(36).slice(2,7), name, nameAr:name, trackIds: ctxTrackId ? [ctxTrackId] : [] };
-  playlists.push(p);
-  fbSavePlaylists();
+  const p = newPlaylistObject(name, ctxTrackId ? [ctxTrackId] : []);
+  playlists.unshift(p);
+  fbSavePlaylist(p);
   renderPlaylistsView(); renderLibrary();
   input.value = '';
   showToast(i18n[curLang].toast_playlist_created);
@@ -2102,158 +2007,100 @@ function ctxCreatePlaylistFromMenu(){
 }
 function ctxRemoveFromPlaylist(){
   if(!ctxPlaylistId || !ctxTrackId) return;
-  const p = playlists.find(x=>x.id===ctxPlaylistId); if(!p) return;
-  p.trackIds = p.trackIds.filter(id=>id!==ctxTrackId);
-  fbSavePlaylists();
-  renderPlaylistsView(); renderLibrary();
+  const p = playlists.find(function(x){ return x.id === ctxPlaylistId; }); if(!p) return;
+  p.trackIds = p.trackIds.filter(function(id){ return id !== ctxTrackId; });
+  fbSavePlaylist(p);
+  renderPlaylistsView(); renderLibrary(); refreshOpenPlaylist();
   showToast(i18n[curLang].toast_removed_playlist);
   closeModal('ctx');
-  if(document.getElementById('pdModal').classList.contains('show')) openPlaylistDetail(ctxPlaylistId);
+}
+function ctxEditTrack(){
+  if(!ctxTrackId) return;
+  const id = ctxTrackId;
+  closeModal('ctx');
+  openAddModal(id);
 }
 function ctxDeleteEntirely(){
   if(!ctxTrackId) return;
-  const confirmMsg = curLang==='ar' ? 'حذف هذه الأغنية نهائياً من الموقع؟ لا يمكن التراجع.' : 'Delete this track permanently from the site? This can\u2019t be undone.';
+  const confirmMsg = curLang === 'ar' ? 'حذف هذه الأغنية نهائياً من الموقع؟ لا يمكن التراجع.' : 'Delete this track permanently from the site? This can\u2019t be undone.';
   if(!window.confirm(confirmMsg)) return;
   const id = ctxTrackId;
-  tracks = tracks.filter(t=>t.id!==id);
-  playlists.forEach(p=>{ p.trackIds = p.trackIds.filter(x=>x!==id); });
-  history = history.filter(x=>x!==id);
-  queueIds = queueIds.filter(x=>x!==id);
+  tracks = tracks.filter(function(t){ return t.id !== id; });
+  playlists.forEach(function(p){
+    if(p.trackIds.includes(id)){ p.trackIds = p.trackIds.filter(function(x){ return x !== id; }); fbSavePlaylist(p); }
+  });
+  history = history.filter(function(x){ return x !== id; });
   fbDeleteTrack(id);
-  fbSavePlaylists();
-  if(currentTrackId === id) closePlayerBar();
-  renderAll();
-  showToast(i18n[curLang].toast_deleted);
   closeModal('ctx');
+  ensureCurrentTrack();
+  renderAll();
+  refreshOpenPlaylist();
+  showToast(i18n[curLang].toast_deleted);
 }
 
-/* ================= PLAYLIST DETAIL VIEW ================= */
+/* ================= PLAYLIST DETAIL ================= */
 let pdPlaylistId = null;
 function openPlaylistDetail(playlistId){
+  const p = playlists.find(function(x){ return x.id === playlistId; }); if(!p) return;
   pdPlaylistId = playlistId;
-  const p = playlists.find(x=>x.id===playlistId); if(!p) return;
-  const items = p.trackIds.map(id=>tracks.find(t=>t.id===id)).filter(Boolean);
-  document.getElementById('pdTitle').textContent = curLang==='ar' ? p.nameAr : p.name;
-  document.getElementById('pdCount').textContent = items.length + (curLang==='ar' ? ' أغنية' : ' tracks');
-  const cover = items[0];
+  const items = p.trackIds.map(function(id){ return tracks.find(function(t){ return t.id === id; }); }).filter(Boolean);
+  document.getElementById('pdTitle').textContent = p.name;
+  document.getElementById('pdCount').textContent = items.length + ' ' + i18n[curLang].unit_tracks;
   const img = document.getElementById('pdImg');
-  if(cover){ img.src = cover.cover; img.onerror = function(){ this.onerror=null; this.src=cover.coverFallback; }; }
-  else { img.src = svgCover('♪', 0); }
-  const queueStr = items.map(t=>t.id).join(',');
-  document.getElementById('pdTrackList').innerHTML = items.length ? items.map(t=>`
-    <div class="result-row">
-      ${coverImg(t, `alt="" onclick="playTrackById('${t.id}','${queueStr}')"`)}
-      <div class="info" onclick="playTrackById('${t.id}','${queueStr}')"><div class="tt">${tName(t)}</div><div class="ta">${aName(t)}</div></div>
-      <span class="meta">${fmtTime(t.duration)}</span>
-      <div class="row-actions">
-        <button class="more-btn" onclick="openContextMenu('${t.id}','${p.id}')"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
-      </div>
-    </div>`).join('') : `<div class="empty-state"><div class="e-t">${curLang==='ar'?'القائمة فارغة':'This playlist is empty'}</div></div>`;
-  document.getElementById('pdPlayAllBtn').onclick = function(){
-    if(items.length) playTrackById(items[0].id, queueStr);
-  };
+  if(items[0]){ img.src = items[0].cover; img.onerror = function(){ this.onerror = null; this.src = items[0].coverFallback; }; }
+  else { img.src = svgCover('♪', idHash(p.id)); }
+  const queueStr = items.map(function(t){ return t.id; }).join(',');
+  document.getElementById('pdTrackList').innerHTML = items.length
+    ? items.map(function(t){ return trackRowHTML(t, queueStr, p.id); }).join('')
+    : emptyHTML(curLang === 'ar' ? 'القائمة فارغة' : 'This playlist is empty');
+  document.getElementById('pdPlayAllBtn').onclick = function(){ if(items.length) playTrackById(items[0].id, queueStr); };
   openModal('pd');
 }
+function refreshOpenPlaylist(){
+  if(!pdPlaylistId || !document.getElementById('pdModal').classList.contains('show')) return;
+  if(playlists.some(function(p){ return p.id === pdPlaylistId; })) openPlaylistDetail(pdPlaylistId);
+  else closeModal('pd');
+}
 function createPlaylistPrompt(){
-  const name = window.prompt(curLang==='ar' ? 'اسم القائمة الجديدة:' : 'New playlist name:');
+  const name = window.prompt(curLang === 'ar' ? 'اسم القائمة الجديدة:' : 'New playlist name:');
   if(!name || !name.trim()) return;
-  const p = { id:'pl_'+Date.now()+'_'+Math.random().toString(36).slice(2,7), name:name.trim(), nameAr:name.trim(), trackIds:[] };
-  playlists.push(p);
-  fbSavePlaylists();
+  const p = newPlaylistObject(name.trim(), []);
+  playlists.unshift(p);
+  fbSavePlaylist(p);
   renderPlaylistsView(); renderLibrary();
   showToast(i18n[curLang].toast_playlist_created);
 }
 function renamePlaylistPrompt(){
-  if(!pdPlaylistId) return;
-  const p = playlists.find(x=>x.id===pdPlaylistId); if(!p) return;
-  const current = curLang==='ar' ? p.nameAr : p.name;
-  const newName = window.prompt(curLang==='ar' ? 'الاسم الجديد للقائمة:' : 'New name for this playlist:', current);
+  const p = playlists.find(function(x){ return x.id === pdPlaylistId; }); if(!p) return;
+  const newName = window.prompt(curLang === 'ar' ? 'الاسم الجديد للقائمة:' : 'New name for this playlist:', p.name);
   if(!newName || !newName.trim()) return;
   p.name = newName.trim();
-  p.nameAr = newName.trim();
-  fbSavePlaylists();
+  fbSavePlaylist(p);
   renderPlaylistsView(); renderLibrary();
-  openPlaylistDetail(pdPlaylistId); // refresh the open modal with the new name
+  openPlaylistDetail(p.id);
   showToast(i18n[curLang].toast_playlist_renamed);
 }
 function deletePlaylistEntirely(){
-  if(!pdPlaylistId) return;
-  const p = playlists.find(x=>x.id===pdPlaylistId); if(!p) return;
-  const label = curLang==='ar' ? p.nameAr : p.name;
-  const confirmMsg = curLang==='ar'
-    ? `حذف قائمة "${label}" نهائياً؟ هذا لا يحذف الأغاني نفسها، فقط القائمة.`
-    : `Delete the playlist "${label}" permanently? This won't delete the songs themselves, just the playlist.`;
+  const p = playlists.find(function(x){ return x.id === pdPlaylistId; }); if(!p) return;
+  const confirmMsg = curLang === 'ar'
+    ? 'حذف قائمة "' + p.name + '" نهائياً؟ هذا لا يحذف الأغاني نفسها، فقط القائمة.'
+    : 'Delete the playlist "' + p.name + '" permanently? This won\'t delete the songs themselves, just the playlist.';
   if(!window.confirm(confirmMsg)) return;
-  playlists = playlists.filter(x=>x.id!==pdPlaylistId);
-  fbSavePlaylists();
+  playlists = playlists.filter(function(x){ return x.id !== p.id; });
+  fbDeletePlaylist(p.id);
   closeModal('pd');
   renderPlaylistsView(); renderLibrary();
   showToast(i18n[curLang].toast_playlist_deleted);
 }
 
-
-/* ================= SONG PROFILE MODAL ================= */
-let profileTrackId = null;
-function openSongProfile(id){
-  profileTrackId = id;
-  const t = tracks.find(x=>x.id===id);
-  const img = document.getElementById('spImg');
-  img.src = t.cover; img.onerror = function(){ this.onerror=null; this.src=t.coverFallback; };
-  document.getElementById('spTitle').textContent = tName(t);
-  document.getElementById('spArtist').textContent = aName(t);
-  document.getElementById('spGenre').textContent = t.genre || '—';
-  document.getElementById('spBpm').textContent = t.mood || '—';
-  document.getElementById('spYear').textContent = t.language || '—';
-  document.getElementById('spDuration').textContent = t.duration ? fmtTime(t.duration) : '—';
-  document.getElementById('spYoutubeLink').href = `https://www.youtube.com/watch?v=${t.videoId}`;
-  openModal('sp');
-}
-
-/* ================= LYRICS MODAL ================= */
-function openLyrics(){
-  const t = currentTrack();
-  const img = document.getElementById('lyrImg');
-  img.src = t.cover; img.onerror = function(){ this.onerror=null; this.src=t.coverFallback; };
-  document.getElementById('lyrTitle').textContent = tName(t);
-  document.getElementById('lyrArtist').textContent = aName(t);
-  document.getElementById('lyrLangSelect').value = 'none';
-  document.getElementById('lyrLangSelect').disabled = !t.translations;
-  document.getElementById('dualCheck').checked = false;
-  renderLyrics();
-  openModal('lyr');
-}
-function renderLyrics(){
-  const t = currentTrack();
-  const body = document.getElementById('lyrBody');
-  if(!t.lyrics){
-    body.innerHTML = `<div class="empty-state"><div class="e-t">${curLang==='ar'?'الكلمات غير متوفرة':'Lyrics not available'}</div><div class="e-s">${curLang==='ar'?'أضف كلمات عند إضافة الأغنية، أو جرّب أغنية أخرى':'Add lyrics when adding a track, or try another one'}</div></div>`;
-    return;
-  }
-  const demoNote = t.isDemoLyrics
-    ? `<div class="form-hint" style="margin-top:0;">${curLang==='ar'?'كلمات توضيحية لعرض ميزة الترجمة — ليست كلمات هذا الفيديو الفعلية.':'Sample lyrics to showcase the translation feature — not the real lyrics for this video.'}</div>` : '';
-  const langSel = document.getElementById('lyrLangSelect').value;
-  const dual = document.getElementById('dualCheck').checked;
-  const trans = (t.translations && langSel!=='none' && langSel!==t.lyricsLang) ? (t.translations[langSel] || null) : null;
-  let html = demoNote;
-  if(dual && trans){
-    html += t.lyrics.map((line,i)=>`
-      <div class="lyr-pair"><div class="lyr-line orig">${line}</div><div class="lyr-line trans">${trans[i]||''}</div></div>`).join('');
-  } else if(trans){
-    html += trans.map(line=>`<div class="lyr-line orig">${line}</div>`).join('');
-  } else {
-    html += t.lyrics.map(line=>`<div class="lyr-line orig">${line}</div>`).join('');
-  }
-  body.innerHTML = html;
-}
-
-/* ================= ADD TRACK (YouTube link → queue) ================= */
+/* ================= ADD / EDIT TRACK ================= */
 function parseYouTubeId(input){
   if(!input) return null;
   input = input.trim();
   if(/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
   try{
     const url = new URL(input);
-    if(url.hostname.replace('www.','') === 'youtu.be') return url.pathname.slice(1,12) || null;
+    if(url.hostname.replace('www.', '') === 'youtu.be') return url.pathname.slice(1, 12) || null;
     if(url.hostname.includes('youtube.com')){
       if(url.searchParams.get('v')) return url.searchParams.get('v');
       const m = url.pathname.match(/\/(embed|shorts|live)\/([a-zA-Z0-9_-]{11})/);
@@ -2265,20 +2112,53 @@ function parseYouTubeId(input){
 }
 async function fetchOEmbed(videoId){
   try{
-    const res = await fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v='+videoId)}&format=json`);
+    const res = await fetch('https://www.youtube.com/oembed?url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + videoId) + '&format=json');
     if(!res.ok) throw new Error('bad response');
     return await res.json(); // { title, author_name, thumbnail_url, ... }
   }catch(e){ return null; }
 }
-function populateAddSelects(){
-  document.getElementById('addGenreSelect').innerHTML = `<option value="None">${i18n[curLang].opt_none}</option>` + filterGenres.map(g=>`<option value="${g}">${g}</option>`).join('');
-  document.getElementById('addMoodSelect').innerHTML = `<option value="None">${i18n[curLang].opt_none}</option>` + filterMoods.map(m=>`<option value="${m}">${m}</option>`).join('');
-  document.getElementById('addLangSelect').innerHTML = `<option value="None">${i18n[curLang].opt_none}</option>` + filterLangs.map(l=>`<option value="${l}">${l}</option>`).join('');
+function setI18n(id, key){
+  const el = document.getElementById(id);
+  el.setAttribute('data-i18n', key);
+  el.textContent = i18n[curLang][key];
 }
-function openAddModal(){
+function ensureOption(sel, value){
+  if(!Array.prototype.some.call(sel.options, function(o){ return o.value === value; })){
+    const o = document.createElement('option'); o.value = value; o.textContent = value; sel.appendChild(o);
+  }
+  sel.value = value;
+}
+function populateAddSelects(){
+  const none = '<option value="None">' + esc(i18n[curLang].opt_none) + '</option>';
+  function opts(list){ return none + list.map(function(v){ return '<option value="' + esc(v) + '">' + esc(v) + '</option>'; }).join(''); }
+  document.getElementById('addGenreSelect').innerHTML = opts(filterGenres);
+  document.getElementById('addMoodSelect').innerHTML = opts(filterMoods);
+  document.getElementById('addLangSelect').innerHTML = opts(filterLangs);
+}
+// openAddModal()      → add a new YouTube link
+// openAddModal(id)    → edit an existing song (name, artist, genre, mood, language)
+function openAddModal(editId){
+  const t = editId ? tracks.find(function(x){ return x.id === editId; }) : null;
+  editTrackId = t ? t.id : null;
   populateAddSelects();
-  ['addUrlInput','addTitleInput','addArtistInput','addLyricsInput'].forEach(id=>document.getElementById(id).value='');
+  setI18n('addModalTitle', t ? 'edit_track_title' : 'add_track_title');
+  setI18n('addModalDesc', t ? 'edit_track_desc' : 'add_track_desc');
+  setI18n('addSubmitBtn', t ? 'save_changes' : 'add_track_submit');
+  const urlEl = document.getElementById('addUrlInput');
+  const titleEl = document.getElementById('addTitleInput');
+  const artistEl = document.getElementById('addArtistInput');
   document.getElementById('addPreview').classList.remove('show');
+  if(t){
+    urlEl.value = 'https://www.youtube.com/watch?v=' + t.videoId; urlEl.disabled = true;
+    titleEl.value = t.title; artistEl.value = t.artist;
+    ensureOption(document.getElementById('addGenreSelect'), t.genre || 'None');
+    ensureOption(document.getElementById('addMoodSelect'), t.mood || 'None');
+    ensureOption(document.getElementById('addLangSelect'), t.language || 'None');
+  } else {
+    urlEl.value = ''; urlEl.disabled = false;
+    titleEl.value = ''; artistEl.value = '';
+    titleEl.placeholder = 'Auto-detected'; artistEl.placeholder = 'Auto-detected';
+  }
   openModal('add');
 }
 let addPreviewTimer;
@@ -2287,7 +2167,7 @@ function previewAddTrack(){
   const id = parseYouTubeId(document.getElementById('addUrlInput').value);
   const prev = document.getElementById('addPreview');
   if(!id){ prev.classList.remove('show'); return; }
-  addPreviewTimer = setTimeout(async ()=>{
+  addPreviewTimer = setTimeout(async function(){
     const meta = await fetchOEmbed(id);
     if(!meta){ prev.classList.remove('show'); return; }
     document.getElementById('addPreviewImg').src = ytThumb(id);
@@ -2298,42 +2178,63 @@ function previewAddTrack(){
     prev.classList.add('show');
   }, 550);
 }
-async function submitAddTrack(){
-  const id = parseYouTubeId(document.getElementById('addUrlInput').value);
-  if(!id){ showToast(i18n[curLang].toast_invalid_link); return; }
-  const existing = tracks.find(t=>t.id===id);
-  if(existing){ closeModal('add'); playTrackById(id); return; }
-  const meta = await fetchOEmbed(id);
-  const titleOverride = document.getElementById('addTitleInput').value.trim();
-  const artistOverride = document.getElementById('addArtistInput').value.trim();
-  const genre = document.getElementById('addGenreSelect').value;
-  const mood = document.getElementById('addMoodSelect').value;
-  const language = document.getElementById('addLangSelect').value;
-  const lyricsText = document.getElementById('addLyricsInput').value.trim();
-  const title = titleOverride || (meta ? meta.title : id);
-  const artist = artistOverride || (meta ? meta.author_name : 'Unknown');
-  if(!meta && !titleOverride) showToast(i18n[curLang].toast_meta_failed);
-  const track = seedTrack(id, title, artist, genre, mood, language, {
-    lyrics: lyricsText ? lyricsText.split('\n').filter(Boolean) : null,
-    lyricsLang: lyricsText ? (language==='Arabic' ? 'ar' : 'en') : null,
-    isCustom:true,
-  });
-  tracks.unshift(track);
-  fbSaveTrack(track);
-  renderAll();
+function saveEditedTrack(){
+  const t = tracks.find(function(x){ return x.id === editTrackId; });
+  if(!t){ closeModal('add'); return; }
+  const title = document.getElementById('addTitleInput').value.trim();
+  const artist = document.getElementById('addArtistInput').value.trim();
+  t.title = title || t.title;
+  t.artist = artist;
+  t.genre = document.getElementById('addGenreSelect').value;
+  t.mood = document.getElementById('addMoodSelect').value;
+  t.language = document.getElementById('addLangSelect').value;
+  t.coverFallback = makeFallback(t.title, t.id);
+  fbSaveTrack(t);
   closeModal('add');
-  playTrackById(id);
-  showToast(i18n[curLang].toast_track_added);
+  renderAll();
+  refreshOpenPlaylist();
+  showToast(i18n[curLang].toast_track_updated);
+}
+async function submitAddTrack(){
+  if(editTrackId){ saveEditedTrack(); return; }
+  if(addBusy) return;
+  addBusy = true;
+  try{
+    const id = parseYouTubeId(document.getElementById('addUrlInput').value);
+    if(!id){ showToast(i18n[curLang].toast_invalid_link); return; }
+    if(tracks.some(function(t){ return t.id === id; })){ closeModal('add'); playTrackById(id); return; }
+    const meta = await fetchOEmbed(id);
+    const titleOverride = document.getElementById('addTitleInput').value.trim();
+    const artistOverride = document.getElementById('addArtistInput').value.trim();
+    if(!meta && !titleOverride) showToast(i18n[curLang].toast_meta_failed);
+    const track = hydrateTrack({
+      id: id, videoId: id,
+      title: titleOverride || (meta ? meta.title : id),
+      artist: artistOverride || (meta ? meta.author_name : 'Unknown'),
+      genre: document.getElementById('addGenreSelect').value,
+      mood: document.getElementById('addMoodSelect').value,
+      language: document.getElementById('addLangSelect').value,
+      favorite: false, addedAt: Date.now()
+    });
+    tracks.unshift(track);      // newest first
+    sortTracks(tracks);
+    fbSaveTrack(track);
+    closeModal('add');
+    renderAll();
+    playTrackById(id);
+    showToast(i18n[curLang].toast_track_added);
+  } finally { addBusy = false; }
 }
 
 /* ================= MODAL HELPERS ================= */
 function openModal(name){
-  document.getElementById(name+'Backdrop').classList.add('show');
-  document.getElementById(name+'Modal').classList.add('show');
+  document.getElementById(name + 'Backdrop').classList.add('show');
+  document.getElementById(name + 'Modal').classList.add('show');
 }
 function closeModal(name){
-  document.getElementById(name+'Backdrop').classList.remove('show');
-  document.getElementById(name+'Modal').classList.remove('show');
+  document.getElementById(name + 'Backdrop').classList.remove('show');
+  document.getElementById(name + 'Modal').classList.remove('show');
+  if(name === 'add') editTrackId = null;
 }
 
 /* ================= TOAST ================= */
@@ -2343,29 +2244,22 @@ function showToast(msg){
   el.textContent = msg;
   el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>el.classList.remove('show'), 2200);
+  toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 2600);
 }
 
 /* ================= INIT ================= */
-document.getElementById('volRange').style.setProperty('--pct', volume+'%');
-document.getElementById('volRangeSheet').style.setProperty('--pct', volume+'%');
-document.getElementById('volPctDesktop').textContent = volume + '%';
-document.getElementById('volPctSheet').textContent = volume + '%';
+['volRange', 'volRangeSheet'].forEach(function(id){ document.getElementById(id).style.setProperty('--pct', volume + '%'); });
+['volPctDesktop', 'volPctSheet'].forEach(function(id){ document.getElementById(id).textContent = volume + '%'; });
 renderLangUI();
 setLang('en');
-currentTrackId = tracks[0].id;
-queueIds = tracks.map(t=>t.id);
-updatePlayerUI();
-isPlaying = false;
-fbListen();
-if(!firebaseEnabled) console.info('Sawt: Firebase is not configured yet — edit firebaseConfig near the top of the script to enable cloud sync. Running in local-only mode for now.');
 
-// Load the official YouTube IFrame Player API script (this drives all real playback).
+// Load the official YouTube IFrame Player API script (drives all real playback).
 (function(){
   const tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/iframe_api";
+  tag.src = 'https://www.youtube.com/iframe_api';
   document.head.appendChild(tag);
 })();
+
 </script>
 </body>
 </html>
