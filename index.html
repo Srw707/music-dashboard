@@ -140,15 +140,38 @@ html[dir="rtl"] .drawer{ transform:translateX(102%); }
 @keyframes fadein{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
 
 /* ============ NOW PLAYING (home) ============ */
-.np-wrap{ min-height:calc(100vh - 290px); flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:8px 0 24px; }
-.np-cover-wrap{ width:min(76vw, 360px); aspect-ratio:1; border-radius:28px; overflow:hidden; background:var(--elevated); border:1px solid var(--border); box-shadow:0 30px 70px rgba(0,0,0,.5); transition:transform .5s ease, box-shadow .5s ease; margin-bottom:26px; }
+html, body{ overscroll-behavior-y:none; }
+.content.np-mode{ padding-bottom:12px; overscroll-behavior-y:contain; }
+.np-wrap{ min-height:100%; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+.np-cover-wrap{ width:min(70vw, 32vh, 340px); aspect-ratio:1; border-radius:26px; overflow:hidden; background:var(--elevated); border:1px solid var(--border); box-shadow:0 30px 70px rgba(0,0,0,.5); transition:transform .5s ease, box-shadow .5s ease; margin-bottom:clamp(14px, 2.6vh, 24px); }
 .np-cover-wrap img{ width:100%; height:100%; object-fit:cover; display:block; }
 .np-cover-wrap.playing{ transform:scale(1.02); box-shadow:0 30px 90px color-mix(in srgb, var(--accent) 38%, transparent); }
-.np-title{ font-family:var(--font-display); font-size:26px; font-weight:600; font-style:italic; line-height:1.3; max-width:min(90vw, 560px); overflow-wrap:anywhere; }
+.np-title{ font-family:var(--font-display); font-size:clamp(20px, 3.2vh, 26px); font-weight:600; font-style:italic; line-height:1.3; max-width:min(90vw, 560px); overflow-wrap:anywhere; }
 html[lang="ar"] .np-title, html[lang="ja"] .np-title, html[lang="ko"] .np-title, html[lang="zh"] .np-title{ font-style:normal; }
 .np-artist{ color:var(--text-muted); font-size:15px; margin-top:6px; max-width:min(90vw, 560px); overflow-wrap:anywhere; }
-.np-more{ margin-top:20px; }
+.np-controls{ width:min(92vw, 460px); display:flex; flex-direction:column; gap:clamp(10px, 2vh, 18px); margin-top:clamp(14px, 2.6vh, 24px); }
+.np-progress{ display:flex; align-items:center; gap:10px; }
+.np-progress .time{ font-size:11px; color:var(--text-muted); width:38px; text-align:center; flex-shrink:0; font-variant-numeric:tabular-nums; }
+.np-transport{ display:flex; align-items:center; justify-content:space-between; padding:0 4px; }
+.np-btn{ width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); transition:.15s; position:relative; flex-shrink:0; }
+.np-btn:hover{ color:var(--text); background:var(--elevated); }
+.np-btn svg{ width:22px; height:22px; }
+.np-btn.active{ color:var(--accent); }
+.np-play{ width:68px; height:68px; border-radius:50%; background:var(--accent); color:#0B0D12; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:.18s; box-shadow:0 10px 30px color-mix(in srgb, var(--accent) 35%, transparent); }
+.np-play:hover{ transform:scale(1.05); }
+.np-play svg{ width:28px; height:28px; }
+.np-extra{ display:flex; align-items:center; gap:8px; }
+.np-vol{ flex:1; width:auto; }
+.np-extra .heart-btn svg{ width:22px; height:22px; }
+.np-extra .heart-btn.active{ color:var(--accent); }
+.np-swipe{ margin-top:clamp(8px, 2vh, 18px); display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--text-muted); font-size:12px; font-weight:600; padding:6px 18px; border-radius:12px; }
+.np-swipe:hover{ color:var(--text); }
+.np-swipe svg{ width:20px; height:20px; animation:nudge 1.8s ease-in-out infinite; }
+@keyframes nudge{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-4px); } }
 .np-empty{ padding-top:12vh; }
+.repeat{ position:relative; }
+.repeat.one::after{ content:'1'; position:absolute; top:-3px; inset-inline-end:-3px; font-size:9px; font-weight:800; color:var(--accent); }
+.np-btn.repeat.one::after{ top:6px; inset-inline-end:6px; }
 
 /* ============ SEARCH ============ */
 .search-bar-row{ display:flex; align-items:center; gap:10px; margin-bottom:22px; }
@@ -420,6 +443,107 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
 .form-field input:disabled{ opacity:.6; cursor:not-allowed; }
 @media (max-width:600px){ .result-row .genre-tag{ display:none; } }
 
+/* ============ QUEUE SHEET ============ */
+.sheet-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.55); backdrop-filter:blur(3px); z-index:85; opacity:0; pointer-events:none; transition:.25s; }
+.sheet-backdrop.show{ opacity:1; pointer-events:auto; }
+.queue-sheet{
+  position:fixed; left:0; right:0; bottom:0; z-index:86; height:min(84vh, 680px); display:flex; flex-direction:column;
+  background:var(--surface); border:1px solid var(--border); border-bottom:none; border-radius:26px 26px 0 0;
+  padding:10px 16px max(16px, env(safe-area-inset-bottom)); box-shadow:0 -24px 70px rgba(0,0,0,.55);
+  transform:translateY(106%); transition:transform .36s cubic-bezier(.2,.9,.3,1);
+}
+.queue-sheet.show{ transform:translateY(0); }
+@media (min-width:900px){
+  .queue-sheet{ left:50%; right:auto; width:min(620px, 94vw); transform:translate(-50%, 106%); }
+  .queue-sheet.show{ transform:translate(-50%, 0); }
+}
+.sheet-grab{ width:44px; height:5px; border-radius:5px; background:var(--elevated-2); margin:2px auto 12px; }
+.queue-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:6px; }
+.queue-titles{ min-width:0; }
+.queue-title{ font-family:var(--font-display); font-style:italic; font-weight:600; font-size:20px; }
+html[lang="ar"] .queue-title, html[lang="ja"] .queue-title, html[lang="ko"] .queue-title, html[lang="zh"] .queue-title{ font-style:normal; }
+.queue-sub{ font-size:12px; color:var(--text-muted); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.queue-actions{ display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.queue-actions .btn-ghost{ padding:8px 14px; font-size:12px; }
+.queue-hint{ font-size:11.5px; color:var(--text-muted); margin:6px 2px 10px; line-height:1.5; }
+.queue-list{ position:relative; flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain; display:flex; flex-direction:column; gap:2px; }
+.queue-row{ display:flex; align-items:center; gap:12px; padding:9px 8px; border-radius:12px; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; transition:background .15s; }
+.queue-row.current{ background:color-mix(in srgb, var(--accent) 12%, var(--elevated)); }
+.queue-row img{ width:44px; height:44px; border-radius:8px; object-fit:cover; flex-shrink:0; pointer-events:none; -webkit-user-drag:none; }
+.queue-row .info{ flex:1; min-width:0; cursor:pointer; }
+.queue-row .info .tt{ font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.queue-row .info .ta{ font-size:12px; color:var(--text-muted); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.queue-row.skipped img, .queue-row.skipped .info{ opacity:.38; }
+.queue-row.skipped .tt{ text-decoration:line-through; }
+.drag-grip{ color:var(--text-muted); cursor:grab; display:flex; flex-shrink:0; }
+.drag-grip svg{ width:18px; height:18px; }
+.drag-ghost{ opacity:.35; background:var(--elevated-2); }
+.drag-chosen{ background:var(--elevated-2); box-shadow:0 10px 28px rgba(0,0,0,.45); }
+.eye-btn svg{ width:17px; height:17px; }
+.eye-btn.on svg{ color:var(--accent); }
+.result-row.is-hidden > img, .result-row.is-hidden .info{ opacity:.4; }
+.result-row.is-hidden .tt{ text-decoration:line-through; }
+.q-eq{ display:none; align-items:flex-end; gap:2px; height:14px; flex-shrink:0; }
+.queue-row.current .q-eq{ display:flex; }
+.q-eq span{ width:3px; background:var(--accent); border-radius:2px; animation:eq .9s ease-in-out infinite; }
+.q-eq span:nth-child(2){ animation-delay:.2s; }
+.q-eq span:nth-child(3){ animation-delay:.4s; }
+.queue-sheet.paused .q-eq span{ animation-play-state:paused; }
+
+/* ============ LOGIN ============ */
+#login-overlay{
+  position:fixed; inset:0; z-index:99999; display:flex; align-items:center; justify-content:center; padding:20px; overflow:auto;
+  font-family:'Tajawal','Inter',sans-serif; color:var(--text);
+  background:
+    radial-gradient(900px 520px at 50% -10%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 60%),
+    radial-gradient(700px 420px at 100% 110%, color-mix(in srgb, var(--accent2) 32%, transparent), transparent 60%),
+    var(--bg);
+}
+#login-overlay::before{
+  content:''; position:absolute; inset:0; opacity:.06; pointer-events:none;
+  background-image:radial-gradient(circle at 12px 12px, var(--accent) 1.4px, transparent 1.6px), radial-gradient(circle at 32px 32px, var(--accent) 1.4px, transparent 1.6px);
+  background-size:44px 44px;
+}
+.login-card{
+  position:relative; width:min(100%, 400px); padding:38px 30px 28px; border-radius:28px;
+  background:color-mix(in srgb, var(--surface) 82%, transparent); backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px);
+  border:1px solid var(--border); box-shadow:0 40px 100px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.04);
+  animation:loginIn .6s cubic-bezier(.2,.9,.3,1) both;
+}
+@keyframes loginIn{ from{ opacity:0; transform:translateY(18px) scale(.98); } to{ opacity:1; transform:none; } }
+.login-brand{ display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:26px; direction:ltr; }
+.login-brand .brand-mark{ width:46px; height:46px; border-radius:14px; font-size:22px; box-shadow:0 10px 30px color-mix(in srgb, var(--accent) 35%, transparent); font-style:italic; }
+.login-brand-name{ font-family:'Fraunces',serif; font-style:italic; font-weight:600; font-size:28px; letter-spacing:.4px; }
+.login-title{ text-align:center; font-size:22px; font-weight:800; margin-bottom:6px; }
+.login-sub{ text-align:center; color:var(--text-muted); font-size:13.5px; line-height:1.7; margin-bottom:26px; }
+.login-field{ display:block; margin-bottom:16px; }
+.login-field > span{ display:block; font-size:12.5px; font-weight:700; color:var(--text-muted); margin-bottom:8px; }
+.login-field input{
+  width:100%; background:var(--elevated); border:1.5px solid var(--border); border-radius:14px; padding:14px 16px; color:var(--text);
+  font-size:15px; font-family:inherit; outline:none; transition:.18s; direction:ltr; text-align:left;
+}
+.login-field input::placeholder{ color:var(--text-muted); opacity:.55; }
+.login-field input:focus{ border-color:color-mix(in srgb, var(--accent) 65%, transparent); box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 14%, transparent); background:var(--elevated-2); }
+.pw-wrap{ position:relative; }
+.pw-wrap input{ padding-right:48px; }
+.pw-toggle{ position:absolute; right:6px; top:50%; transform:translateY(-50%); width:36px; height:36px; border-radius:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; }
+.pw-toggle:hover, .pw-toggle.on{ color:var(--accent); }
+.pw-toggle svg{ width:19px; height:19px; }
+.login-btn{
+  width:100%; margin-top:8px; padding:15px; border-radius:14px; font-size:16px; font-weight:800; font-family:inherit; color:#0B0D12;
+  background:linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow:0 14px 34px color-mix(in srgb, var(--accent) 32%, transparent); transition:.18s;
+}
+.login-btn:hover:not(:disabled){ transform:translateY(-1px); filter:brightness(1.06); }
+.login-btn:disabled{ opacity:.7; cursor:progress; }
+.login-error{ margin-top:16px; padding:11px 14px; border-radius:12px; background:rgba(228,96,126,.12); border:1px solid rgba(228,96,126,.35); color:#F08FA6; font-size:13px; text-align:center; }
+.login-error.shake{ animation:shake .4s; }
+@keyframes shake{ 20%,60%{ transform:translateX(-6px); } 40%,80%{ transform:translateX(6px); } }
+.login-foot{ margin-top:22px; text-align:center; font-size:11.5px; color:var(--text-muted); }
+.login-spinner{ display:none; width:34px; height:34px; border-radius:50%; border:3px solid var(--elevated-2); border-top-color:var(--accent); margin:6px auto 4px; animation:spin .8s linear infinite; }
+@keyframes spin{ to{ transform:rotate(360deg); } }
+#login-overlay.checking .login-form-area{ display:none; }
+#login-overlay.checking .login-spinner{ display:block; }
+
 /* ============ RESPONSIVE ============ */
 @media (max-width:900px){
   .content{ padding:18px 16px 150px; }
@@ -435,17 +559,42 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
   .filter-btn{ padding:14px; }
 }
 </style>
+<script>
+/* apply the saved theme + language immediately, so a refresh never flashes the default look */
+try{
+  var d=document.documentElement, t=JSON.parse(localStorage.getItem('sawt_theme')||'null');
+  if(t && t.accent && t.bg){ var r=d.style; r.setProperty('--accent',t.accent); r.setProperty('--accent2',t.accent2); r.setProperty('--bg',t.bg); r.setProperty('--surface',t.surface); r.setProperty('--elevated',t.elevated); r.setProperty('--elevated-2',t.elevated2||t.elevated); }
+  var l=localStorage.getItem('sawt_lang'); if(l){ d.lang=l; d.dir=(l==='ar')?'rtl':'ltr'; }
+}catch(e){}
+</script>
 </head>
 <body>
 <!-- شاشة تسجيل الدخول الشخصية -->
-<div id="login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #121212; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 99999;">
-  <h2 style="margin-bottom: 20px; font-family: sans-serif;">تسجيل الدخول للموقع الشخصي 🎵</h2>
-  <form id="login-form" style="display: flex; flex-direction: column; gap: 12px; width: 300px;">
-    <input type="text" id="username" placeholder="اسم المستخدم" required style="padding: 12px; border-radius: 6px; border: 1px solid #333; background: #222; color: white; outline: none;">
-    <input type="password" id="password" placeholder="كلمة المرور" required style="padding: 12px; border-radius: 6px; border: 1px solid #333; background: #222; color: white; outline: none;">
-    <button type="submit" style="padding: 12px; background: #1db954; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px;">دخول</button>
-  </form>
-  <p id="error-msg" style="color: #ff5555; margin-top: 15px; display: none; font-family: sans-serif;"></p>
+<div id="login-overlay" class="checking" dir="rtl">
+  <div class="login-card">
+    <div class="login-brand"><div class="brand-mark">S</div><div class="login-brand-name">Sawt</div></div>
+    <div class="login-spinner"></div>
+    <div class="login-form-area">
+      <h2 class="login-title">أهلاً بعودتك</h2>
+      <p class="login-sub">سجّل دخولك للوصول إلى مكتبتك الموسيقية الخاصة</p>
+      <form id="login-form">
+        <label class="login-field"><span>اسم المستخدم</span>
+          <input type="text" id="username" placeholder="username" required autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
+        </label>
+        <label class="login-field"><span>كلمة المرور</span>
+          <div class="pw-wrap">
+            <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+            <button type="button" class="pw-toggle" id="pwToggle" onclick="togglePw()" aria-label="إظهار كلمة المرور">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </label>
+        <button type="submit" class="login-btn" id="login-btn">دخول</button>
+      </form>
+      <p id="error-msg" class="login-error" style="display:none;"></p>
+      <div class="login-foot">مكتبتك الموسيقية، في أي مكان</div>
+    </div>
+  </div>
 </div>
 
 <div class="lattice-bg"></div>
@@ -518,15 +667,55 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
   </div>
 
   <div class="main">
-    <div class="content">
+    <div class="content np-mode">
       <!-- NOW PLAYING (home) -->
       <section class="view active" id="view-home">
         <div class="np-wrap" id="npWrap" style="display:none;">
           <div class="np-cover-wrap" id="npCoverWrap"><img id="npCover" src="" alt=""></div>
           <div class="np-title" id="npTitle">—</div>
           <div class="np-artist" id="npArtist">—</div>
-          <button class="icon-btn np-more" onclick="openContextMenu(currentTrackId)" title="More">
-            <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+
+          <div class="np-controls">
+            <div class="np-progress">
+              <span class="time" id="npTCurrent">0:00</span>
+              <input type="range" class="seek-range" id="npSeekRange" min="0" max="1000" value="0" oninput="onSeekInput(this)" onchange="onSeekCommit(this)">
+              <span class="time" id="npTTotal">0:00</span>
+            </div>
+            <div class="np-transport">
+              <button class="np-btn shuffle" id="npBtnShuffle" onclick="toggleShuffle()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg>
+              </button>
+              <button class="np-btn" onclick="prevTrack()">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zM20 6l-9 6 9 6z"/></svg>
+              </button>
+              <button class="np-play" id="npBtnPlay" onclick="togglePlay()">
+                <svg id="npPlayIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              </button>
+              <button class="np-btn" onclick="nextTrack()">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 6h-2v12h2zM4 6l9 6-9 6z"/></svg>
+              </button>
+              <button class="np-btn repeat" id="npBtnRepeat" onclick="toggleRepeat()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+              </button>
+            </div>
+            <div class="np-extra">
+              <button class="np-btn heart-btn" id="npHeart" onclick="toggleFavorite(currentTrackId)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z"/></svg>
+              </button>
+              <div class="vol-row np-vol">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="color:var(--text-muted); flex-shrink:0;"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19 7a7 7 0 010 10"/></svg>
+                <input type="range" class="vol-range" id="npVolRange" min="0" max="100" value="70" oninput="onVolumeInput(this)">
+                <span class="vol-pct" id="npVolPct">70%</span>
+              </div>
+              <button class="np-btn" onclick="openContextMenu(currentTrackId)" title="More">
+                <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <button class="np-swipe" onclick="openQueue()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>
+            <span data-i18n="queue_title">Up next</span>
           </button>
         </div>
         <div class="empty-state np-empty" id="npEmpty">
@@ -537,7 +726,8 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
         </div>
       </section>
 
-      <!-- SEARCH VIEW -->
+      
+<!-- SEARCH VIEW -->
       <section class="view" id="view-search">
         <div class="search-bar-row">
           <div class="search-hero">
@@ -672,6 +862,7 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
   </div>
 
   <div class="player-right desktop-only">
+    <button class="icon-btn" onclick="openQueue()" title="Queue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></button>
     <div class="vol-row">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="color:var(--text-muted); flex-shrink:0;"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19 7a7 7 0 010 10"/></svg>
       <input type="range" class="vol-range" id="volRange" min="0" max="100" value="70" oninput="onVolumeInput(this)">
@@ -706,6 +897,10 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
     <button class="ctx-item" id="pmoreRepeatBtn" onclick="toggleRepeat(); refreshPlayerMore();">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
       <span data-i18n="pm_repeat">Repeat</span>
+    </button>
+    <button class="ctx-item" onclick="closeModal('pmore'); openQueue();">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+      <span data-i18n="queue_title">Up next</span>
     </button>
   </div>
   <div class="vol-row" style="width:100%; margin-top:14px; padding-top:14px; border-top:1px solid var(--border);">
@@ -811,6 +1006,10 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
     </div>
   </div>
   <div class="ctx-menu">
+    <button class="ctx-item" onclick="ctxPlayNext()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4l10 8-10 8z"/><path d="M19 5v14"/></svg>
+      <span data-i18n="ctx_play_next">Play next</span>
+    </button>
     <button class="ctx-item" onclick="ctxAddToQueue()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h11M4 12h11M4 18h6"/><path d="M18 15v6M15 18h6"/></svg>
       <span data-i18n="ctx_add_queue">Add to queue</span>
@@ -860,12 +1059,34 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
   <div class="pd-track-list" id="pdTrackList"></div>
 </div>
 
+<!-- QUEUE SHEET (swipe up on Now Playing, or tap "Up next") -->
+<div class="sheet-backdrop" id="queueBackdrop" onclick="closeQueue()"></div>
+<div class="queue-sheet" id="queueSheet">
+  <div id="queueHead">
+    <div class="sheet-grab"></div>
+    <div class="queue-head">
+      <div class="queue-titles">
+        <div class="queue-title" data-i18n="queue_title">Up next</div>
+        <div class="queue-sub" id="queueSub"></div>
+      </div>
+      <div class="queue-actions">
+        <button class="btn-ghost" onclick="saveQueueAsPlaylist()" data-i18n="queue_save">Save as playlist</button>
+        <button class="icon-btn" onclick="closeQueue()" style="width:34px;height:34px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+      </div>
+    </div>
+  </div>
+  <div class="queue-hint" data-i18n="queue_hint">Hold a song and drag to reorder · tap the eye to skip it</div>
+  <div class="queue-list" id="queueList"></div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <!-- Firebase SDK (compat build — works as plain global scripts, no bundler needed) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<!-- SortableJS: hold & drag to reorder -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
 
 <script>
 /* ================= SVG COVER GENERATOR (fixes broken images) ================= */
@@ -908,7 +1129,7 @@ const languages = [
 
 /* ================= I18N ================= */
 const i18n = {
-  en:{ ctx_edit:"Edit details", edit_track_title:"Edit track", edit_track_desc:"Change the name, artist, genre, mood, or language. The YouTube link can't be changed.", save_changes:"Save changes", toast_track_updated:"Track updated", np_empty_title:"No songs yet", np_empty_sub:"Add a YouTube link to start listening.", no_results:"No results", unit_tracks:"tracks", toast_cloud_error:"Couldn't save to the cloud — check your connection or permissions", nav_menu:"Menu", nav_search:"Search & Filters", nav_library:"Library", nav_playlists:"Playlists", nav_settings:"Settings",
+  en:{ queue_title:"Up next", queue_from:"Playing from", queue_all:"All songs", queue_custom:"Custom queue", queue_save:"Save as playlist", queue_hint:"Hold a song and drag to reorder · tap the eye to skip it", queue_empty:"The queue is empty", ctx_play_next:"Play next", toast_play_next:"Will play next", queue_skip_tip:"Skip this song when its turn comes", ctx_edit:"Edit details", edit_track_title:"Edit track", edit_track_desc:"Change the name, artist, genre, mood, or language. The YouTube link can't be changed.", save_changes:"Save changes", toast_track_updated:"Track updated", np_empty_title:"No songs yet", np_empty_sub:"Add a YouTube link to start listening.", no_results:"No results", unit_tracks:"tracks", toast_cloud_error:"Couldn't save to the cloud — check your connection or permissions", nav_menu:"Menu", nav_search:"Search & Filters", nav_library:"Library", nav_playlists:"Playlists", nav_settings:"Settings",
     
     
     
@@ -939,7 +1160,7 @@ const i18n = {
     toast_track_added:"Added to your queue", toast_invalid_link:"Couldn't read a video ID from that link", toast_meta_failed:"Added, but couldn't fetch title/channel — edit them manually",
     filter_none_all:"None / All", opt_none:"None", toast_added_queue:"Added to queue", toast_added_playlist:"Added to playlist", toast_playlist_created:"Playlist created", toast_removed_playlist:"Removed from playlist", toast_deleted:"Track deleted", ctx_add_queue:"Add to queue", ctx_add_playlist:"Add to playlist / Move", ctx_new_playlist_ph:"New playlist name...", ctx_create_short:"Create", ctx_add_short:"Add", ctx_remove_playlist:"Remove from this playlist", ctx_delete:"Delete entirely", pd_play_all:"▶ Play All", pd_rename:"✎ Rename", pd_delete:"🗑 Delete Playlist", toast_playlist_renamed:"Playlist renamed", toast_playlist_deleted:"Playlist deleted", pm_favorite:"Favorite", pm_shuffle:"Shuffle", pm_repeat:"Repeat", pm_repeat_all:"Repeat: All", pm_repeat_one:"Repeat: One", 
   },
-  ar:{ ctx_edit:"تعديل البيانات", edit_track_title:"تعديل الأغنية", edit_track_desc:"عدّل الاسم أو الفنان أو النوع أو المزاج أو اللغة. رابط يوتيوب لا يمكن تغييره.", save_changes:"حفظ التعديلات", toast_track_updated:"تم تحديث الأغنية", np_empty_title:"لا توجد أغاني بعد", np_empty_sub:"أضف رابط يوتيوب لتبدأ الاستماع.", no_results:"لا توجد نتائج", unit_tracks:"أغنية", toast_cloud_error:"تعذّر الحفظ في السحابة — تحقق من الاتصال أو الصلاحيات", nav_menu:"القائمة", nav_search:"البحث والتصفية", nav_library:"مكتبتي", nav_playlists:"قوائم التشغيل", nav_settings:"الإعدادات",
+  ar:{ queue_title:"قائمة التشغيل", queue_from:"التشغيل من", queue_all:"كل الأغاني", queue_custom:"قائمة مخصصة", queue_save:"حفظ كقائمة", queue_hint:"اضغط مطولاً على الأغنية واسحبها لتغيير الترتيب · اضغط على العين لتخطيها", queue_empty:"قائمة التشغيل فارغة", ctx_play_next:"الأغنية التالية", toast_play_next:"ستُشغَّل بعد الأغنية الحالية", queue_skip_tip:"تخطّي هذه الأغنية عند حلول دورها", ctx_edit:"تعديل البيانات", edit_track_title:"تعديل الأغنية", edit_track_desc:"عدّل الاسم أو الفنان أو النوع أو المزاج أو اللغة. رابط يوتيوب لا يمكن تغييره.", save_changes:"حفظ التعديلات", toast_track_updated:"تم تحديث الأغنية", np_empty_title:"لا توجد أغاني بعد", np_empty_sub:"أضف رابط يوتيوب لتبدأ الاستماع.", no_results:"لا توجد نتائج", unit_tracks:"أغنية", toast_cloud_error:"تعذّر الحفظ في السحابة — تحقق من الاتصال أو الصلاحيات", nav_menu:"القائمة", nav_search:"البحث والتصفية", nav_library:"مكتبتي", nav_playlists:"قوائم التشغيل", nav_settings:"الإعدادات",
     
     
     
@@ -970,7 +1191,7 @@ const i18n = {
     toast_track_added:"أُضيفت إلى قائمتك", toast_invalid_link:"تعذّر استخراج معرّف الفيديو من هذا الرابط", toast_meta_failed:"تمت الإضافة، لكن تعذّر جلب العنوان/القناة — عدّلهما يدوياً",
     filter_none_all:"بدون / الكل", opt_none:"بدون", toast_added_queue:"أُضيفت إلى طابور التشغيل", toast_added_playlist:"أُضيفت إلى القائمة", toast_playlist_created:"تم إنشاء القائمة", toast_removed_playlist:"أُزيلت من القائمة", toast_deleted:"تم حذف الأغنية", ctx_add_queue:"إضافة إلى طابور التشغيل", ctx_add_playlist:"إضافة إلى قائمة / نقل", ctx_new_playlist_ph:"اسم القائمة الجديدة...", ctx_create_short:"إنشاء", ctx_add_short:"إضافة", ctx_remove_playlist:"حذف من هذه القائمة", ctx_delete:"حذف نهائي", pd_play_all:"▶ تشغيل الكل", pd_rename:"✎ إعادة تسمية", pd_delete:"🗑 حذف القائمة", toast_playlist_renamed:"تمت إعادة تسمية القائمة", toast_playlist_deleted:"تم حذف القائمة", pm_favorite:"مفضلة", pm_shuffle:"عشوائي", pm_repeat:"تكرار", pm_repeat_all:"تكرار: الكل", pm_repeat_one:"تكرار: أغنية واحدة", 
   },
-  ja:{ ctx_edit:"情報を編集", edit_track_title:"曲を編集", edit_track_desc:"名前、アーティスト、ジャンル、ムード、言語を変更できます。YouTubeのリンクは変更できません。", save_changes:"変更を保存", toast_track_updated:"曲を更新しました", np_empty_title:"まだ曲がありません", np_empty_sub:"YouTubeのリンクを追加して聴き始めましょう。", no_results:"結果がありません", unit_tracks:"曲", toast_cloud_error:"クラウドに保存できませんでした — 接続または権限を確認してください", nav_menu:"メニュー", nav_search:"検索とフィルター", nav_library:"ライブラリ", nav_playlists:"プレイリスト", nav_settings:"設定",
+  ja:{ queue_title:"次に再生", queue_from:"再生元", queue_all:"すべての曲", queue_custom:"カスタムキュー", queue_save:"プレイリストとして保存", queue_hint:"曲を長押ししてドラッグで並べ替え · 目のアイコンでスキップ", queue_empty:"キューは空です", ctx_play_next:"次に再生", toast_play_next:"次に再生されます", queue_skip_tip:"順番が来たらこの曲をスキップ", ctx_edit:"情報を編集", edit_track_title:"曲を編集", edit_track_desc:"名前、アーティスト、ジャンル、ムード、言語を変更できます。YouTubeのリンクは変更できません。", save_changes:"変更を保存", toast_track_updated:"曲を更新しました", np_empty_title:"まだ曲がありません", np_empty_sub:"YouTubeのリンクを追加して聴き始めましょう。", no_results:"結果がありません", unit_tracks:"曲", toast_cloud_error:"クラウドに保存できませんでした — 接続または権限を確認してください", nav_menu:"メニュー", nav_search:"検索とフィルター", nav_library:"ライブラリ", nav_playlists:"プレイリスト", nav_settings:"設定",
     
     
     
@@ -1001,7 +1222,7 @@ const i18n = {
     toast_track_added:"キューに追加しました", toast_invalid_link:"このリンクから動画IDを読み取れませんでした", toast_meta_failed:"追加しましたが、タイトル/チャンネルを取得できませんでした — 手動で編集してください",
     filter_none_all:"なし / すべて", opt_none:"なし", toast_added_queue:"キューに追加しました", toast_added_playlist:"プレイリストに追加しました", toast_playlist_created:"プレイリストを作成しました", toast_removed_playlist:"プレイリストから削除しました", toast_deleted:"曲を削除しました", ctx_add_queue:"キューに追加", ctx_add_playlist:"プレイリストに追加 / 移動", ctx_new_playlist_ph:"新しいプレイリスト名...", ctx_create_short:"作成", ctx_add_short:"追加", ctx_remove_playlist:"このプレイリストから削除", ctx_delete:"完全に削除", pd_play_all:"▶ すべて再生", pd_rename:"✎ 名前を変更", pd_delete:"🗑 プレイリストを削除", toast_playlist_renamed:"プレイリスト名を変更しました", toast_playlist_deleted:"プレイリストを削除しました", pm_favorite:"お気に入り", pm_shuffle:"シャッフル", pm_repeat:"リピート", pm_repeat_all:"リピート: すべて", pm_repeat_one:"リピート: 1曲", 
   },
-  zh:{ ctx_edit:"编辑信息", edit_track_title:"编辑曲目", edit_track_desc:"可修改名称、艺术家、流派、心情或语言。YouTube 链接无法更改。", save_changes:"保存更改", toast_track_updated:"曲目已更新", np_empty_title:"还没有歌曲", np_empty_sub:"添加 YouTube 链接开始收听。", no_results:"没有结果", unit_tracks:"首", toast_cloud_error:"无法保存到云端 —— 请检查网络或权限", nav_menu:"菜单", nav_search:"搜索与筛选", nav_library:"音乐库", nav_playlists:"播放列表", nav_settings:"设置",
+  zh:{ queue_title:"播放队列", queue_from:"播放来源", queue_all:"所有歌曲", queue_custom:"自定义队列", queue_save:"保存为播放列表", queue_hint:"长按歌曲并拖动即可重新排序 · 点击眼睛图标可跳过", queue_empty:"队列为空", ctx_play_next:"下一首播放", toast_play_next:"将在下一首播放", queue_skip_tip:"轮到时跳过这首歌", ctx_edit:"编辑信息", edit_track_title:"编辑曲目", edit_track_desc:"可修改名称、艺术家、流派、心情或语言。YouTube 链接无法更改。", save_changes:"保存更改", toast_track_updated:"曲目已更新", np_empty_title:"还没有歌曲", np_empty_sub:"添加 YouTube 链接开始收听。", no_results:"没有结果", unit_tracks:"首", toast_cloud_error:"无法保存到云端 —— 请检查网络或权限", nav_menu:"菜单", nav_search:"搜索与筛选", nav_library:"音乐库", nav_playlists:"播放列表", nav_settings:"设置",
     
     
     
@@ -1032,7 +1253,7 @@ const i18n = {
     toast_track_added:"已添加到你的队列", toast_invalid_link:"无法从该链接读取视频 ID", toast_meta_failed:"已添加，但无法获取标题/频道 —— 请手动编辑",
     filter_none_all:"无 / 全部", opt_none:"无", toast_added_queue:"已添加到队列", toast_added_playlist:"已添加到播放列表", toast_playlist_created:"播放列表已创建", toast_removed_playlist:"已从播放列表移除", toast_deleted:"歌曲已删除", ctx_add_queue:"添加到队列", ctx_add_playlist:"添加到播放列表 / 移动", ctx_new_playlist_ph:"新播放列表名称...", ctx_create_short:"创建", ctx_add_short:"添加", ctx_remove_playlist:"从此播放列表中移除", ctx_delete:"彻底删除", pd_play_all:"▶ 播放全部", pd_rename:"✎ 重命名", pd_delete:"🗑 删除播放列表", toast_playlist_renamed:"播放列表已重命名", toast_playlist_deleted:"播放列表已删除", pm_favorite:"收藏", pm_shuffle:"随机播放", pm_repeat:"循环", pm_repeat_all:"循环：全部", pm_repeat_one:"循环：单曲", 
   },
-  es:{ ctx_edit:"Editar datos", edit_track_title:"Editar pista", edit_track_desc:"Cambia el nombre, artista, género, estado de ánimo o idioma. El enlace de YouTube no se puede cambiar.", save_changes:"Guardar cambios", toast_track_updated:"Pista actualizada", np_empty_title:"Aún no hay canciones", np_empty_sub:"Añade un enlace de YouTube para empezar a escuchar.", no_results:"Sin resultados", unit_tracks:"pistas", toast_cloud_error:"No se pudo guardar en la nube — revisa tu conexión o permisos", nav_menu:"Menú", nav_search:"Buscar y filtrar", nav_library:"Biblioteca", nav_playlists:"Listas", nav_settings:"Ajustes",
+  es:{ queue_title:"A continuación", queue_from:"Reproduciendo desde", queue_all:"Todas las canciones", queue_custom:"Cola personalizada", queue_save:"Guardar como lista", queue_hint:"Mantén pulsada una canción y arrastra para reordenar · toca el ojo para omitirla", queue_empty:"La cola está vacía", ctx_play_next:"Reproducir a continuación", toast_play_next:"Sonará a continuación", queue_skip_tip:"Omitir esta canción cuando le toque", ctx_edit:"Editar datos", edit_track_title:"Editar pista", edit_track_desc:"Cambia el nombre, artista, género, estado de ánimo o idioma. El enlace de YouTube no se puede cambiar.", save_changes:"Guardar cambios", toast_track_updated:"Pista actualizada", np_empty_title:"Aún no hay canciones", np_empty_sub:"Añade un enlace de YouTube para empezar a escuchar.", no_results:"Sin resultados", unit_tracks:"pistas", toast_cloud_error:"No se pudo guardar en la nube — revisa tu conexión o permisos", nav_menu:"Menú", nav_search:"Buscar y filtrar", nav_library:"Biblioteca", nav_playlists:"Listas", nav_settings:"Ajustes",
     
     
     
@@ -1063,7 +1284,7 @@ const i18n = {
     toast_track_added:"Añadida a tu cola", toast_invalid_link:"No se pudo leer un ID de video de ese enlace", toast_meta_failed:"Añadida, pero no se pudo obtener título/canal — edítalos manualmente",
     filter_none_all:"Ninguno / Todos", opt_none:"Ninguno", toast_added_queue:"Añadida a la cola", toast_added_playlist:"Añadida a la lista", toast_playlist_created:"Lista creada", toast_removed_playlist:"Quitada de la lista", toast_deleted:"Pista eliminada", ctx_add_queue:"Añadir a la cola", ctx_add_playlist:"Añadir a lista / Mover", ctx_new_playlist_ph:"Nombre de la nueva lista...", ctx_create_short:"Crear", ctx_add_short:"Añadir", ctx_remove_playlist:"Quitar de esta lista", ctx_delete:"Eliminar definitivamente", pd_play_all:"▶ Reproducir todo", pd_rename:"✎ Renombrar", pd_delete:"🗑 Eliminar lista", toast_playlist_renamed:"Lista renombrada", toast_playlist_deleted:"Lista eliminada", pm_favorite:"Favorito", pm_shuffle:"Aleatorio", pm_repeat:"Repetir", pm_repeat_all:"Repetir: Todo", pm_repeat_one:"Repetir: Una", 
   },
-  fr:{ ctx_edit:"Modifier les infos", edit_track_title:"Modifier le titre", edit_track_desc:"Modifiez le nom, l'artiste, le genre, l'ambiance ou la langue. Le lien YouTube ne peut pas être modifié.", save_changes:"Enregistrer", toast_track_updated:"Titre mis à jour", np_empty_title:"Aucun titre pour l'instant", np_empty_sub:"Ajoutez un lien YouTube pour commencer à écouter.", no_results:"Aucun résultat", unit_tracks:"titres", toast_cloud_error:"Impossible d'enregistrer dans le cloud — vérifiez la connexion ou les autorisations", nav_menu:"Menu", nav_search:"Recherche et filtres", nav_library:"Bibliothèque", nav_playlists:"Playlists", nav_settings:"Paramètres",
+  fr:{ queue_title:"À suivre", queue_from:"Lecture depuis", queue_all:"Tous les titres", queue_custom:"File personnalisée", queue_save:"Enregistrer comme playlist", queue_hint:"Maintenez un titre et glissez pour réorganiser · touchez l'œil pour l'ignorer", queue_empty:"La file est vide", ctx_play_next:"Lire ensuite", toast_play_next:"Sera lu ensuite", queue_skip_tip:"Ignorer ce titre quand son tour vient", ctx_edit:"Modifier les infos", edit_track_title:"Modifier le titre", edit_track_desc:"Modifiez le nom, l'artiste, le genre, l'ambiance ou la langue. Le lien YouTube ne peut pas être modifié.", save_changes:"Enregistrer", toast_track_updated:"Titre mis à jour", np_empty_title:"Aucun titre pour l'instant", np_empty_sub:"Ajoutez un lien YouTube pour commencer à écouter.", no_results:"Aucun résultat", unit_tracks:"titres", toast_cloud_error:"Impossible d'enregistrer dans le cloud — vérifiez la connexion ou les autorisations", nav_menu:"Menu", nav_search:"Recherche et filtres", nav_library:"Bibliothèque", nav_playlists:"Playlists", nav_settings:"Paramètres",
     
     
     
@@ -1094,7 +1315,7 @@ const i18n = {
     toast_track_added:"Ajouté à votre file d'attente", toast_invalid_link:"Impossible de lire un ID de vidéo depuis ce lien", toast_meta_failed:"Ajouté, mais impossible de récupérer le titre/la chaîne — modifiez-les manuellement",
     filter_none_all:"Aucun / Tous", opt_none:"Aucun", toast_added_queue:"Ajouté à la file d'attente", toast_added_playlist:"Ajouté à la playlist", toast_playlist_created:"Playlist créée", toast_removed_playlist:"Retiré de la playlist", toast_deleted:"Titre supprimé", ctx_add_queue:"Ajouter à la file d'attente", ctx_add_playlist:"Ajouter à une playlist / Déplacer", ctx_new_playlist_ph:"Nom de la nouvelle playlist...", ctx_create_short:"Créer", ctx_add_short:"Ajouter", ctx_remove_playlist:"Retirer de cette playlist", ctx_delete:"Supprimer définitivement", pd_play_all:"▶ Tout lire", pd_rename:"✎ Renommer", pd_delete:"🗑 Supprimer la playlist", toast_playlist_renamed:"Playlist renommée", toast_playlist_deleted:"Playlist supprimée", pm_favorite:"Favori", pm_shuffle:"Aléatoire", pm_repeat:"Répéter", pm_repeat_all:"Répéter : Tout", pm_repeat_one:"Répéter : Un titre", 
   },
-  de:{ ctx_edit:"Details bearbeiten", edit_track_title:"Titel bearbeiten", edit_track_desc:"Ändere Name, Künstler, Genre, Stimmung oder Sprache. Der YouTube-Link kann nicht geändert werden.", save_changes:"Änderungen speichern", toast_track_updated:"Titel aktualisiert", np_empty_title:"Noch keine Songs", np_empty_sub:"Füge einen YouTube-Link hinzu, um loszulegen.", no_results:"Keine Ergebnisse", unit_tracks:"Titel", toast_cloud_error:"Cloud-Speichern fehlgeschlagen — Verbindung oder Berechtigungen prüfen", nav_menu:"Menü", nav_search:"Suche & Filter", nav_library:"Bibliothek", nav_playlists:"Playlists", nav_settings:"Einstellungen",
+  de:{ queue_title:"Als Nächstes", queue_from:"Wiedergabe aus", queue_all:"Alle Songs", queue_custom:"Eigene Warteschlange", queue_save:"Als Playlist speichern", queue_hint:"Song gedrückt halten und ziehen zum Sortieren · Auge antippen zum Überspringen", queue_empty:"Die Warteschlange ist leer", ctx_play_next:"Als Nächstes spielen", toast_play_next:"Wird als Nächstes gespielt", queue_skip_tip:"Diesen Song überspringen, wenn er dran ist", ctx_edit:"Details bearbeiten", edit_track_title:"Titel bearbeiten", edit_track_desc:"Ändere Name, Künstler, Genre, Stimmung oder Sprache. Der YouTube-Link kann nicht geändert werden.", save_changes:"Änderungen speichern", toast_track_updated:"Titel aktualisiert", np_empty_title:"Noch keine Songs", np_empty_sub:"Füge einen YouTube-Link hinzu, um loszulegen.", no_results:"Keine Ergebnisse", unit_tracks:"Titel", toast_cloud_error:"Cloud-Speichern fehlgeschlagen — Verbindung oder Berechtigungen prüfen", nav_menu:"Menü", nav_search:"Suche & Filter", nav_library:"Bibliothek", nav_playlists:"Playlists", nav_settings:"Einstellungen",
     
     
     
@@ -1125,7 +1346,7 @@ const i18n = {
     toast_track_added:"Zur Warteschlange hinzugefügt", toast_invalid_link:"Aus diesem Link konnte keine Video-ID gelesen werden", toast_meta_failed:"Hinzugefügt, aber Titel/Kanal konnten nicht abgerufen werden — bitte manuell bearbeiten",
     filter_none_all:"Keine / Alle", opt_none:"Keine", toast_added_queue:"Zur Warteschlange hinzugefügt", toast_added_playlist:"Zur Playlist hinzugefügt", toast_playlist_created:"Playlist erstellt", toast_removed_playlist:"Aus Playlist entfernt", toast_deleted:"Titel gelöscht", ctx_add_queue:"Zur Warteschlange hinzufügen", ctx_add_playlist:"Zu Playlist hinzufügen / Verschieben", ctx_new_playlist_ph:"Name der neuen Playlist...", ctx_create_short:"Erstellen", ctx_add_short:"Hinzufügen", ctx_remove_playlist:"Aus dieser Playlist entfernen", ctx_delete:"Endgültig löschen", pd_play_all:"▶ Alle abspielen", pd_rename:"✎ Umbenennen", pd_delete:"🗑 Playlist löschen", toast_playlist_renamed:"Playlist umbenannt", toast_playlist_deleted:"Playlist gelöscht", pm_favorite:"Favorit", pm_shuffle:"Zufall", pm_repeat:"Wiederholen", pm_repeat_all:"Wiederholen: Alle", pm_repeat_one:"Wiederholen: Einen", 
   },
-  ko:{ ctx_edit:"정보 편집", edit_track_title:"트랙 편집", edit_track_desc:"이름, 아티스트, 장르, 분위기, 언어를 변경할 수 있습니다. YouTube 링크는 변경할 수 없습니다.", save_changes:"변경 사항 저장", toast_track_updated:"트랙이 업데이트되었습니다", np_empty_title:"아직 곡이 없습니다", np_empty_sub:"YouTube 링크를 추가해 들어보세요.", no_results:"결과 없음", unit_tracks:"곡", toast_cloud_error:"클라우드에 저장하지 못했습니다 — 연결 또는 권한을 확인하세요", nav_menu:"메뉴", nav_search:"검색 및 필터", nav_library:"보관함", nav_playlists:"플레이리스트", nav_settings:"설정",
+  ko:{ queue_title:"다음 곡", queue_from:"재생 출처", queue_all:"모든 곡", queue_custom:"사용자 지정 대기열", queue_save:"플레이리스트로 저장", queue_hint:"곡을 길게 눌러 드래그하여 순서 변경 · 눈 아이콘으로 건너뛰기", queue_empty:"대기열이 비어 있습니다", ctx_play_next:"다음에 재생", toast_play_next:"다음에 재생됩니다", queue_skip_tip:"차례가 되면 이 곡 건너뛰기", ctx_edit:"정보 편집", edit_track_title:"트랙 편집", edit_track_desc:"이름, 아티스트, 장르, 분위기, 언어를 변경할 수 있습니다. YouTube 링크는 변경할 수 없습니다.", save_changes:"변경 사항 저장", toast_track_updated:"트랙이 업데이트되었습니다", np_empty_title:"아직 곡이 없습니다", np_empty_sub:"YouTube 링크를 추가해 들어보세요.", no_results:"결과 없음", unit_tracks:"곡", toast_cloud_error:"클라우드에 저장하지 못했습니다 — 연결 또는 권한을 확인하세요", nav_menu:"메뉴", nav_search:"검색 및 필터", nav_library:"보관함", nav_playlists:"플레이리스트", nav_settings:"설정",
     
     
     
@@ -1156,7 +1377,7 @@ const i18n = {
     toast_track_added:"대기열에 추가되었습니다", toast_invalid_link:"이 링크에서 동영상 ID를 읽을 수 없습니다", toast_meta_failed:"추가되었지만 제목/채널을 가져오지 못했습니다 — 직접 수정하세요",
     filter_none_all:"없음 / 전체", opt_none:"없음", toast_added_queue:"대기열에 추가되었습니다", toast_added_playlist:"플레이리스트에 추가되었습니다", toast_playlist_created:"플레이리스트가 생성되었습니다", toast_removed_playlist:"플레이리스트에서 제거되었습니다", toast_deleted:"트랙이 삭제되었습니다", ctx_add_queue:"대기열에 추가", ctx_add_playlist:"플레이리스트에 추가 / 이동", ctx_new_playlist_ph:"새 플레이리스트 이름...", ctx_create_short:"만들기", ctx_add_short:"추가", ctx_remove_playlist:"이 플레이리스트에서 제거", ctx_delete:"완전히 삭제", pd_play_all:"▶ 전체 재생", pd_rename:"✎ 이름 변경", pd_delete:"🗑 플레이리스트 삭제", toast_playlist_renamed:"플레이리스트 이름이 변경되었습니다", toast_playlist_deleted:"플레이리스트가 삭제되었습니다", pm_favorite:"즐겨찾기", pm_shuffle:"셔플", pm_repeat:"반복", pm_repeat_all:"반복: 전체", pm_repeat_one:"반복: 한 곡", 
   },
-  ru:{ ctx_edit:"Редактировать", edit_track_title:"Редактировать трек", edit_track_desc:"Измените название, исполнителя, жанр, настроение или язык. Ссылку на YouTube изменить нельзя.", save_changes:"Сохранить", toast_track_updated:"Трек обновлён", np_empty_title:"Пока нет песен", np_empty_sub:"Добавьте ссылку на YouTube, чтобы начать слушать.", no_results:"Нет результатов", unit_tracks:"треков", toast_cloud_error:"Не удалось сохранить в облако — проверьте соединение или права", nav_menu:"Меню", nav_search:"Поиск и фильтры", nav_library:"Медиатека", nav_playlists:"Плейлисты", nav_settings:"Настройки",
+  ru:{ queue_title:"Далее", queue_from:"Воспроизведение из", queue_all:"Все песни", queue_custom:"Своя очередь", queue_save:"Сохранить как плейлист", queue_hint:"Удерживайте песню и перетащите, чтобы изменить порядок · нажмите на глаз, чтобы пропустить", queue_empty:"Очередь пуста", ctx_play_next:"Играть следующей", toast_play_next:"Будет играть следующей", queue_skip_tip:"Пропускать эту песню, когда подойдёт её очередь", ctx_edit:"Редактировать", edit_track_title:"Редактировать трек", edit_track_desc:"Измените название, исполнителя, жанр, настроение или язык. Ссылку на YouTube изменить нельзя.", save_changes:"Сохранить", toast_track_updated:"Трек обновлён", np_empty_title:"Пока нет песен", np_empty_sub:"Добавьте ссылку на YouTube, чтобы начать слушать.", no_results:"Нет результатов", unit_tracks:"треков", toast_cloud_error:"Не удалось сохранить в облако — проверьте соединение или права", nav_menu:"Меню", nav_search:"Поиск и фильтры", nav_library:"Медиатека", nav_playlists:"Плейлисты", nav_settings:"Настройки",
     
     
     
@@ -1187,7 +1408,7 @@ const i18n = {
     toast_track_added:"Добавлено в очередь", toast_invalid_link:"Не удалось определить ID видео по этой ссылке", toast_meta_failed:"Добавлено, но не удалось получить название/канал — отредактируйте вручную",
     filter_none_all:"Нет / Все", opt_none:"Нет", toast_added_queue:"Добавлено в очередь", toast_added_playlist:"Добавлено в плейлист", toast_playlist_created:"Плейлист создан", toast_removed_playlist:"Удалено из плейлиста", toast_deleted:"Трек удалён", ctx_add_queue:"Добавить в очередь", ctx_add_playlist:"Добавить в плейлист / Переместить", ctx_new_playlist_ph:"Название нового плейлиста...", ctx_create_short:"Создать", ctx_add_short:"Добавить", ctx_remove_playlist:"Удалить из этого плейлиста", ctx_delete:"Удалить навсегда", pd_play_all:"▶ Воспроизвести всё", pd_rename:"✎ Переименовать", pd_delete:"🗑 Удалить плейлист", toast_playlist_renamed:"Плейлист переименован", toast_playlist_deleted:"Плейлист удалён", pm_favorite:"Избранное", pm_shuffle:"Перемешать", pm_repeat:"Повтор", pm_repeat_all:"Повтор: Все", pm_repeat_one:"Повтор: Один", 
   },
-  tr:{ ctx_edit:"Bilgileri düzenle", edit_track_title:"Parçayı düzenle", edit_track_desc:"Adı, sanatçıyı, türü, ruh halini veya dili değiştirin. YouTube bağlantısı değiştirilemez.", save_changes:"Değişiklikleri kaydet", toast_track_updated:"Parça güncellendi", np_empty_title:"Henüz şarkı yok", np_empty_sub:"Dinlemeye başlamak için bir YouTube bağlantısı ekleyin.", no_results:"Sonuç yok", unit_tracks:"parça", toast_cloud_error:"Buluta kaydedilemedi — bağlantıyı veya izinleri kontrol edin", nav_menu:"Menü", nav_search:"Arama ve Filtreler", nav_library:"Kitaplık", nav_playlists:"Çalma Listeleri", nav_settings:"Ayarlar",
+  tr:{ queue_title:"Sıradaki", queue_from:"Çalınan kaynak", queue_all:"Tüm şarkılar", queue_custom:"Özel sıra", queue_save:"Çalma listesi olarak kaydet", queue_hint:"Bir şarkıyı basılı tutup sürükleyerek sıralayın · atlamak için göze dokunun", queue_empty:"Sıra boş", ctx_play_next:"Sıradaki olarak çal", toast_play_next:"Sıradaki olarak çalınacak", queue_skip_tip:"Sırası gelince bu şarkıyı atla", ctx_edit:"Bilgileri düzenle", edit_track_title:"Parçayı düzenle", edit_track_desc:"Adı, sanatçıyı, türü, ruh halini veya dili değiştirin. YouTube bağlantısı değiştirilemez.", save_changes:"Değişiklikleri kaydet", toast_track_updated:"Parça güncellendi", np_empty_title:"Henüz şarkı yok", np_empty_sub:"Dinlemeye başlamak için bir YouTube bağlantısı ekleyin.", no_results:"Sonuç yok", unit_tracks:"parça", toast_cloud_error:"Buluta kaydedilemedi — bağlantıyı veya izinleri kontrol edin", nav_menu:"Menü", nav_search:"Arama ve Filtreler", nav_library:"Kitaplık", nav_playlists:"Çalma Listeleri", nav_settings:"Ayarlar",
     
     
     
@@ -1233,6 +1454,7 @@ function setLang(code){
     const key = el.getAttribute('data-i18n-ph');
     if(i18n[code][key]) el.placeholder = i18n[code][key];
   });
+  try{ localStorage.setItem('sawt_lang', code); }catch(e){}
   document.getElementById('langQuickLabel').textContent = code.toUpperCase();
   renderLangUI();
   updateTopbarTitle();
@@ -1271,17 +1493,34 @@ const themes = [
   {id:'obsidian', name:'Obsidian Blue', accent:'#5B7FD9', accent2:'#12213F', bg:'#05070C', surface:'#0C1018', elevated:'#141A26'},
 ];
 let activeThemeId = 'gold';
-function applyTheme(t){
+function applyTheme(t, persist){
   const r = document.documentElement.style;
+  const e2 = t.elevated2 || shade(t.elevated, 8);
   r.setProperty('--accent', t.accent);
   r.setProperty('--accent2', t.accent2);
   r.setProperty('--bg', t.bg);
   r.setProperty('--surface', t.surface);
   r.setProperty('--elevated', t.elevated);
-  r.setProperty('--elevated-2', shade(t.elevated, 8));
+  r.setProperty('--elevated-2', e2);
   activeThemeId = t.id || 'custom';
   document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.toggle('selected', s.dataset.id===activeThemeId));
+  if(persist !== false){
+    try{ localStorage.setItem('sawt_theme', JSON.stringify({ id:activeThemeId, accent:t.accent, accent2:t.accent2, bg:t.bg, surface:t.surface, elevated:t.elevated, elevated2:e2 })); }catch(e){}
+  }
 }
+// The chosen theme (custom ones too) is remembered on this device and re-applied on every load.
+function restoreSavedTheme(){
+  let saved = null;
+  try{ saved = JSON.parse(localStorage.getItem('sawt_theme') || 'null'); }catch(e){}
+  if(!saved || !saved.accent || !saved.bg) return;
+  applyTheme(saved, false);
+  if(saved.id === 'custom'){
+    document.getElementById('cPrimary').value = saved.accent;
+    document.getElementById('cBg').value = saved.bg;
+    document.getElementById('cGrad').value = saved.accent2;
+  }
+}
+
 function shade(hex, amt){
   const c = hex.replace('#','');
   const num = parseInt(c,16);
@@ -1363,11 +1602,12 @@ function normalizePlaylist(raw, id){
     id: id,
     name: String(raw.name || raw.nameAr || 'Playlist'),
     trackIds: toArr(raw.trackIds || raw.tracks),
+    hiddenIds: toArr(raw.hiddenIds),   // songs this playlist skips when its turn comes
     createdAt: Number(raw.createdAt) || 0
   };
 }
 function serializePlaylist(p){
-  return { id: p.id, name: p.name, createdAt: p.createdAt || 0, trackIds: p.trackIds.slice() };
+  return { id: p.id, name: p.name, createdAt: p.createdAt || 0, trackIds: p.trackIds.slice(), hiddenIds: (p.hiddenIds || []).slice() };
 }
 // Handles both the old array-style storage (keys 0,1,2…) and the new one keyed by playlist id.
 function parsePlaylistSnapshot(val){
@@ -1404,6 +1644,9 @@ let repeatMode = 0;          // 0 off, 1 repeat-all(queue), 2 repeat-one
 let progress = 0;
 let playerVisible = true;
 let seekDragging = false;
+let queueSource = { type:'all' };   // where the queue came from: all | search | fav | history | pl (playlist) | custom
+let skippedIds = new Set();        // songs the queue skips when their turn comes
+let queueOpen = false, queueDragging = false, queueSortable = null, pdSortable = null;
 let volume = 70;
 let islandEnabled = true;
 let currentView = 'home';
@@ -1440,23 +1683,44 @@ function fbFail(err){
 }
 
 // Personal login screen — fails closed: if Firebase can't load, the overlay simply stays up.
+function setLoginBusy(busy){
+  const btn = document.getElementById('login-btn');
+  btn.disabled = busy;
+  btn.textContent = busy ? 'جارٍ الدخول…' : 'دخول';
+}
+function togglePw(){
+  const input = document.getElementById('password');
+  const show = input.type === 'password';
+  input.type = show ? 'text' : 'password';
+  document.getElementById('pwToggle').classList.toggle('on', show);
+}
 if(firebaseEnabled){
   firebase.auth().onAuthStateChanged(function(user){
     const overlay = document.getElementById('login-overlay');
+    overlay.classList.remove('checking');
     if(user){ overlay.style.display = 'none'; console.log('Signed in as', user.email); fbListen(); }
-    else { overlay.style.display = 'flex'; fbUnlisten(); }
+    else { overlay.style.display = 'flex'; setLoginBusy(false); fbUnlisten(); }
   });
   document.getElementById('login-form').addEventListener('submit', function(e){
     e.preventDefault();
     const usernameInput = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value;
     const errorMsg = document.getElementById('error-msg');
+    errorMsg.style.display = 'none';
+    setLoginBusy(true);
     const fakeEmail = usernameInput + '@mycustomapp.local';
     firebase.auth().signInWithEmailAndPassword(fakeEmail, password).catch(function(){
+      setLoginBusy(false);
       errorMsg.style.display = 'block';
       errorMsg.innerText = "اسم المستخدم أو كلمة المرور غير صحيحة!";
+      errorMsg.classList.remove('shake'); void errorMsg.offsetWidth; errorMsg.classList.add('shake');
     });
   });
+} else {
+  document.getElementById('login-overlay').classList.remove('checking');
+  const connErr = document.getElementById('error-msg');
+  connErr.style.display = 'block';
+  connErr.innerText = 'تعذّر الاتصال بخدمة تسجيل الدخول. تحقق من الإنترنت وأعد تحميل الصفحة.';
 }
 
 function fbSaveTrack(t){
@@ -1528,20 +1792,31 @@ function emptyHTML(title, sub){
 const HEART_PATH = 'M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z';
 const DOTS_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>';
 
+const EYE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_OFF_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 19c-7 0-11-7-11-7a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 7 11 7a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><path d="M1 1l22 22"/></svg>';
+const GRIP_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 12h14M5 16h14"/></svg>';
+
 // One row layout shared by Search, Favorites, History and the playlist detail view.
-function trackRowHTML(t, queueStr, playlistId){
-  const q = queueStr ? ",'" + queueStr + "'" : '';
+// `source` tells the queue where the list came from ('search' | 'fav' | 'history'); inside a playlist it IS the playlist.
+function trackRowHTML(t, queueStr, playlistId, source){
+  const src = playlistId ? 'pl:' + playlistId : (source || '');
+  const q = queueStr ? ",'" + queueStr + "'" + (src ? ",'" + src + "'" : '') : '';
   const play = "playTrackById('" + t.id + "'" + q + ")";
   const tag = (t.genre && t.genre !== 'None') ? '<span class="genre-tag">' + esc(t.genre) + '</span>' : '';
   const dur = t.duration ? '<span class="meta">' + fmtTime(t.duration) + '</span>' : '';
+  const pl = playlistId ? playlists.find(function(p){ return p.id === playlistId; }) : null;
+  const isHidden = !!(pl && (pl.hiddenIds || []).indexOf(t.id) !== -1);
   const heart = playlistId ? '' :
     '<button class="icon-btn" style="width:32px;height:32px;" onclick="toggleFavorite(\'' + t.id + '\')">' +
     '<svg viewBox="0 0 24 24" fill="' + (t.favorite ? 'var(--accent)' : 'none') + '" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="' + HEART_PATH + '"/></svg></button>';
+  const eye = playlistId
+    ? '<button class="more-btn eye-btn' + (isHidden ? ' on' : '') + '" title="' + esc(i18n[curLang].queue_skip_tip) + '" onclick="togglePlaylistHidden(\'' + playlistId + '\',\'' + t.id + '\')">' + (isHidden ? EYE_OFF_SVG : EYE_SVG) + '</button>'
+    : '';
   const more = '<button class="more-btn" onclick="openContextMenu(\'' + t.id + '\'' + (playlistId ? ",'" + playlistId + "'" : '') + ')">' + DOTS_SVG + '</button>';
-  return '<div class="result-row">' +
+  return '<div class="result-row' + (isHidden ? ' is-hidden' : '') + '" data-id="' + t.id + '">' +
     coverImg(t, 'alt="" onclick="' + play + '"') +
     '<div class="info" onclick="' + play + '"><div class="tt">' + esc(tName(t)) + '</div><div class="ta">' + esc(aName(t)) + '</div></div>' +
-    tag + dur + '<div class="row-actions">' + heart + more + '</div></div>';
+    tag + dur + '<div class="row-actions">' + heart + eye + more + '</div></div>';
 }
 
 function renderNowPlaying(){
@@ -1573,7 +1848,7 @@ function renderSearchResults(){
   const queueStr = list.map(function(t){ return t.id; }).join(',');
   const L = i18n[curLang];
   document.getElementById('resultList').innerHTML = list.length
-    ? list.map(function(t){ return trackRowHTML(t, queueStr); }).join('')
+    ? list.map(function(t){ return trackRowHTML(t, queueStr, null, 'search'); }).join('')
     : (tracks.length ? emptyHTML(L.no_results) : emptyHTML(L.np_empty_title, L.np_empty_sub));
   renderActivePills();
 }
@@ -1639,14 +1914,14 @@ function renderLibrary(){
   const favT = tracks.filter(function(t){ return t.favorite; });
   const favQueue = favT.map(function(t){ return t.id; }).join(',');
   document.getElementById('lib-fav').innerHTML = favT.length
-    ? favT.map(function(t){ return trackRowHTML(t, favQueue); }).join('')
+    ? favT.map(function(t){ return trackRowHTML(t, favQueue, null, 'fav'); }).join('')
     : emptyHTML(L.empty_fav_t, L.empty_fav_s);
   document.getElementById('lib-playlists').innerHTML =
     '<div class="playlist-grid">' + playlists.map(playlistCardHTML).join('') + newPlaylistCardHTML() + '</div>';
   const histT = history.map(function(id){ return tracks.find(function(t){ return t.id === id; }); }).filter(Boolean);
   const histQueue = histT.map(function(t){ return t.id; }).join(',');
   document.getElementById('lib-history').innerHTML = histT.length
-    ? histT.map(function(t){ return trackRowHTML(t, histQueue); }).join('')
+    ? histT.map(function(t){ return trackRowHTML(t, histQueue, null, 'history'); }).join('')
     : emptyHTML(L.empty_hist_t, L.empty_hist_s);
 }
 function playlistCardHTML(p){
@@ -1670,6 +1945,7 @@ function renderPlaylistsView(){
 function renderAll(){
   renderSearchResults(); renderLibrary(); renderPlaylistsView(); renderThemeGrid();
   updatePlayerUI();
+  if(queueOpen && !queueDragging) renderQueue();
 }
 
 /* ================= NAVIGATION / DRAWER ================= */
@@ -1682,8 +1958,12 @@ function goView(name){
   document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
   document.getElementById('view-' + name).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.toggle('active', n.dataset.view === name); });
+  const content = document.querySelector('.content');
+  // On the Now Playing page the controls live in the page itself, so the bottom bar steps aside.
+  content.classList.toggle('np-mode', name === 'home');
   updateTopbarTitle();
-  document.querySelector('.content').scrollTop = 0;
+  applyPlayerVisibility();
+  content.scrollTop = 0;
   closeDrawer();
 }
 document.querySelectorAll('.nav-item').forEach(function(el){ el.addEventListener('click', function(){ goView(el.dataset.view); }); });
@@ -1701,6 +1981,8 @@ document.getElementById('libTabs').addEventListener('click', function(e){
 });
 
 /* ================= PLAYER (real YouTube IFrame Player API, queue-scoped) ================= */
+function $(id){ return document.getElementById(id); }
+
 // Called by the https://www.youtube.com/iframe_api script once it has loaded.
 function onYouTubeIframeAPIReady(){
   ytPlayer = new YT.Player('ytPlayerMount', {
@@ -1725,16 +2007,6 @@ function onPlayerStateChange(e){
   else if(e.data === YT.PlayerState.ENDED){ handleTrackEnd(); }
 }
 function onPlayerError(){ showToast(curLang === 'ar' ? 'تعذّر تشغيل هذا الفيديو' : "This video can't be played"); }
-
-// End of a song: repeat-one replays; otherwise advance inside the CURRENT queue only —
-// it never falls back to the whole library.
-function handleTrackEnd(){
-  if(repeatMode === 2){ ytPlayer.seekTo(0, true); ytPlayer.playVideo(); return; }
-  const idx = queueIds.indexOf(currentTrackId);
-  const atEnd = isShuffled ? false : idx >= queueIds.length - 1;
-  if(atEnd && repeatMode !== 1){ isPlaying = false; ytPlayer.pauseVideo(); updatePlayerUI(); return; }
-  nextTrack();
-}
 function loadAndPlay(videoId){
   if(!ytReady){ pendingPlayId = videoId; return; }
   loadedVideoId = videoId;
@@ -1752,14 +2024,64 @@ setInterval(function(){
   updateProgressUI();
 }, 1000);
 
+/* ---- queue logic ---- */
+function parseSource(src){
+  if(!src) return { type: 'all' };
+  if(src.indexOf('pl:') === 0) return { type: 'pl', id: src.slice(3) };
+  return { type: src };
+}
+function sourcePlaylist(){
+  return queueSource.type === 'pl' ? (playlists.find(function(p){ return p.id === queueSource.id; }) || null) : null;
+}
+function isPlayable(id){ return !skippedIds.has(id) && tracks.some(function(t){ return t.id === id; }); }
+function findNext(){
+  if(!queueIds.length) return null;
+  if(isShuffled){
+    const pool = queueIds.filter(function(id){ return id !== currentTrackId && isPlayable(id); });
+    if(pool.length) return pool[Math.floor(Math.random() * pool.length)];
+    return (repeatMode === 1 && isPlayable(currentTrackId)) ? currentTrackId : null;
+  }
+  const idx = queueIds.indexOf(currentTrackId);
+  for(let i = idx + 1; i < queueIds.length; i++){ if(isPlayable(queueIds[i])) return queueIds[i]; }
+  if(repeatMode === 1){
+    for(let i = 0; i <= idx; i++){ if(isPlayable(queueIds[i])) return queueIds[i]; }
+  }
+  return null;
+}
+function findPrev(){
+  const idx = queueIds.indexOf(currentTrackId);
+  for(let i = idx - 1; i >= 0; i--){ if(isPlayable(queueIds[i])) return queueIds[i]; }
+  if(repeatMode === 1){
+    for(let i = queueIds.length - 1; i > idx; i--){ if(isPlayable(queueIds[i])) return queueIds[i]; }
+  }
+  return null;
+}
+// End of a song: repeat-one replays; otherwise move to the next PLAYABLE song of the current queue
+// (hidden songs are skipped). It never falls back to the whole library.
+function handleTrackEnd(){
+  if(repeatMode === 2){ ytPlayer.seekTo(0, true); ytPlayer.playVideo(); return; }
+  const n = findNext();
+  if(n){ playTrackById(n); return; }
+  isPlaying = false; ytPlayer.pauseVideo(); updatePlayerUI();
+}
+
 /**
- * Plays a track. `queue` scopes playback: pass a comma-joined id string (or array) to lock
- * next/prev/end-of-queue to that list only (a playlist, Favorites, a search result set…).
+ * Plays a track. `queue` (comma-joined ids or an array) scopes playback to that list, and `source`
+ * says where the list came from ('search' | 'fav' | 'history' | 'pl:<playlistId>').
+ * Without `queue` the current queue is kept.
  */
-function playTrackById(id, queue){
+function playTrackById(id, queue, source){
   if(!tracks.some(function(t){ return t.id === id; })) return;
-  if(queue){ queueIds = (typeof queue === 'string') ? queue.split(',').filter(Boolean) : queue.slice(); }
-  else if(!queueIds.includes(id)){ queueIds = tracks.map(function(t){ return t.id; }); }
+  if(queue){
+    queueIds = (typeof queue === 'string') ? queue.split(',').filter(Boolean) : queue.slice();
+    queueSource = parseSource(source);
+    const p = sourcePlaylist();
+    skippedIds = new Set(p ? (p.hiddenIds || []) : []);
+  } else if(!queueIds.includes(id)){
+    queueIds = tracks.map(function(t){ return t.id; });
+    queueSource = { type: 'all' };
+    skippedIds = new Set();
+  }
   currentTrackId = id;
   progress = 0;
   isPlaying = true;
@@ -1776,28 +2098,23 @@ function togglePlay(){
   if(!ytReady) return;
   if(isPlaying) ytPlayer.pauseVideo(); else ytPlayer.playVideo();
 }
-function nextTrack(){
-  if(!queueIds.length) return;
-  const idx = queueIds.indexOf(currentTrackId);
-  let nextIdx = isShuffled ? Math.floor(Math.random() * queueIds.length) : idx + 1;
-  if(nextIdx >= queueIds.length){
-    if(repeatMode === 1) nextIdx = 0; else return; // stop at the end of this queue
-  }
-  playTrackById(queueIds[nextIdx]);
-}
+function nextTrack(){ const n = findNext(); if(n) playTrackById(n); }
 function prevTrack(){
-  if(!queueIds.length) return;
-  const idx = queueIds.indexOf(currentTrackId);
-  let prevIdx = idx - 1;
-  if(prevIdx < 0) prevIdx = (repeatMode === 1) ? queueIds.length - 1 : 0;
-  playTrackById(queueIds[prevIdx]);
+  const p = findPrev();
+  if(p){ playTrackById(p); return; }
+  const t = currentTrack(); if(t) playTrackById(t.id);   // nothing before it: restart this song
 }
-function toggleShuffle(){ isShuffled = !isShuffled; document.getElementById('btnShuffle').classList.toggle('active', isShuffled); }
+function toggleShuffle(){
+  isShuffled = !isShuffled;
+  ['btnShuffle', 'npBtnShuffle'].forEach(function(id){ $(id).classList.toggle('active', isShuffled); });
+}
 function toggleRepeat(){
   repeatMode = (repeatMode + 1) % 3;
-  const btn = document.getElementById('btnRepeat');
-  btn.classList.toggle('active', repeatMode !== 0);
-  btn.style.opacity = repeatMode === 2 ? '0.7' : '1';
+  ['btnRepeat', 'npBtnRepeat'].forEach(function(id){
+    const b = $(id);
+    b.classList.toggle('active', repeatMode !== 0);
+    b.classList.toggle('one', repeatMode === 2);
+  });
 }
 function toggleFavorite(id){
   const t = tracks.find(function(x){ return x.id === id; }); if(!t) return;
@@ -1807,74 +2124,76 @@ function toggleFavorite(id){
   updatePlayerUI(); renderLibrary(); renderSearchResults();
 }
 
-/* Range-slider seek + volume */
+/* Range-slider seek + volume (the bottom bar and the Now Playing page share the same state) */
+function trackDuration(t){ return t.duration || (ytReady ? ytPlayer.getDuration() : 0) || 0; }
+function paintSeek(pct, dur, fromEl){
+  ['seekRange', 'npSeekRange'].forEach(function(id){
+    const r = $(id);
+    if(r !== fromEl) r.value = Math.round(pct * 1000);
+    r.style.setProperty('--pct', (pct * 100) + '%');
+  });
+  ['tCurrent', 'npTCurrent'].forEach(function(id){ $(id).textContent = fmtTime(pct * dur); });
+}
 function onSeekInput(el){
   seekDragging = true;
   const t = currentTrack(); if(!t) return;
-  const dur = t.duration || (ytReady ? ytPlayer.getDuration() : 0) || 0;
-  const pct = el.value / 1000;
-  document.getElementById('tCurrent').textContent = fmtTime(pct * dur);
-  el.style.setProperty('--pct', (pct * 100) + '%');
+  paintSeek(el.value / 1000, trackDuration(t), el);
 }
 function onSeekCommit(el){
   const t = currentTrack(); if(!t) return;
-  const dur = t.duration || (ytReady ? ytPlayer.getDuration() : 0) || 0;
-  progress = (el.value / 1000) * dur;
+  progress = (el.value / 1000) * trackDuration(t);
   if(ytReady && loadedVideoId === t.id) ytPlayer.seekTo(progress, true);
   seekDragging = false;
 }
 function onVolumeInput(el){
   volume = parseInt(el.value, 10);
-  ['volRange', 'volRangeSheet'].forEach(function(id){
-    const r = document.getElementById(id);
-    if(!r) return;
+  ['volRange', 'volRangeSheet', 'npVolRange'].forEach(function(id){
+    const r = $(id); if(!r) return;
     if(r !== el) r.value = volume;
     r.style.setProperty('--pct', volume + '%');
   });
-  ['volPctDesktop', 'volPctSheet'].forEach(function(id){
-    const b = document.getElementById(id);
-    if(b) b.textContent = volume + '%';
+  ['volPctDesktop', 'volPctSheet', 'npVolPct'].forEach(function(id){
+    const b = $(id); if(b) b.textContent = volume + '%';
   });
   if(ytReady) ytPlayer.setVolume(volume);
 }
 function updateProgressUI(){
   const t = currentTrack(); if(!t) return;
-  document.getElementById('tCurrent').textContent = fmtTime(progress);
-  document.getElementById('tTotal').textContent = fmtTime(t.duration);
-  const pct = t.duration ? (progress / t.duration) : 0;
-  const range = document.getElementById('seekRange');
-  if(!seekDragging){ range.value = Math.round(pct * 1000); }
-  range.style.setProperty('--pct', (pct * 100) + '%');
+  ['tTotal', 'npTTotal'].forEach(function(id){ $(id).textContent = fmtTime(t.duration); });
+  if(seekDragging) return;
+  paintSeek(t.duration ? Math.min(1, progress / t.duration) : 0, t.duration, null);
 }
 function applyPlayerVisibility(){
   const t = currentTrack();
-  document.getElementById('playerBar').classList.toggle('hidden', !t || !playerVisible);
-  document.getElementById('reopenPill').classList.toggle('show', !!t && !playerVisible);
+  const onNP = currentView === 'home';   // Now Playing has its own controls, so the bottom bar hides there
+  $('playerBar').classList.toggle('hidden', !t || !playerVisible || onNP);
+  $('reopenPill').classList.toggle('show', !!t && !playerVisible && !onNP);
 }
 function updatePlayerUI(){
   applyPlayerVisibility();
   renderNowPlaying();
   const t = currentTrack();
   if(!t){ updateDynIsland(); return; }
-  const pImg = document.getElementById('pImg');
+  const pImg = $('pImg');
   pImg.src = t.cover; pImg.onerror = function(){ this.onerror = null; this.src = t.coverFallback; };
-  document.getElementById('pTitle').textContent = tName(t);
-  document.getElementById('pArtist').textContent = aName(t);
-  document.getElementById('pHeart').classList.toggle('active', !!t.favorite);
-  document.getElementById('playIcon').innerHTML = isPlaying
-    ? '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>'
-    : '<path d="M8 5v14l11-7z"/>';
+  $('pTitle').textContent = tName(t);
+  $('pArtist').textContent = aName(t);
+  ['pHeart', 'npHeart'].forEach(function(id){ $(id).classList.toggle('active', !!t.favorite); });
+  const playPath = isPlaying ? '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>' : '<path d="M8 5v14l11-7z"/>';
+  $('playIcon').innerHTML = playPath;
+  $('npPlayIcon').innerHTML = playPath;
   updateProgressUI();
   updateDynIsland();
   updateMediaSession();
+  if(queueOpen) highlightQueue();
 }
 function updateDynIsland(){
-  const island = document.getElementById('dynIsland');
+  const island = $('dynIsland');
   const t = currentTrack();
   if(!islandEnabled || !playerVisible || !t || !isPlaying){ island.classList.remove('show'); return; }
-  const img = document.getElementById('diImg');
+  const img = $('diImg');
   img.src = t.cover; img.onerror = function(){ this.onerror = null; this.src = t.coverFallback; };
-  document.getElementById('diText').textContent = tName(t) + ' · ' + aName(t);
+  $('diText').textContent = tName(t) + ' · ' + aName(t);
   island.classList.add('show');
 }
 function toggleIslandSetting(el){
@@ -1886,20 +2205,20 @@ function toggleIslandSetting(el){
 /* Mobile "more" sheet — the controls that don't fit the compact mobile player bar */
 function openPlayerMore(){
   const t = currentTrack(); if(!t) return;
-  const img = document.getElementById('pmoreImg');
+  const img = $('pmoreImg');
   img.src = t.cover; img.onerror = function(){ this.onerror = null; this.src = t.coverFallback; };
-  document.getElementById('pmoreTitle').textContent = tName(t);
-  document.getElementById('pmoreArtist').textContent = aName(t);
+  $('pmoreTitle').textContent = tName(t);
+  $('pmoreArtist').textContent = aName(t);
   refreshPlayerMore();
   openModal('pmore');
 }
 function refreshPlayerMore(){
   const t = currentTrack(); if(!t) return;
-  const heartBtn = document.getElementById('pmoreHeartBtn');
+  const heartBtn = $('pmoreHeartBtn');
   heartBtn.querySelector('svg').setAttribute('fill', t.favorite ? 'var(--accent)' : 'none');
   heartBtn.style.color = t.favorite ? 'var(--accent)' : '';
-  document.getElementById('pmoreShuffleBtn').style.color = isShuffled ? 'var(--accent)' : '';
-  const repeatBtn = document.getElementById('pmoreRepeatBtn');
+  $('pmoreShuffleBtn').style.color = isShuffled ? 'var(--accent)' : '';
+  const repeatBtn = $('pmoreRepeatBtn');
   repeatBtn.style.color = repeatMode !== 0 ? 'var(--accent)' : '';
   repeatBtn.querySelector('span').textContent = repeatMode === 2
     ? i18n[curLang].pm_repeat_one
@@ -1928,7 +2247,7 @@ function updateMediaSession(){
   }catch(e){ /* MediaSession not fully supported in this browser */ }
 }
 
-/* Close / reopen the player bar */
+/* Close / reopen the bottom player bar */
 function closePlayerBar(){
   if(ytReady) ytPlayer.pauseVideo();
   isPlaying = false;
@@ -1946,6 +2265,143 @@ function reopenPlayer(){
   updatePlayerUI();
 }
 
+/* ---- Queue sheet (swipe up on Now Playing, or tap the queue button) ---- */
+function queueSourceLabel(){
+  const L = i18n[curLang];
+  switch(queueSource.type){
+    case 'pl': { const p = sourcePlaylist(); return p ? p.name : L.queue_custom; }
+    case 'fav': return L.tab_fav;
+    case 'history': return L.tab_history;
+    case 'search': return L.nav_search;
+    case 'custom': return L.queue_custom;
+    default: return L.queue_all;
+  }
+}
+function queueRowHTML(t){
+  const skipped = skippedIds.has(t.id);
+  return '<div class="queue-row' + (t.id === currentTrackId ? ' current' : '') + (skipped ? ' skipped' : '') + '" data-id="' + t.id + '">' +
+    '<span class="drag-grip">' + GRIP_SVG + '</span>' +
+    coverImg(t, 'alt=""') +
+    '<div class="info" onclick="playFromQueue(\'' + t.id + '\')"><div class="tt">' + esc(tName(t)) + '</div><div class="ta">' + esc(aName(t)) + '</div></div>' +
+    '<span class="q-eq"><span></span><span></span><span></span></span>' +
+    '<button class="more-btn eye-btn' + (skipped ? ' on' : '') + '" title="' + esc(i18n[curLang].queue_skip_tip) + '" onclick="toggleSkip(\'' + t.id + '\')">' + (skipped ? EYE_OFF_SVG : EYE_SVG) + '</button>' +
+    '</div>';
+}
+function renderQueue(){
+  const L = i18n[curLang];
+  const rows = queueIds.map(function(id){ return tracks.find(function(t){ return t.id === id; }); }).filter(Boolean);
+  $('queueList').innerHTML = rows.length ? rows.map(queueRowHTML).join('') : emptyHTML(L.queue_empty);
+  $('queueSub').textContent = L.queue_from + ': ' + queueSourceLabel() + ' · ' + rows.length + ' ' + L.unit_tracks;
+  $('queueSheet').classList.toggle('paused', !isPlaying);
+  initQueueSortable();
+}
+function highlightQueue(){
+  $('queueSheet').classList.toggle('paused', !isPlaying);
+  Array.prototype.forEach.call($('queueList').querySelectorAll('.queue-row'), function(r){
+    r.classList.toggle('current', r.getAttribute('data-id') === currentTrackId);
+  });
+}
+function openQueue(){
+  if(!currentTrack()) return;
+  queueOpen = true;
+  renderQueue();
+  $('queueBackdrop').classList.add('show');
+  $('queueSheet').classList.add('show');
+  setTimeout(function(){
+    const list = $('queueList'), cur = list.querySelector('.queue-row.current');
+    if(cur) list.scrollTop = cur.offsetTop - (list.clientHeight - cur.offsetHeight) / 2;
+  }, 140);
+}
+function closeQueue(){
+  queueOpen = false;
+  $('queueBackdrop').classList.remove('show');
+  $('queueSheet').classList.remove('show');
+}
+function playFromQueue(id){
+  skippedIds.delete(id);                // you picked it yourself, so play it even if it was hidden
+  playTrackById(id);
+  renderQueue();
+}
+function toggleSkip(id){
+  const nowSkipped = !skippedIds.has(id);
+  if(nowSkipped) skippedIds.add(id); else skippedIds.delete(id);
+  const p = sourcePlaylist();
+  if(p){   // playing a playlist: hiding a song there is remembered for that playlist
+    p.hiddenIds = (p.hiddenIds || []).filter(function(x){ return x !== id; });
+    if(nowSkipped) p.hiddenIds.push(id);
+    fbSavePlaylist(p);
+    refreshOpenPlaylist();
+  }
+  renderQueue();
+}
+function saveQueueAsPlaylist(){
+  const ids = queueIds.filter(isPlayable);   // hidden songs are left out
+  if(!ids.length) return;
+  const name = window.prompt(curLang === 'ar' ? 'اسم القائمة الجديدة:' : 'New playlist name:', queueSourceLabel());
+  if(!name || !name.trim()) return;
+  const p = newPlaylistObject(name.trim(), ids);
+  playlists.unshift(p);
+  fbSavePlaylist(p);
+  renderPlaylistsView(); renderLibrary();
+  showToast(i18n[curLang].toast_playlist_created);
+}
+
+/* Hold & drag to reorder (SortableJS). Touch needs a short press-and-hold so normal scrolling still works. */
+function sortableOpts(extra){
+  return Object.assign({
+    animation: 160, delay: 220, delayOnTouchOnly: true, touchStartThreshold: 6,
+    filter: 'button', preventOnFilter: false, ghostClass: 'drag-ghost', chosenClass: 'drag-chosen',
+    onChoose: function(){ if(navigator.vibrate) navigator.vibrate(12); }
+  }, extra);
+}
+function initQueueSortable(){
+  if(queueSortable || typeof Sortable === 'undefined') return;
+  queueSortable = Sortable.create($('queueList'), sortableOpts({
+    onStart: function(){ queueDragging = true; },
+    onEnd: function(){
+      queueDragging = false;
+      const ids = Array.prototype.map.call($('queueList').querySelectorAll('.queue-row'), function(r){ return r.getAttribute('data-id'); });
+      queueIds = ids;
+      const p = sourcePlaylist();
+      if(p){   // the queue IS this playlist, so the new order is saved to it
+        p.trackIds = ids.concat(p.trackIds.filter(function(x){ return ids.indexOf(x) === -1; }));
+        fbSavePlaylist(p);
+        renderPlaylistsView(); refreshOpenPlaylist();
+      }
+    }
+  }));
+}
+
+// Swipe up on the Now Playing page → open the queue.
+(function(){
+  const view = document.getElementById('view-home');
+  let sx = 0, sy = 0, tracking = false;
+  view.addEventListener('touchstart', function(e){
+    if(e.touches.length !== 1 || (e.target.closest && e.target.closest('input[type="range"]'))){ tracking = false; return; }
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; tracking = true;
+  }, { passive: true });
+  view.addEventListener('touchend', function(e){
+    if(!tracking) return;
+    tracking = false;
+    const t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+    const c = document.querySelector('.content');
+    // if the page itself scrolls (very small screens), only react once it's at the bottom
+    const atEdge = (c.scrollHeight - c.clientHeight < 4) || (c.scrollTop + c.clientHeight >= c.scrollHeight - 2);
+    if(dy < -70 && Math.abs(dx) < Math.abs(dy) * 0.6 && atEdge) openQueue();
+  }, { passive: true });
+})();
+// Swipe down on the sheet's header → close it.
+(function(){
+  const head = document.getElementById('queueHead');
+  let sy = 0, tracking = false;
+  head.addEventListener('touchstart', function(e){ sy = e.touches[0].clientY; tracking = true; }, { passive: true });
+  head.addEventListener('touchend', function(e){
+    if(!tracking) return;
+    tracking = false;
+    if(e.changedTouches[0].clientY - sy > 70) closeQueue();
+  }, { passive: true });
+})();
+
 /* ================= CONTEXT MENU (⋮) ================= */
 let ctxTrackId = null;
 let ctxPlaylistId = null; // set when opened from inside a playlist, enables "remove from this playlist"
@@ -1962,10 +2418,28 @@ function openContextMenu(id, playlistId){
   renderCtxPlaylistPicker();
   openModal('ctx');
 }
+// Put the song right after the one that's playing.
+function ctxPlayNext(){
+  const id = ctxTrackId; if(!id) return;
+  const cur = currentTrackId;
+  if(id !== cur){
+    queueIds = queueIds.filter(function(x){ return x !== id; });
+    let ci = queueIds.indexOf(cur);
+    if(ci < 0 && cur){ queueIds.unshift(cur); ci = 0; }
+    queueIds.splice(ci + 1, 0, id);
+    skippedIds.delete(id);
+    queueSource = { type: 'custom' };   // no longer just the original list
+  }
+  if(queueOpen && !queueDragging) renderQueue();
+  showToast(i18n[curLang].toast_play_next);
+  closeModal('ctx');
+}
 function ctxAddToQueue(){
   if(!ctxTrackId) return;
-  if(!queueIds.length) queueIds = [ctxTrackId];
-  else if(!queueIds.includes(ctxTrackId)) queueIds.push(ctxTrackId);
+  if(!queueIds.length && currentTrackId) queueIds = [currentTrackId];
+  if(!queueIds.includes(ctxTrackId)){ queueIds.push(ctxTrackId); queueSource = { type: 'custom' }; }
+  skippedIds.delete(ctxTrackId);
+  if(queueOpen && !queueDragging) renderQueue();
   showToast(i18n[curLang].toast_added_queue);
   closeModal('ctx');
 }
@@ -1991,7 +2465,7 @@ function ctxAddToPlaylist(playlistId){
   closeModal('ctx');
 }
 function newPlaylistObject(name, trackIds){
-  return { id: 'pl_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7), name: name, trackIds: trackIds || [], createdAt: Date.now() };
+  return { id: 'pl_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7), name: name, trackIds: trackIds || [], hiddenIds: [], createdAt: Date.now() };
 }
 function ctxCreatePlaylistFromMenu(){
   const input = document.getElementById('ctxNewPlaylistInput');
@@ -2009,6 +2483,7 @@ function ctxRemoveFromPlaylist(){
   if(!ctxPlaylistId || !ctxTrackId) return;
   const p = playlists.find(function(x){ return x.id === ctxPlaylistId; }); if(!p) return;
   p.trackIds = p.trackIds.filter(function(id){ return id !== ctxTrackId; });
+  p.hiddenIds = (p.hiddenIds || []).filter(function(id){ return id !== ctxTrackId; });
   fbSavePlaylist(p);
   renderPlaylistsView(); renderLibrary(); refreshOpenPlaylist();
   showToast(i18n[curLang].toast_removed_playlist);
@@ -2027,9 +2502,14 @@ function ctxDeleteEntirely(){
   const id = ctxTrackId;
   tracks = tracks.filter(function(t){ return t.id !== id; });
   playlists.forEach(function(p){
-    if(p.trackIds.includes(id)){ p.trackIds = p.trackIds.filter(function(x){ return x !== id; }); fbSavePlaylist(p); }
+    if(p.trackIds.includes(id) || (p.hiddenIds || []).includes(id)){
+      p.trackIds = p.trackIds.filter(function(x){ return x !== id; });
+      p.hiddenIds = (p.hiddenIds || []).filter(function(x){ return x !== id; });
+      fbSavePlaylist(p);
+    }
   });
   history = history.filter(function(x){ return x !== id; });
+  skippedIds.delete(id);
   fbDeleteTrack(id);
   closeModal('ctx');
   ensureCurrentTrack();
@@ -2053,8 +2533,38 @@ function openPlaylistDetail(playlistId){
   document.getElementById('pdTrackList').innerHTML = items.length
     ? items.map(function(t){ return trackRowHTML(t, queueStr, p.id); }).join('')
     : emptyHTML(curLang === 'ar' ? 'القائمة فارغة' : 'This playlist is empty');
-  document.getElementById('pdPlayAllBtn').onclick = function(){ if(items.length) playTrackById(items[0].id, queueStr); };
+  const hidden = p.hiddenIds || [];
+  const firstPlayable = items.find(function(t){ return hidden.indexOf(t.id) === -1; }) || items[0];
+  document.getElementById('pdPlayAllBtn').onclick = function(){ if(firstPlayable) playTrackById(firstPlayable.id, queueStr, 'pl:' + p.id); };
+  initPdSortable();
   openModal('pd');
+}
+// Hold & drag inside a playlist → the new order is saved to the playlist.
+function initPdSortable(){
+  if(pdSortable || typeof Sortable === 'undefined') return;
+  pdSortable = Sortable.create(document.getElementById('pdTrackList'), sortableOpts({
+    onEnd: function(){
+      const p = playlists.find(function(x){ return x.id === pdPlaylistId; }); if(!p) return;
+      const ids = Array.prototype.map.call(document.getElementById('pdTrackList').querySelectorAll('.result-row'), function(r){ return r.getAttribute('data-id'); });
+      p.trackIds = ids.concat(p.trackIds.filter(function(x){ return ids.indexOf(x) === -1; }));
+      fbSavePlaylist(p);
+      renderPlaylistsView(); renderLibrary();
+      if(queueSource.type === 'pl' && queueSource.id === p.id){ queueIds = ids.slice(); if(queueOpen && !queueDragging) renderQueue(); }
+    }
+  }));
+}
+// Hide a song inside a playlist: it stays in the list but is skipped when the playlist plays.
+function togglePlaylistHidden(playlistId, id){
+  const p = playlists.find(function(x){ return x.id === playlistId; }); if(!p) return;
+  const had = (p.hiddenIds || []).indexOf(id) !== -1;
+  p.hiddenIds = (p.hiddenIds || []).filter(function(x){ return x !== id; });
+  if(!had) p.hiddenIds.push(id);
+  fbSavePlaylist(p);
+  if(queueSource.type === 'pl' && queueSource.id === p.id){
+    if(had) skippedIds.delete(id); else skippedIds.add(id);
+    if(queueOpen && !queueDragging) renderQueue();
+  }
+  openPlaylistDetail(p.id);
 }
 function refreshOpenPlaylist(){
   if(!pdPlaylistId || !document.getElementById('pdModal').classList.contains('show')) return;
@@ -2086,6 +2596,7 @@ function deletePlaylistEntirely(){
     ? 'حذف قائمة "' + p.name + '" نهائياً؟ هذا لا يحذف الأغاني نفسها، فقط القائمة.'
     : 'Delete the playlist "' + p.name + '" permanently? This won\'t delete the songs themselves, just the playlist.';
   if(!window.confirm(confirmMsg)) return;
+  if(queueSource.type === 'pl' && queueSource.id === p.id) queueSource = { type: 'custom' };
   playlists = playlists.filter(function(x){ return x.id !== p.id; });
   fbDeletePlaylist(p.id);
   closeModal('pd');
@@ -2248,10 +2759,13 @@ function showToast(msg){
 }
 
 /* ================= INIT ================= */
-['volRange', 'volRangeSheet'].forEach(function(id){ document.getElementById(id).style.setProperty('--pct', volume + '%'); });
-['volPctDesktop', 'volPctSheet'].forEach(function(id){ document.getElementById(id).textContent = volume + '%'; });
+['volRange', 'volRangeSheet', 'npVolRange'].forEach(function(id){ $(id).style.setProperty('--pct', volume + '%'); });
+['volPctDesktop', 'volPctSheet', 'npVolPct'].forEach(function(id){ $(id).textContent = volume + '%'; });
+restoreSavedTheme();
+let startLang = 'en';
+try{ const savedLang = localStorage.getItem('sawt_lang'); if(savedLang && i18n[savedLang]) startLang = savedLang; }catch(e){}
 renderLangUI();
-setLang('en');
+setLang(startLang);
 
 // Load the official YouTube IFrame Player API script (drives all real playback).
 (function(){
