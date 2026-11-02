@@ -610,7 +610,7 @@ try{
     <div class="login-spinner"></div>
     <div class="login-form-area">
       <h2 class="login-title">أهلاً بعودتك</h2>
-      <p class="login-sub">سجّل دخولك للوصول إلى مكتبتك الموسيقية الخاصة</p>
+      <p class="login-sub">سجّل دخولك للوصول إلى مكتبتك الصوتية الخاصة</p>
       <form id="login-form">
         <label class="login-field"><span>اسم المستخدم</span>
           <input type="text" id="username" placeholder="username" required autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
@@ -651,8 +651,8 @@ try{
 <aside class="drawer" id="drawer">
   <div class="drawer-head">
     <div class="brand">
-      <div class="brand-mark">S</div>
-      <div class="brand-name" style="display:block;">Sawt</div>
+      <div class="brand-mark">M</div>
+      <div class="brand-name" style="display:block;">M3sob</div>
     </div>
     <button class="drawer-close" onclick="closeDrawer()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
   </div>
@@ -691,8 +691,8 @@ try{
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
     </button>
     <div class="brand">
-      <div class="brand-mark">S</div>
-      <div class="brand-name">Sawt</div>
+      <div class="brand-mark">M</div>
+      <div class="brand-name">M3sob</div>
     </div>
     <h1 id="topbarTitle"></h1>
     <div class="topbar-spacer"></div>
@@ -1747,14 +1747,14 @@ function coverImg(t, extraAttrs){
   return '<img src="' + esc(t.cover) + '" onerror="this.onerror=null;this.src=\'' + t.coverFallback + '\'" ' + (extraAttrs || '') + '>';
 }
 
-const filterGenres = ["Songs","AI","Podcast","Quran","Nasheed","Lecture","Audiobook","Pop","Dark Pop","Metal","Rock","Synthwave","Lo-Fi","Hip-Hop","Indie","Classical","Sheilat","Folk","Jazz","EDM","Acoustic"];
+const filterGenres = ["Songs","AI","Podcast","Quran","Nasheed","Lecture","Audiobook","Pop","Dark Pop","Metal","Rock","Synthwave","Old","Hip-Hop","Indie","Classical","Sheilat","Folk","poem","Cartoon","Acoustic"];
 const filterMoods = ["Chill","Sad","Energetic","Focus","Cinematic","Dark"];
 const filterLangs = ["Arabic","English","Japanese","Korean","Global"];
 // Arabic names for the genre / mood / language chips (other languages keep the English names)
 const AR_LABELS = {
   'Songs':'أغاني','AI':'ذكاء اصطناعي','Podcast':'بودكاست','Quran':'قرآن','Nasheed':'أناشيد','Lecture':'محاضرات','Audiobook':'كتب صوتية',
-  'Pop':'بوب','Dark Pop':'دارك بوب','Metal':'ميتال','Rock':'روك','Synthwave':'سينث ويف','Lo-Fi':'لو-فاي','Hip-Hop':'هيب هوب','Indie':'إندي',
-  'Classical':'كلاسيكي','Sheilat':'شيلات','Folk':'فولك','Jazz':'جاز','EDM':'إي دي إم','Acoustic':'أكوستيك',
+  'Pop':'بوب','Dark Pop':'دارك بوب','Metal':'ميتال','Rock':'روك','Synthwave':'سينث ويف','Old':'قديم','Hip-Hop':'هيب هوب','Indie':'إندي',
+  'Classical':'كلاسيكي','Sheilat':'شيلات','Folk':'فولك','poem':'قصيدة','Cartoon':'كارتون','Acoustic':'أكوستيك',
   'Chill':'هادئ','Sad':'حزين','Energetic':'حماسي','Focus':'تركيز','Cinematic':'سينمائي','Dark':'مظلم',
   'Arabic':'عربي','English':'إنجليزي','Japanese':'ياباني','Korean':'كوري','Global':'عالمي'
 };
