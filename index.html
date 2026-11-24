@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sawt · Your Sound, Your World</title>
+<title>M3sob · Your Sound, Your World</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800&family=Noto+Sans+JP:wght@500;700&family=Noto+Sans+KR:wght@500;700&family=Noto+Sans+SC:wght@500;700&display=swap" rel="stylesheet">
 <style>
@@ -18,6 +18,7 @@
   --text:#F2EFEA;
   --text-muted:#8B8F9C;
   --border:rgba(242,239,234,0.08);
+  --on-accent:#0B0D12;
   --radius-lg:20px;
   --radius-md:14px;
   --radius-sm:9px;
@@ -39,7 +40,7 @@ body{
   -webkit-font-smoothing:antialiased;
   position:relative;
 }
-::selection{ background:var(--accent); color:#0B0D12; }
+::selection{ background:var(--accent); color:var(--on-accent); }
 ::-webkit-scrollbar{width:8px; height:8px;}
 ::-webkit-scrollbar-thumb{background:var(--elevated-2); border-radius:8px;}
 ::-webkit-scrollbar-track{background:transparent;}
@@ -69,7 +70,7 @@ input,select{font-family:inherit;}
 .burger-btn:hover{ background:var(--elevated-2); }
 .burger-btn svg{ width:19px; height:19px; }
 .brand{ display:flex; align-items:center; gap:10px; flex-shrink:0; }
-.brand-mark{ width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,var(--accent),var(--accent2)); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:700; font-style:italic; color:#0B0D12; font-size:17px; flex-shrink:0;}
+.brand-mark{ width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,var(--accent),var(--accent2)); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:700; font-style:italic; color:var(--on-accent); font-size:17px; flex-shrink:0;}
 html[lang="ar"] .brand-mark, html[lang="ja"] .brand-mark, html[lang="ko"] .brand-mark, html[lang="zh"] .brand-mark{font-style:normal;}
 .brand-name{ font-family:var(--font-display); font-style:italic; font-weight:600; font-size:20px; letter-spacing:.3px; display:none;}
 html[lang="ar"] .brand-name{font-style:normal;}
@@ -114,7 +115,7 @@ html[lang="ar"] .topbar h1{font-style:normal;}
   transition:transform .32s cubic-bezier(.2,.9,.3,1);
 }
 html[dir="rtl"] .drawer{ transform:translateX(102%); }
-.drawer.open{ transform:translateX(0); }
+.drawer.open, html[dir="rtl"] .drawer.open{ transform:translateX(0); }   /* the rtl rule is more specific, so without this the Arabic menu never opened */
 .drawer-head{ display:flex; align-items:center; justify-content:space-between; padding:0 4px; }
 .drawer-close{ width:32px; height:32px; border-radius:50%; background:var(--elevated); display:flex; align-items:center; justify-content:center; }
 .drawer-close svg{ width:14px; height:14px; }
@@ -134,7 +135,7 @@ html[dir="rtl"] .drawer{ transform:translateX(102%); }
 
 /* ============ MAIN / INDEPENDENT SCROLL ============ */
 .main{ flex:1; min-height:0; display:flex; flex-direction:column; }
-.content{ flex:1; min-height:0; overflow-y:auto; padding:26px 30px 150px; }
+.content{ flex:1; min-height:0; overflow-y:auto; overflow-x:hidden; touch-action:pan-y; padding:26px 30px 150px; }
 .view{ display:none; animation:fadein .35s ease; }
 .view.active{ display:block; }
 @keyframes fadein{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
@@ -157,7 +158,7 @@ html[lang="ar"] .np-title, html[lang="ja"] .np-title, html[lang="ko"] .np-title,
 .np-btn:hover{ color:var(--text); background:var(--elevated); }
 .np-btn svg{ width:22px; height:22px; }
 .np-btn.active{ color:var(--accent); }
-.np-play{ width:68px; height:68px; border-radius:50%; background:var(--accent); color:#0B0D12; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:.18s; box-shadow:0 10px 30px color-mix(in srgb, var(--accent) 35%, transparent); }
+.np-play{ width:68px; height:68px; border-radius:50%; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:.18s; box-shadow:0 10px 30px color-mix(in srgb, var(--accent) 35%, transparent); }
 .np-play:hover{ transform:scale(1.05); }
 .np-play svg{ width:28px; height:28px; }
 .np-extra{ display:flex; align-items:center; gap:8px; }
@@ -184,7 +185,7 @@ html[lang="ar"] .np-title, html[lang="ja"] .np-title, html[lang="ko"] .np-title,
 }
 .filter-btn:hover{ border-color:color-mix(in srgb, var(--accent) 45%, transparent); }
 .filter-btn svg{ width:16px; height:16px; }
-.filter-btn .badge{ position:absolute; top:-5px; inset-inline-end:-5px; background:var(--accent); color:#0B0D12; font-size:10px; font-weight:800; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+.filter-btn .badge{ position:absolute; top:-5px; inset-inline-end:-5px; background:var(--accent); color:var(--on-accent); font-size:10px; font-weight:800; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
 
 .ads-notice{ font-size:11.5px; color:var(--text-muted); line-height:1.6; margin-bottom:18px; max-width:640px; }
 .form-field{ display:flex; flex-direction:column; gap:7px; margin-bottom:16px; }
@@ -221,7 +222,7 @@ html[dir="rtl"] .pill{ padding:6px 14px 6px 12px; }
 /* ============ LIBRARY ============ */
 .tab-row{ display:flex; gap:6px; background:var(--elevated); padding:4px; border-radius:12px; width:fit-content; margin-bottom:22px; }
 .tab-btn{ padding:9px 18px; border-radius:9px; font-size:13px; font-weight:600; color:var(--text-muted); transition:.18s; }
-.tab-btn.active{ background:var(--accent); color:#0B0D12; }
+.tab-btn.active{ background:var(--accent); color:var(--on-accent); }
 .lib-panel{ display:none; }
 .lib-panel.active{ display:block; }
 .empty-state{ text-align:center; padding:60px 20px; color:var(--text-muted); }
@@ -254,7 +255,7 @@ html[lang="ar"] .settings-block h3{font-style:normal;}
 .builder-field{ display:flex; flex-direction:column; gap:8px; }
 .builder-field label{ font-size:11.5px; color:var(--text-muted); font-weight:600; }
 .color-input{ width:56px; height:36px; border-radius:9px; border:1px solid var(--border); background:none; padding:2px; cursor:pointer;}
-.btn-primary{ background:var(--accent); color:#0B0D12; padding:11px 22px; border-radius:999px; font-weight:700; font-size:13px; transition:.18s;}
+.btn-primary{ background:var(--accent); color:var(--on-accent); padding:11px 22px; border-radius:999px; font-weight:700; font-size:13px; transition:.18s;}
 .btn-primary:hover{ filter:brightness(1.08); transform:translateY(-1px);}
 .btn-ghost{ padding:10px 18px; border-radius:999px; font-weight:600; font-size:13px; background:var(--elevated); color:var(--text-muted);}
 .btn-ghost:hover{ color:var(--text); }
@@ -296,7 +297,7 @@ html[lang="ar"] .settings-block h3{font-style:normal;}
 .transport button svg{ width:17px; height:17px; color:var(--text-muted); transition:.15s; }
 .transport button:hover svg{ color:var(--text); }
 .transport .play-main{ width:36px; height:36px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; }
-.transport .play-main svg{ width:15px; height:15px; color:#0B0D12; }
+.transport .play-main svg{ width:15px; height:15px; color:var(--on-accent); }
 .transport .shuffle.active svg, .transport .repeat.active svg{ color:var(--accent); }
 .progress-row{ display:flex; align-items:center; gap:9px; width:100%; }
 .progress-row .time{ font-size:10.5px; color:var(--text-muted); width:34px; text-align:center; flex-shrink:0;}
@@ -447,10 +448,10 @@ html[lang="ar"] .pd-head h2{font-style:normal;}
 .sheet-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.55); backdrop-filter:blur(3px); z-index:85; opacity:0; pointer-events:none; transition:.25s; }
 .sheet-backdrop.show{ opacity:1; pointer-events:auto; }
 .queue-sheet{
-  position:fixed; left:0; right:0; bottom:0; z-index:86; height:min(84vh, 680px); display:flex; flex-direction:column;
+  position:fixed; left:0; right:0; bottom:0; z-index:86; height:var(--qh, 55vh); max-height:96vh; display:flex; flex-direction:column;
   background:var(--surface); border:1px solid var(--border); border-bottom:none; border-radius:26px 26px 0 0;
   padding:10px 16px max(16px, env(safe-area-inset-bottom)); box-shadow:0 -24px 70px rgba(0,0,0,.55);
-  transform:translateY(106%); transition:transform .36s cubic-bezier(.2,.9,.3,1);
+  transform:translateY(106%); transition:transform .36s cubic-bezier(.2,.9,.3,1), height .28s ease;
 }
 .queue-sheet.show{ transform:translateY(0); }
 @media (min-width:900px){
@@ -530,7 +531,7 @@ html[lang="ar"] .queue-title, html[lang="ja"] .queue-title, html[lang="ko"] .que
 .pw-toggle:hover, .pw-toggle.on{ color:var(--accent); }
 .pw-toggle svg{ width:19px; height:19px; }
 .login-btn{
-  width:100%; margin-top:8px; padding:15px; border-radius:14px; font-size:16px; font-weight:800; font-family:inherit; color:#0B0D12;
+  width:100%; margin-top:8px; padding:15px; border-radius:14px; font-size:16px; font-weight:800; font-family:inherit; color:var(--on-accent);
   background:linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow:0 14px 34px color-mix(in srgb, var(--accent) 32%, transparent); transition:.18s;
 }
 .login-btn:hover:not(:disabled){ transform:translateY(-1px); filter:brightness(1.06); }
@@ -578,6 +579,61 @@ html[lang="ar"] .queue-title, html[lang="ja"] .queue-title, html[lang="ko"] .que
 .builder-field input[type="text"]:focus{ border-color:color-mix(in srgb, var(--accent) 55%, transparent); }
 .rand-count{ font-size:12px; color:var(--text-muted); text-align:center; margin:-6px 0 14px; }
 
+/* ============ THEME-AWARE · MOBILE FIT · LOGIN LANGUAGE ============ */
+html, body{ max-width:100%; overflow-x:hidden; }
+.search-hero{ min-width:0; }
+.search-hero input{ min-width:0; width:100%; }
+.vol-row input[type="range"]{ min-width:0; }
+.drag-grip{ width:30px; height:44px; align-items:center; justify-content:center; touch-action:none; margin-inline-start:-6px; }
+.drag-grip svg{ width:18px; height:18px; }
+.queue-sheet.dragging{ transition:transform .36s cubic-bezier(.2,.9,.3,1); }
+#queueHead{ touch-action:none; cursor:grab; }
+
+.login-lang{ position:absolute; top:16px; inset-inline-end:16px; z-index:3; }
+.login-lang-btn{ display:flex; align-items:center; gap:8px; padding:9px 14px; border-radius:999px; background:color-mix(in srgb, var(--surface) 80%, transparent); border:1px solid var(--border); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); font-size:13px; font-weight:700; color:var(--text); font-family:inherit; }
+.login-lang-btn svg{ width:16px; height:16px; color:var(--text-muted); }
+.login-lang-menu{ position:absolute; top:calc(100% + 8px); inset-inline-end:0; width:230px; max-height:60vh; overflow-y:auto; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:8px; box-shadow:0 24px 60px rgba(0,0,0,.5); opacity:0; pointer-events:none; transform:translateY(-6px); transition:.18s; }
+.login-lang-menu.open{ opacity:1; pointer-events:auto; transform:none; }
+.login-lang-opt{ display:flex; width:100%; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; font-size:14px; font-weight:600; text-align:start; font-family:inherit; color:var(--text); }
+.login-lang-opt .en{ color:var(--text-muted); font-size:11.5px; font-weight:500; }
+.login-lang-opt:hover{ background:var(--elevated); }
+.login-lang-opt.selected{ color:var(--accent); }
+#login-overlay.checking .login-lang{ display:none; }
+
+@media (max-width:600px){
+  .content{ padding:16px 14px 150px; }
+  .content.np-mode{ padding-bottom:12px; }
+  .search-bar-row{ gap:8px; margin-bottom:16px; }
+  .search-hero{ padding:12px 14px; gap:10px; }
+  .search-hero input{ font-size:15px; }
+  .filter-btn{ width:46px; height:46px; padding:0; justify-content:center; }
+  .filter-btn svg{ width:18px; height:18px; }
+  .result-row{ padding:8px 6px; gap:10px; }
+  .result-row img{ width:44px; height:44px; }
+  .row-actions{ gap:2px; }
+  .modal{ padding:22px 18px; width:94vw; }
+  .form-row2{ grid-template-columns:1fr; gap:0; }
+  .playlist-grid{ grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:14px; }
+  .tab-row{ width:100%; }
+  .tab-btn{ flex:1; padding:9px 6px; }
+  .builder-row{ gap:14px; padding:16px; }
+  .section-head{ margin:26px 0 12px; }
+  .login-card{ padding:32px 22px 24px; }
+}
+@media (max-width:380px){
+  .np-btn{ width:40px; height:40px; }
+  .np-extra{ gap:2px; }
+}
+
+/* ---- volume hint (phones can't let a web page change the volume) + small bits ---- */
+.vol-hint{ display:none; align-items:center; gap:8px; font-size:12px; color:var(--text-muted); line-height:1.4; }
+.vol-hint svg{ width:16px; height:16px; flex-shrink:0; }
+.no-vol .vol-row{ display:none !important; }
+.no-vol .vol-hint{ display:flex; }
+.np-vol-hint{ flex:1; justify-content:center; text-align:center; }
+.toggle-row-inline{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.toggle-row-inline label{ text-transform:none; letter-spacing:0; font-size:13px; color:var(--text); }
+
 /* ============ RESPONSIVE ============ */
 @media (max-width:900px){
   .content{ padding:18px 16px 150px; }
@@ -593,40 +649,59 @@ html[lang="ar"] .queue-title, html[lang="ja"] .queue-title, html[lang="ko"] .que
   .filter-btn{ padding:14px; }
 }
 </style>
+<meta name="theme-color" content="#0B0D12">
 <script>
 /* apply the saved theme + language immediately, so a refresh never flashes the default look */
 try{
   var d=document.documentElement, t=JSON.parse(localStorage.getItem('sawt_theme')||'null');
-  if(t && t.accent && t.bg){ var r=d.style; r.setProperty('--accent',t.accent); r.setProperty('--accent2',t.accent2); r.setProperty('--bg',t.bg); r.setProperty('--surface',t.surface); r.setProperty('--elevated',t.elevated); r.setProperty('--elevated-2',t.elevated2||t.elevated); }
-  var l=localStorage.getItem('sawt_lang'); if(l){ d.lang=l; d.dir=(l==='ar')?'rtl':'ltr'; }
+  if(t && t.accent && t.bg){
+    var r=d.style;
+    r.setProperty('--accent',t.accent); r.setProperty('--accent2',t.accent2); r.setProperty('--bg',t.bg);
+    r.setProperty('--surface',t.surface); r.setProperty('--elevated',t.elevated); r.setProperty('--elevated-2',t.elevated2||t.elevated);
+    if(t.text){ r.setProperty('--text',t.text); r.setProperty('--text-muted',t.muted); r.setProperty('--border',t.border); }
+    if(t.onAccent) r.setProperty('--on-accent',t.onAccent);
+  }
+  var l=localStorage.getItem('sawt_lang');
+  if(!l){ var n=(navigator.language||'').slice(0,2).toLowerCase(); if(n==='ar') l='ar'; }
+  if(l){ d.lang=l; d.dir=(l==='ar')?'rtl':'ltr'; }
+  /* iPhone/iPad: the system does not let a web page change the media volume, so the slider is replaced by a hint */
+  var ua=navigator.userAgent||'';
+  if(/iPad|iPhone|iPod/.test(ua) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1)) d.classList.add('no-vol');
 }catch(e){}
 </script>
 </head>
 <body>
 <!-- شاشة تسجيل الدخول الشخصية -->
-<div id="login-overlay" class="checking" dir="rtl">
+<div id="login-overlay" class="checking">
+  <div class="login-lang">
+    <button type="button" class="login-lang-btn" onclick="toggleLoginLang(event)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></svg>
+      <span id="loginLangLabel">English</span>
+    </button>
+    <div class="login-lang-menu" id="loginLangMenu"></div>
+  </div>
   <div class="login-card">
-    <div class="login-brand"><div class="brand-mark">S</div><div class="login-brand-name">Sawt</div></div>
+    <div class="login-brand"><div class="brand-mark">M</div><div class="login-brand-name">M3sob</div></div>
     <div class="login-spinner"></div>
     <div class="login-form-area">
-      <h2 class="login-title">أهلاً بعودتك</h2>
-      <p class="login-sub">سجّل دخولك للوصول إلى مكتبتك الصوتية الخاصة</p>
+      <h2 class="login-title" data-i18n="login_title">Welcome back</h2>
+      <p class="login-sub" data-i18n="login_sub">Sign in to reach your private audio library</p>
       <form id="login-form">
-        <label class="login-field"><span>اسم المستخدم</span>
+        <label class="login-field"><span data-i18n="login_user">Username</span>
           <input type="text" id="username" placeholder="username" required autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
         </label>
-        <label class="login-field"><span>كلمة المرور</span>
+        <label class="login-field"><span data-i18n="login_pass">Password</span>
           <div class="pw-wrap">
             <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
-            <button type="button" class="pw-toggle" id="pwToggle" onclick="togglePw()" aria-label="إظهار كلمة المرور">
+            <button type="button" class="pw-toggle" id="pwToggle" onclick="togglePw()" aria-label="Show password">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
           </div>
         </label>
-        <button type="submit" class="login-btn" id="login-btn">دخول</button>
+        <button type="submit" class="login-btn" id="login-btn" data-i18n="login_btn">Sign in</button>
       </form>
       <p id="error-msg" class="login-error" style="display:none;"></p>
-      <div class="login-foot">مكتبتك الموسيقية، في أي مكان</div>
+      <div class="login-foot" data-i18n="login_foot">Your audio library, anywhere</div>
     </div>
   </div>
 </div>
@@ -696,13 +771,7 @@ try{
     </div>
     <h1 id="topbarTitle"></h1>
     <div class="topbar-spacer"></div>
-    <div class="lang-quick">
-      <button class="lang-quick-btn" onclick="toggleLangDropdown(event)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></svg>
-        <span id="langQuickLabel">EN</span>
-      </button>
-      <div class="lang-dropdown" id="langDropdown"></div>
-    </div>
+    
   </div>
 
   <div class="main">
@@ -747,6 +816,7 @@ try{
                 <input type="range" class="vol-range" id="npVolRange" min="0" max="100" value="70" oninput="onVolumeInput(this)">
                 <span class="vol-pct" id="npVolPct">70%</span>
               </div>
+              <div class="vol-hint np-vol-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19 7a7 7 0 010 10"/></svg><span data-i18n="vol_hint">Use your phone's volume buttons</span></div>
               <button class="np-btn" onclick="openRandomModal()" title="Random"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="8.5" cy="15.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor"/></svg></button>
               <button class="np-btn" onclick="openContextMenu(currentTrackId)" title="More">
                 <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
@@ -818,6 +888,7 @@ try{
         <div class="settings-block">
           <h3 data-i18n="set_theme_title">Theme Customizer</h3>
           <p class="desc" data-i18n="set_theme_desc">Choose a luxury preset, or design your own from scratch.</p>
+          <p class="desc" data-i18n="set_theme_note" style="margin-top:-10px;">A song with its own colors overrides this theme while it plays.</p>
           <div class="theme-grid" id="themeGrid"></div>
         </div>
 
@@ -844,12 +915,6 @@ try{
         </div>
 
         <div class="settings-block">
-          <h3 data-i18n="set_lang_title">Language</h3>
-          <p class="desc" data-i18n="set_lang_desc">Switch the entire interface between global languages.</p>
-          <div class="lang-grid" id="langGrid"></div>
-        </div>
-
-        <div class="settings-block">
           <h3 data-i18n="set_playback_title">Playback</h3>
           <div class="settings-toggle-row">
             <div class="toggle-label"><div class="tt" data-i18n="set_autoplay">Autoplay similar tracks</div><div class="ss" data-i18n="set_autoplay_sub">Keep the vibe going when a playlist ends</div></div>
@@ -858,6 +923,10 @@ try{
           <div class="settings-toggle-row">
             <div class="toggle-label"><div class="tt" data-i18n="set_island">Dynamic Island simulation</div><div class="ss" data-i18n="set_island_sub">Show a lock-screen style now-playing pill</div></div>
             <div class="switch on" id="islandSwitch" onclick="toggleIslandSetting(this)"></div>
+          </div>
+          <div class="settings-toggle-row">
+            <div class="toggle-label"><div class="tt" data-i18n="set_hide_covers">Hide all cover images</div><div class="ss" data-i18n="set_hide_covers_sub">Show a plain tile instead of artwork everywhere</div></div>
+            <div class="switch" id="coversSwitch" onclick="toggleCoversSetting(this)"></div>
           </div>
         </div>
       </section>
@@ -956,6 +1025,7 @@ try{
     <input type="range" class="vol-range" id="volRangeSheet" min="0" max="100" value="70" oninput="onVolumeInput(this)">
     <span class="vol-pct" id="volPctSheet">70%</span>
   </div>
+  <div class="vol-hint" style="margin-top:14px; padding-top:14px; border-top:1px solid var(--border);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19 7a7 7 0 010 10"/></svg><span data-i18n="vol_hint">Use your phone's volume buttons</span></div>
 </div>
 
 
@@ -1040,6 +1110,10 @@ try{
     <div class="form-hint" style="margin-top:2px;" data-i18n="bg_hint">Colors shown behind this song on the Now Playing page.</div>
   </div>
 
+  <div class="form-field">
+    <div class="toggle-row-inline"><label data-i18n="ctx_hide_cover">Hide cover image</label><div class="switch" id="addNoCover" onclick="this.classList.toggle('on')"></div></div>
+  </div>
+
   <div class="filter-actions">
     <button class="btn-ghost" onclick="closeModal('add')" data-i18n="cancel">Cancel</button>
     <button class="btn-primary" id="addSubmitBtn" onclick="submitAddTrack()" data-i18n="add_track_submit">Add & Play</button>
@@ -1077,6 +1151,10 @@ try{
         <button class="btn-primary" style="padding:8px 14px; font-size:12px;" onclick="ctxCreatePlaylistFromMenu()" data-i18n="ctx_create_short">Create</button>
       </div>
     </div>
+    <button class="ctx-item" onclick="ctxToggleCover()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 19c-7 0-11-7-11-7a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 7 11 7a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><path d="M1 1l22 22"/></svg>
+      <span id="ctxCoverLabel">Hide cover image</span>
+    </button>
     <button class="ctx-item" onclick="ctxEditTrack()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>
       <span data-i18n="ctx_edit">Edit details</span>
@@ -1202,7 +1280,7 @@ const languages = [
 
 /* ================= I18N ================= */
 const i18n = {
-  en:{ logout:"Log out", np_idle_title:"Nothing playing", np_idle_sub:"Pick something from your library, or let me choose.", np_browse:"Browse library", btn_random:"Random", rand_title:"Random play", rand_desc:"Choose what the random mix should include.", rand_play:"Play random", rand_none:"No songs match these choices", queue_random:"Random mix", field_bg:"Background", bg_custom:"Custom", bg_hint:"Colors shown behind this song on the Now Playing page.", set_theme_name:"Theme name", set_save_theme:"Save as theme", toast_theme_saved:"Theme saved", toast_theme_deleted:"Theme deleted", tip_delete:"Delete", queue_title:"Up next", queue_from:"Playing from", queue_all:"All songs", queue_custom:"Custom queue", queue_save:"Save as playlist", queue_hint:"Hold a song and drag to reorder · tap the eye to skip it", queue_empty:"The queue is empty", ctx_play_next:"Play next", toast_play_next:"Will play next", queue_skip_tip:"Skip this song when its turn comes", ctx_edit:"Edit details", edit_track_title:"Edit track", edit_track_desc:"Change the name, artist, genre, mood, or language. The YouTube link can't be changed.", save_changes:"Save changes", toast_track_updated:"Track updated", np_empty_title:"No songs yet", np_empty_sub:"Add a YouTube link to start listening.", no_results:"No results", unit_tracks:"tracks", toast_cloud_error:"Couldn't save to the cloud — check your connection or permissions", nav_menu:"Menu", nav_search:"Search & Filters", nav_library:"Library", nav_playlists:"Playlists", nav_settings:"Settings",
+  en:{ login_title:"Welcome back", login_sub:"Sign in to reach your private audio library", login_user:"Username", login_pass:"Password", login_btn:"Sign in", login_busy:"Signing in…", login_error:"Wrong username or password!", login_conn_error:"Couldn't reach the sign-in service. Check your internet and reload the page.", login_foot:"Your audio library, anywhere", login_show_pw:"Show password", set_theme_note:"A song with its own colors overrides this theme while it plays.", rand_started:"Random mix started · {n} tracks", ctx_hide_cover:"Hide cover image", ctx_show_cover:"Show cover image", set_hide_covers:"Hide all cover images", set_hide_covers_sub:"Show a plain tile instead of artwork everywhere", toast_cover_hidden:"Cover hidden", toast_cover_shown:"Cover shown", vol_hint:"Use your phone's volume buttons", logout:"Log out", np_idle_title:"Nothing playing", np_idle_sub:"Pick something from your library, or let me choose.", np_browse:"Browse library", btn_random:"Random", rand_title:"Random play", rand_desc:"Choose what the random mix should include.", rand_play:"Play random", rand_none:"No songs match these choices", queue_random:"Random mix", field_bg:"Background", bg_custom:"Custom", bg_hint:"While this song plays, the whole app takes these colors.", set_theme_name:"Theme name", set_save_theme:"Save as theme", toast_theme_saved:"Theme saved", toast_theme_deleted:"Theme deleted", tip_delete:"Delete", queue_title:"Up next", queue_from:"Playing from", queue_all:"All songs", queue_custom:"Custom queue", queue_save:"Save as playlist", queue_hint:"Hold a song and drag to reorder · tap the eye to skip it", queue_empty:"The queue is empty", ctx_play_next:"Play next", toast_play_next:"Will play next", queue_skip_tip:"Skip this song when its turn comes", ctx_edit:"Edit details", edit_track_title:"Edit track", edit_track_desc:"Change the name, artist, genre, mood, or language. The YouTube link can't be changed.", save_changes:"Save changes", toast_track_updated:"Track updated", np_empty_title:"No songs yet", np_empty_sub:"Add a YouTube link to start listening.", no_results:"No results", unit_tracks:"tracks", toast_cloud_error:"Couldn't save to the cloud — check your connection or permissions", nav_menu:"Menu", nav_search:"Search & Filters", nav_library:"Library", nav_playlists:"Playlists", nav_settings:"Settings",
     
     
     
@@ -1233,7 +1311,7 @@ const i18n = {
     toast_track_added:"Added to your queue", toast_invalid_link:"Couldn't read a video ID from that link", toast_meta_failed:"Added, but couldn't fetch title/channel — edit them manually",
     filter_none_all:"None / All", opt_none:"None", toast_added_queue:"Added to queue", toast_added_playlist:"Added to playlist", toast_playlist_created:"Playlist created", toast_removed_playlist:"Removed from playlist", toast_deleted:"Track deleted", ctx_add_queue:"Add to queue", ctx_add_playlist:"Add to playlist / Move", ctx_new_playlist_ph:"New playlist name...", ctx_create_short:"Create", ctx_add_short:"Add", ctx_remove_playlist:"Remove from this playlist", ctx_delete:"Delete entirely", pd_play_all:"▶ Play All", pd_rename:"✎ Rename", pd_delete:"🗑 Delete Playlist", toast_playlist_renamed:"Playlist renamed", toast_playlist_deleted:"Playlist deleted", pm_favorite:"Favorite", pm_shuffle:"Shuffle", pm_repeat:"Repeat", pm_repeat_all:"Repeat: All", pm_repeat_one:"Repeat: One", 
   },
-  ar:{ logout:"تسجيل الخروج", np_idle_title:"لا شيء قيد التشغيل", np_idle_sub:"اختر شيئاً من مكتبتك، أو دعني أختار لك.", np_browse:"تصفّح المكتبة", btn_random:"عشوائي", rand_title:"تشغيل عشوائي", rand_desc:"اختر ما تريد أن يشمله التشغيل العشوائي.", rand_play:"ابدأ التشغيل", rand_none:"لا توجد أغانٍ تطابق هذه الخيارات", queue_random:"مزيج عشوائي", field_bg:"الخلفية", bg_custom:"مخصص", bg_hint:"ألوان تظهر خلف هذه الأغنية في صفحة التشغيل الحالي.", set_theme_name:"اسم الثيم", set_save_theme:"حفظ كثيم", toast_theme_saved:"تم حفظ الثيم", toast_theme_deleted:"تم حذف الثيم", tip_delete:"حذف", queue_title:"قائمة التشغيل", queue_from:"التشغيل من", queue_all:"كل الأغاني", queue_custom:"قائمة مخصصة", queue_save:"حفظ كقائمة", queue_hint:"اضغط مطولاً على الأغنية واسحبها لتغيير الترتيب · اضغط على العين لتخطيها", queue_empty:"قائمة التشغيل فارغة", ctx_play_next:"الأغنية التالية", toast_play_next:"ستُشغَّل بعد الأغنية الحالية", queue_skip_tip:"تخطّي هذه الأغنية عند حلول دورها", ctx_edit:"تعديل البيانات", edit_track_title:"تعديل الأغنية", edit_track_desc:"عدّل الاسم أو الفنان أو النوع أو المزاج أو اللغة. رابط يوتيوب لا يمكن تغييره.", save_changes:"حفظ التعديلات", toast_track_updated:"تم تحديث الأغنية", np_empty_title:"لا توجد أغاني بعد", np_empty_sub:"أضف رابط يوتيوب لتبدأ الاستماع.", no_results:"لا توجد نتائج", unit_tracks:"أغنية", toast_cloud_error:"تعذّر الحفظ في السحابة — تحقق من الاتصال أو الصلاحيات", nav_menu:"القائمة", nav_search:"البحث والتصفية", nav_library:"مكتبتي", nav_playlists:"قوائم التشغيل", nav_settings:"الإعدادات",
+  ar:{ login_title:"أهلاً بعودتك", login_sub:"سجّل دخولك للوصول إلى مكتبتك الصوتية الخاصة", login_user:"اسم المستخدم", login_pass:"كلمة المرور", login_btn:"دخول", login_busy:"جارٍ الدخول…", login_error:"اسم المستخدم أو كلمة المرور غير صحيحة!", login_conn_error:"تعذّر الاتصال بخدمة تسجيل الدخول. تحقق من الإنترنت وأعد تحميل الصفحة.", login_foot:"مكتبتك الصوتية, في أي مكان", login_show_pw:"إظهار كلمة المرور", set_theme_note:"الأغنية التي لها ألوان خاصة تتجاوز هذا الثيم أثناء تشغيلها.", rand_started:"بدأ التشغيل العشوائي · {n} أغنية", ctx_hide_cover:"إخفاء صورة الغلاف", ctx_show_cover:"إظهار صورة الغلاف", set_hide_covers:"إخفاء كل صور الأغلفة", set_hide_covers_sub:"عرض مربع بسيط بدل الصور في كل مكان", toast_cover_hidden:"تم إخفاء الصورة", toast_cover_shown:"تم إظهار الصورة", vol_hint:"استخدم أزرار الصوت في جوالك", logout:"تسجيل الخروج", np_idle_title:"لا شيء قيد التشغيل", np_idle_sub:"اختر شيئاً من مكتبتك، أو دعني أختار لك.", np_browse:"تصفّح المكتبة", btn_random:"عشوائي", rand_title:"تشغيل عشوائي", rand_desc:"اختر ما تريد أن يشمله التشغيل العشوائي.", rand_play:"ابدأ التشغيل", rand_none:"لا توجد أغانٍ تطابق هذه الخيارات", queue_random:"مزيج عشوائي", field_bg:"الخلفية", bg_custom:"مخصص", bg_hint:"عند تشغيل هذه الأغنية يتحول الموقع كله إلى هذه الألوان.", set_theme_name:"اسم الثيم", set_save_theme:"حفظ كثيم", toast_theme_saved:"تم حفظ الثيم", toast_theme_deleted:"تم حذف الثيم", tip_delete:"حذف", queue_title:"قائمة التشغيل", queue_from:"التشغيل من", queue_all:"كل الأغاني", queue_custom:"قائمة مخصصة", queue_save:"حفظ كقائمة", queue_hint:"اضغط مطولاً على الأغنية واسحبها لتغيير الترتيب · اضغط على العين لتخطيها", queue_empty:"قائمة التشغيل فارغة", ctx_play_next:"الأغنية التالية", toast_play_next:"ستُشغَّل بعد الأغنية الحالية", queue_skip_tip:"تخطّي هذه الأغنية عند حلول دورها", ctx_edit:"تعديل البيانات", edit_track_title:"تعديل الأغنية", edit_track_desc:"عدّل الاسم أو الفنان أو النوع أو المزاج أو اللغة. رابط يوتيوب لا يمكن تغييره.", save_changes:"حفظ التعديلات", toast_track_updated:"تم تحديث الأغنية", np_empty_title:"لا توجد أغاني بعد", np_empty_sub:"أضف رابط يوتيوب لتبدأ الاستماع.", no_results:"لا توجد نتائج", unit_tracks:"أغنية", toast_cloud_error:"تعذّر الحفظ في السحابة — تحقق من الاتصال أو الصلاحيات", nav_menu:"القائمة", nav_search:"البحث والتصفية", nav_library:"مكتبتي", nav_playlists:"قوائم التشغيل", nav_settings:"الإعدادات",
     
     
     
@@ -1264,7 +1342,7 @@ const i18n = {
     toast_track_added:"أُضيفت إلى قائمتك", toast_invalid_link:"تعذّر استخراج معرّف الفيديو من هذا الرابط", toast_meta_failed:"تمت الإضافة، لكن تعذّر جلب العنوان/القناة — عدّلهما يدوياً",
     filter_none_all:"بدون / الكل", opt_none:"بدون", toast_added_queue:"أُضيفت إلى طابور التشغيل", toast_added_playlist:"أُضيفت إلى القائمة", toast_playlist_created:"تم إنشاء القائمة", toast_removed_playlist:"أُزيلت من القائمة", toast_deleted:"تم حذف الأغنية", ctx_add_queue:"إضافة إلى طابور التشغيل", ctx_add_playlist:"إضافة إلى قائمة / نقل", ctx_new_playlist_ph:"اسم القائمة الجديدة...", ctx_create_short:"إنشاء", ctx_add_short:"إضافة", ctx_remove_playlist:"حذف من هذه القائمة", ctx_delete:"حذف نهائي", pd_play_all:"▶ تشغيل الكل", pd_rename:"✎ إعادة تسمية", pd_delete:"🗑 حذف القائمة", toast_playlist_renamed:"تمت إعادة تسمية القائمة", toast_playlist_deleted:"تم حذف القائمة", pm_favorite:"مفضلة", pm_shuffle:"عشوائي", pm_repeat:"تكرار", pm_repeat_all:"تكرار: الكل", pm_repeat_one:"تكرار: أغنية واحدة", 
   },
-  ja:{ logout:"ログアウト", np_idle_title:"再生中の曲はありません", np_idle_sub:"ライブラリから選ぶか、おまかせで再生しましょう。", np_browse:"ライブラリを見る", btn_random:"ランダム", rand_title:"ランダム再生", rand_desc:"ランダム再生に含める内容を選んでください。", rand_play:"再生する", rand_none:"条件に合う曲がありません", queue_random:"ランダムミックス", field_bg:"背景", bg_custom:"カスタム", bg_hint:"「再生中」ページでこの曲の背後に表示される色です。", set_theme_name:"テーマ名", set_save_theme:"テーマとして保存", toast_theme_saved:"テーマを保存しました", toast_theme_deleted:"テーマを削除しました", tip_delete:"削除", queue_title:"次に再生", queue_from:"再生元", queue_all:"すべての曲", queue_custom:"カスタムキュー", queue_save:"プレイリストとして保存", queue_hint:"曲を長押ししてドラッグで並べ替え · 目のアイコンでスキップ", queue_empty:"キューは空です", ctx_play_next:"次に再生", toast_play_next:"次に再生されます", queue_skip_tip:"順番が来たらこの曲をスキップ", ctx_edit:"情報を編集", edit_track_title:"曲を編集", edit_track_desc:"名前、アーティスト、ジャンル、ムード、言語を変更できます。YouTubeのリンクは変更できません。", save_changes:"変更を保存", toast_track_updated:"曲を更新しました", np_empty_title:"まだ曲がありません", np_empty_sub:"YouTubeのリンクを追加して聴き始めましょう。", no_results:"結果がありません", unit_tracks:"曲", toast_cloud_error:"クラウドに保存できませんでした — 接続または権限を確認してください", nav_menu:"メニュー", nav_search:"検索とフィルター", nav_library:"ライブラリ", nav_playlists:"プレイリスト", nav_settings:"設定",
+  ja:{ login_title:"おかえりなさい", login_sub:"サインインしてプライベートなオーディオライブラリにアクセス", login_user:"ユーザー名", login_pass:"パスワード", login_btn:"ログイン", login_busy:"ログイン中…", login_error:"ユーザー名またはパスワードが違います！", login_conn_error:"サインインサービスに接続できません。インターネット接続を確認してページを再読み込みしてください。", login_foot:"どこでも、あなたのオーディオライブラリ", login_show_pw:"パスワードを表示", set_theme_note:"専用の色を持つ曲は、再生中このテーマより優先されます。", rand_started:"ランダム再生を開始 · {n}曲", ctx_hide_cover:"カバー画像を隠す", ctx_show_cover:"カバー画像を表示", set_hide_covers:"すべてのカバー画像を隠す", set_hide_covers_sub:"あらゆる場所でアートワークの代わりに無地のタイルを表示", toast_cover_hidden:"カバーを隠しました", toast_cover_shown:"カバーを表示しました", vol_hint:"音量は本体のボタンで調整してください", logout:"ログアウト", np_idle_title:"再生中の曲はありません", np_idle_sub:"ライブラリから選ぶか、おまかせで再生しましょう。", np_browse:"ライブラリを見る", btn_random:"ランダム", rand_title:"ランダム再生", rand_desc:"ランダム再生に含める内容を選んでください。", rand_play:"再生する", rand_none:"条件に合う曲がありません", queue_random:"ランダムミックス", field_bg:"背景", bg_custom:"カスタム", bg_hint:"この曲の再生中は、アプリ全体がこの色になります。", set_theme_name:"テーマ名", set_save_theme:"テーマとして保存", toast_theme_saved:"テーマを保存しました", toast_theme_deleted:"テーマを削除しました", tip_delete:"削除", queue_title:"次に再生", queue_from:"再生元", queue_all:"すべての曲", queue_custom:"カスタムキュー", queue_save:"プレイリストとして保存", queue_hint:"曲を長押ししてドラッグで並べ替え · 目のアイコンでスキップ", queue_empty:"キューは空です", ctx_play_next:"次に再生", toast_play_next:"次に再生されます", queue_skip_tip:"順番が来たらこの曲をスキップ", ctx_edit:"情報を編集", edit_track_title:"曲を編集", edit_track_desc:"名前、アーティスト、ジャンル、ムード、言語を変更できます。YouTubeのリンクは変更できません。", save_changes:"変更を保存", toast_track_updated:"曲を更新しました", np_empty_title:"まだ曲がありません", np_empty_sub:"YouTubeのリンクを追加して聴き始めましょう。", no_results:"結果がありません", unit_tracks:"曲", toast_cloud_error:"クラウドに保存できませんでした — 接続または権限を確認してください", nav_menu:"メニュー", nav_search:"検索とフィルター", nav_library:"ライブラリ", nav_playlists:"プレイリスト", nav_settings:"設定",
     
     
     
@@ -1295,7 +1373,7 @@ const i18n = {
     toast_track_added:"キューに追加しました", toast_invalid_link:"このリンクから動画IDを読み取れませんでした", toast_meta_failed:"追加しましたが、タイトル/チャンネルを取得できませんでした — 手動で編集してください",
     filter_none_all:"なし / すべて", opt_none:"なし", toast_added_queue:"キューに追加しました", toast_added_playlist:"プレイリストに追加しました", toast_playlist_created:"プレイリストを作成しました", toast_removed_playlist:"プレイリストから削除しました", toast_deleted:"曲を削除しました", ctx_add_queue:"キューに追加", ctx_add_playlist:"プレイリストに追加 / 移動", ctx_new_playlist_ph:"新しいプレイリスト名...", ctx_create_short:"作成", ctx_add_short:"追加", ctx_remove_playlist:"このプレイリストから削除", ctx_delete:"完全に削除", pd_play_all:"▶ すべて再生", pd_rename:"✎ 名前を変更", pd_delete:"🗑 プレイリストを削除", toast_playlist_renamed:"プレイリスト名を変更しました", toast_playlist_deleted:"プレイリストを削除しました", pm_favorite:"お気に入り", pm_shuffle:"シャッフル", pm_repeat:"リピート", pm_repeat_all:"リピート: すべて", pm_repeat_one:"リピート: 1曲", 
   },
-  zh:{ logout:"退出登录", np_idle_title:"当前没有播放内容", np_idle_sub:"从你的音乐库中选择，或者让我随机挑选。", np_browse:"浏览音乐库", btn_random:"随机播放", rand_title:"随机播放", rand_desc:"选择随机播放要包含的内容。", rand_play:"开始播放", rand_none:"没有符合条件的歌曲", queue_random:"随机混合", field_bg:"背景", bg_custom:"自定义", bg_hint:"在“正在播放”页面中显示于这首歌背后的颜色。", set_theme_name:"主题名称", set_save_theme:"保存为主题", toast_theme_saved:"主题已保存", toast_theme_deleted:"主题已删除", tip_delete:"删除", queue_title:"播放队列", queue_from:"播放来源", queue_all:"所有歌曲", queue_custom:"自定义队列", queue_save:"保存为播放列表", queue_hint:"长按歌曲并拖动即可重新排序 · 点击眼睛图标可跳过", queue_empty:"队列为空", ctx_play_next:"下一首播放", toast_play_next:"将在下一首播放", queue_skip_tip:"轮到时跳过这首歌", ctx_edit:"编辑信息", edit_track_title:"编辑曲目", edit_track_desc:"可修改名称、艺术家、流派、心情或语言。YouTube 链接无法更改。", save_changes:"保存更改", toast_track_updated:"曲目已更新", np_empty_title:"还没有歌曲", np_empty_sub:"添加 YouTube 链接开始收听。", no_results:"没有结果", unit_tracks:"首", toast_cloud_error:"无法保存到云端 —— 请检查网络或权限", nav_menu:"菜单", nav_search:"搜索与筛选", nav_library:"音乐库", nav_playlists:"播放列表", nav_settings:"设置",
+  zh:{ login_title:"欢迎回来", login_sub:"登录以访问你的私人音频库", login_user:"用户名", login_pass:"密码", login_btn:"登录", login_busy:"登录中…", login_error:"用户名或密码错误！", login_conn_error:"无法连接登录服务。请检查网络并刷新页面。", login_foot:"你的音频库，随时随地", login_show_pw:"显示密码", set_theme_note:"设置了专属颜色的歌曲在播放时会覆盖此主题。", rand_started:"已开始随机播放 · {n} 首", ctx_hide_cover:"隐藏封面图片", ctx_show_cover:"显示封面图片", set_hide_covers:"隐藏所有封面图片", set_hide_covers_sub:"在所有位置用纯色方块代替封面", toast_cover_hidden:"封面已隐藏", toast_cover_shown:"封面已显示", vol_hint:"请使用手机的音量键调节", logout:"退出登录", np_idle_title:"当前没有播放内容", np_idle_sub:"从你的音乐库中选择，或者让我随机挑选。", np_browse:"浏览音乐库", btn_random:"随机播放", rand_title:"随机播放", rand_desc:"选择随机播放要包含的内容。", rand_play:"开始播放", rand_none:"没有符合条件的歌曲", queue_random:"随机混合", field_bg:"背景", bg_custom:"自定义", bg_hint:"播放这首歌时，整个应用都会采用这些颜色。", set_theme_name:"主题名称", set_save_theme:"保存为主题", toast_theme_saved:"主题已保存", toast_theme_deleted:"主题已删除", tip_delete:"删除", queue_title:"播放队列", queue_from:"播放来源", queue_all:"所有歌曲", queue_custom:"自定义队列", queue_save:"保存为播放列表", queue_hint:"长按歌曲并拖动即可重新排序 · 点击眼睛图标可跳过", queue_empty:"队列为空", ctx_play_next:"下一首播放", toast_play_next:"将在下一首播放", queue_skip_tip:"轮到时跳过这首歌", ctx_edit:"编辑信息", edit_track_title:"编辑曲目", edit_track_desc:"可修改名称、艺术家、流派、心情或语言。YouTube 链接无法更改。", save_changes:"保存更改", toast_track_updated:"曲目已更新", np_empty_title:"还没有歌曲", np_empty_sub:"添加 YouTube 链接开始收听。", no_results:"没有结果", unit_tracks:"首", toast_cloud_error:"无法保存到云端 —— 请检查网络或权限", nav_menu:"菜单", nav_search:"搜索与筛选", nav_library:"音乐库", nav_playlists:"播放列表", nav_settings:"设置",
     
     
     
@@ -1326,7 +1404,7 @@ const i18n = {
     toast_track_added:"已添加到你的队列", toast_invalid_link:"无法从该链接读取视频 ID", toast_meta_failed:"已添加，但无法获取标题/频道 —— 请手动编辑",
     filter_none_all:"无 / 全部", opt_none:"无", toast_added_queue:"已添加到队列", toast_added_playlist:"已添加到播放列表", toast_playlist_created:"播放列表已创建", toast_removed_playlist:"已从播放列表移除", toast_deleted:"歌曲已删除", ctx_add_queue:"添加到队列", ctx_add_playlist:"添加到播放列表 / 移动", ctx_new_playlist_ph:"新播放列表名称...", ctx_create_short:"创建", ctx_add_short:"添加", ctx_remove_playlist:"从此播放列表中移除", ctx_delete:"彻底删除", pd_play_all:"▶ 播放全部", pd_rename:"✎ 重命名", pd_delete:"🗑 删除播放列表", toast_playlist_renamed:"播放列表已重命名", toast_playlist_deleted:"播放列表已删除", pm_favorite:"收藏", pm_shuffle:"随机播放", pm_repeat:"循环", pm_repeat_all:"循环：全部", pm_repeat_one:"循环：单曲", 
   },
-  es:{ logout:"Cerrar sesión", np_idle_title:"Nada en reproducción", np_idle_sub:"Elige algo de tu biblioteca o deja que yo elija.", np_browse:"Explorar biblioteca", btn_random:"Aleatorio", rand_title:"Reproducción aleatoria", rand_desc:"Elige qué debe incluir la mezcla aleatoria.", rand_play:"Reproducir", rand_none:"Ninguna canción coincide", queue_random:"Mezcla aleatoria", field_bg:"Fondo", bg_custom:"Personalizado", bg_hint:"Colores que se muestran detrás de esta canción en la página En reproducción.", set_theme_name:"Nombre del tema", set_save_theme:"Guardar como tema", toast_theme_saved:"Tema guardado", toast_theme_deleted:"Tema eliminado", tip_delete:"Eliminar", queue_title:"A continuación", queue_from:"Reproduciendo desde", queue_all:"Todas las canciones", queue_custom:"Cola personalizada", queue_save:"Guardar como lista", queue_hint:"Mantén pulsada una canción y arrastra para reordenar · toca el ojo para omitirla", queue_empty:"La cola está vacía", ctx_play_next:"Reproducir a continuación", toast_play_next:"Sonará a continuación", queue_skip_tip:"Omitir esta canción cuando le toque", ctx_edit:"Editar datos", edit_track_title:"Editar pista", edit_track_desc:"Cambia el nombre, artista, género, estado de ánimo o idioma. El enlace de YouTube no se puede cambiar.", save_changes:"Guardar cambios", toast_track_updated:"Pista actualizada", np_empty_title:"Aún no hay canciones", np_empty_sub:"Añade un enlace de YouTube para empezar a escuchar.", no_results:"Sin resultados", unit_tracks:"pistas", toast_cloud_error:"No se pudo guardar en la nube — revisa tu conexión o permisos", nav_menu:"Menú", nav_search:"Buscar y filtrar", nav_library:"Biblioteca", nav_playlists:"Listas", nav_settings:"Ajustes",
+  es:{ login_title:"Bienvenido de nuevo", login_sub:"Inicia sesión para acceder a tu biblioteca de audio privada", login_user:"Usuario", login_pass:"Contraseña", login_btn:"Entrar", login_busy:"Entrando…", login_error:"¡Usuario o contraseña incorrectos!", login_conn_error:"No se pudo conectar con el servicio de inicio de sesión. Revisa tu internet y recarga la página.", login_foot:"Tu biblioteca de audio, en cualquier lugar", login_show_pw:"Mostrar contraseña", set_theme_note:"Una canción con colores propios sustituye este tema mientras suena.", rand_started:"Mezcla aleatoria · {n} pistas", ctx_hide_cover:"Ocultar la portada", ctx_show_cover:"Mostrar la portada", set_hide_covers:"Ocultar todas las portadas", set_hide_covers_sub:"Muestra un recuadro neutro en lugar de la imagen en todas partes", toast_cover_hidden:"Portada oculta", toast_cover_shown:"Portada visible", vol_hint:"Usa los botones de volumen del teléfono", logout:"Cerrar sesión", np_idle_title:"Nada en reproducción", np_idle_sub:"Elige algo de tu biblioteca o deja que yo elija.", np_browse:"Explorar biblioteca", btn_random:"Aleatorio", rand_title:"Reproducción aleatoria", rand_desc:"Elige qué debe incluir la mezcla aleatoria.", rand_play:"Reproducir", rand_none:"Ninguna canción coincide", queue_random:"Mezcla aleatoria", field_bg:"Fondo", bg_custom:"Personalizado", bg_hint:"Mientras suena esta canción, toda la app adopta estos colores.", set_theme_name:"Nombre del tema", set_save_theme:"Guardar como tema", toast_theme_saved:"Tema guardado", toast_theme_deleted:"Tema eliminado", tip_delete:"Eliminar", queue_title:"A continuación", queue_from:"Reproduciendo desde", queue_all:"Todas las canciones", queue_custom:"Cola personalizada", queue_save:"Guardar como lista", queue_hint:"Mantén pulsada una canción y arrastra para reordenar · toca el ojo para omitirla", queue_empty:"La cola está vacía", ctx_play_next:"Reproducir a continuación", toast_play_next:"Sonará a continuación", queue_skip_tip:"Omitir esta canción cuando le toque", ctx_edit:"Editar datos", edit_track_title:"Editar pista", edit_track_desc:"Cambia el nombre, artista, género, estado de ánimo o idioma. El enlace de YouTube no se puede cambiar.", save_changes:"Guardar cambios", toast_track_updated:"Pista actualizada", np_empty_title:"Aún no hay canciones", np_empty_sub:"Añade un enlace de YouTube para empezar a escuchar.", no_results:"Sin resultados", unit_tracks:"pistas", toast_cloud_error:"No se pudo guardar en la nube — revisa tu conexión o permisos", nav_menu:"Menú", nav_search:"Buscar y filtrar", nav_library:"Biblioteca", nav_playlists:"Listas", nav_settings:"Ajustes",
     
     
     
@@ -1357,7 +1435,7 @@ const i18n = {
     toast_track_added:"Añadida a tu cola", toast_invalid_link:"No se pudo leer un ID de video de ese enlace", toast_meta_failed:"Añadida, pero no se pudo obtener título/canal — edítalos manualmente",
     filter_none_all:"Ninguno / Todos", opt_none:"Ninguno", toast_added_queue:"Añadida a la cola", toast_added_playlist:"Añadida a la lista", toast_playlist_created:"Lista creada", toast_removed_playlist:"Quitada de la lista", toast_deleted:"Pista eliminada", ctx_add_queue:"Añadir a la cola", ctx_add_playlist:"Añadir a lista / Mover", ctx_new_playlist_ph:"Nombre de la nueva lista...", ctx_create_short:"Crear", ctx_add_short:"Añadir", ctx_remove_playlist:"Quitar de esta lista", ctx_delete:"Eliminar definitivamente", pd_play_all:"▶ Reproducir todo", pd_rename:"✎ Renombrar", pd_delete:"🗑 Eliminar lista", toast_playlist_renamed:"Lista renombrada", toast_playlist_deleted:"Lista eliminada", pm_favorite:"Favorito", pm_shuffle:"Aleatorio", pm_repeat:"Repetir", pm_repeat_all:"Repetir: Todo", pm_repeat_one:"Repetir: Una", 
   },
-  fr:{ logout:"Se déconnecter", np_idle_title:"Rien en lecture", np_idle_sub:"Choisissez dans votre bibliothèque, ou laissez-moi choisir.", np_browse:"Parcourir la bibliothèque", btn_random:"Aléatoire", rand_title:"Lecture aléatoire", rand_desc:"Choisissez ce que le mix aléatoire doit inclure.", rand_play:"Lancer", rand_none:"Aucun titre ne correspond", queue_random:"Mix aléatoire", field_bg:"Arrière-plan", bg_custom:"Personnalisé", bg_hint:"Couleurs affichées derrière ce titre sur la page En cours de lecture.", set_theme_name:"Nom du thème", set_save_theme:"Enregistrer comme thème", toast_theme_saved:"Thème enregistré", toast_theme_deleted:"Thème supprimé", tip_delete:"Supprimer", queue_title:"À suivre", queue_from:"Lecture depuis", queue_all:"Tous les titres", queue_custom:"File personnalisée", queue_save:"Enregistrer comme playlist", queue_hint:"Maintenez un titre et glissez pour réorganiser · touchez l'œil pour l'ignorer", queue_empty:"La file est vide", ctx_play_next:"Lire ensuite", toast_play_next:"Sera lu ensuite", queue_skip_tip:"Ignorer ce titre quand son tour vient", ctx_edit:"Modifier les infos", edit_track_title:"Modifier le titre", edit_track_desc:"Modifiez le nom, l'artiste, le genre, l'ambiance ou la langue. Le lien YouTube ne peut pas être modifié.", save_changes:"Enregistrer", toast_track_updated:"Titre mis à jour", np_empty_title:"Aucun titre pour l'instant", np_empty_sub:"Ajoutez un lien YouTube pour commencer à écouter.", no_results:"Aucun résultat", unit_tracks:"titres", toast_cloud_error:"Impossible d'enregistrer dans le cloud — vérifiez la connexion ou les autorisations", nav_menu:"Menu", nav_search:"Recherche et filtres", nav_library:"Bibliothèque", nav_playlists:"Playlists", nav_settings:"Paramètres",
+  fr:{ login_title:"Bon retour", login_sub:"Connectez-vous pour accéder à votre bibliothèque audio privée", login_user:"Nom d'utilisateur", login_pass:"Mot de passe", login_btn:"Se connecter", login_busy:"Connexion…", login_error:"Nom d'utilisateur ou mot de passe incorrect !", login_conn_error:"Impossible de joindre le service de connexion. Vérifiez votre connexion et rechargez la page.", login_foot:"Votre bibliothèque audio, partout", login_show_pw:"Afficher le mot de passe", set_theme_note:"Un titre avec ses propres couleurs remplace ce thème pendant la lecture.", rand_started:"Mix aléatoire · {n} titres", ctx_hide_cover:"Masquer la pochette", ctx_show_cover:"Afficher la pochette", set_hide_covers:"Masquer toutes les pochettes", set_hide_covers_sub:"Affiche une vignette neutre à la place des visuels, partout", toast_cover_hidden:"Pochette masquée", toast_cover_shown:"Pochette affichée", vol_hint:"Utilisez les boutons de volume du téléphone", logout:"Se déconnecter", np_idle_title:"Rien en lecture", np_idle_sub:"Choisissez dans votre bibliothèque, ou laissez-moi choisir.", np_browse:"Parcourir la bibliothèque", btn_random:"Aléatoire", rand_title:"Lecture aléatoire", rand_desc:"Choisissez ce que le mix aléatoire doit inclure.", rand_play:"Lancer", rand_none:"Aucun titre ne correspond", queue_random:"Mix aléatoire", field_bg:"Arrière-plan", bg_custom:"Personnalisé", bg_hint:"Pendant la lecture de ce titre, toute l'appli adopte ces couleurs.", set_theme_name:"Nom du thème", set_save_theme:"Enregistrer comme thème", toast_theme_saved:"Thème enregistré", toast_theme_deleted:"Thème supprimé", tip_delete:"Supprimer", queue_title:"À suivre", queue_from:"Lecture depuis", queue_all:"Tous les titres", queue_custom:"File personnalisée", queue_save:"Enregistrer comme playlist", queue_hint:"Maintenez un titre et glissez pour réorganiser · touchez l'œil pour l'ignorer", queue_empty:"La file est vide", ctx_play_next:"Lire ensuite", toast_play_next:"Sera lu ensuite", queue_skip_tip:"Ignorer ce titre quand son tour vient", ctx_edit:"Modifier les infos", edit_track_title:"Modifier le titre", edit_track_desc:"Modifiez le nom, l'artiste, le genre, l'ambiance ou la langue. Le lien YouTube ne peut pas être modifié.", save_changes:"Enregistrer", toast_track_updated:"Titre mis à jour", np_empty_title:"Aucun titre pour l'instant", np_empty_sub:"Ajoutez un lien YouTube pour commencer à écouter.", no_results:"Aucun résultat", unit_tracks:"titres", toast_cloud_error:"Impossible d'enregistrer dans le cloud — vérifiez la connexion ou les autorisations", nav_menu:"Menu", nav_search:"Recherche et filtres", nav_library:"Bibliothèque", nav_playlists:"Playlists", nav_settings:"Paramètres",
     
     
     
@@ -1388,7 +1466,7 @@ const i18n = {
     toast_track_added:"Ajouté à votre file d'attente", toast_invalid_link:"Impossible de lire un ID de vidéo depuis ce lien", toast_meta_failed:"Ajouté, mais impossible de récupérer le titre/la chaîne — modifiez-les manuellement",
     filter_none_all:"Aucun / Tous", opt_none:"Aucun", toast_added_queue:"Ajouté à la file d'attente", toast_added_playlist:"Ajouté à la playlist", toast_playlist_created:"Playlist créée", toast_removed_playlist:"Retiré de la playlist", toast_deleted:"Titre supprimé", ctx_add_queue:"Ajouter à la file d'attente", ctx_add_playlist:"Ajouter à une playlist / Déplacer", ctx_new_playlist_ph:"Nom de la nouvelle playlist...", ctx_create_short:"Créer", ctx_add_short:"Ajouter", ctx_remove_playlist:"Retirer de cette playlist", ctx_delete:"Supprimer définitivement", pd_play_all:"▶ Tout lire", pd_rename:"✎ Renommer", pd_delete:"🗑 Supprimer la playlist", toast_playlist_renamed:"Playlist renommée", toast_playlist_deleted:"Playlist supprimée", pm_favorite:"Favori", pm_shuffle:"Aléatoire", pm_repeat:"Répéter", pm_repeat_all:"Répéter : Tout", pm_repeat_one:"Répéter : Un titre", 
   },
-  de:{ logout:"Abmelden", np_idle_title:"Nichts wird abgespielt", np_idle_sub:"Wähle etwas aus deiner Bibliothek oder lass mich auswählen.", np_browse:"Bibliothek durchsuchen", btn_random:"Zufall", rand_title:"Zufallswiedergabe", rand_desc:"Wähle, was der Zufallsmix enthalten soll.", rand_play:"Abspielen", rand_none:"Keine passenden Songs", queue_random:"Zufallsmix", field_bg:"Hintergrund", bg_custom:"Eigene", bg_hint:"Farben hinter diesem Song auf der Seite „Läuft gerade“.", set_theme_name:"Theme-Name", set_save_theme:"Als Theme speichern", toast_theme_saved:"Theme gespeichert", toast_theme_deleted:"Theme gelöscht", tip_delete:"Löschen", queue_title:"Als Nächstes", queue_from:"Wiedergabe aus", queue_all:"Alle Songs", queue_custom:"Eigene Warteschlange", queue_save:"Als Playlist speichern", queue_hint:"Song gedrückt halten und ziehen zum Sortieren · Auge antippen zum Überspringen", queue_empty:"Die Warteschlange ist leer", ctx_play_next:"Als Nächstes spielen", toast_play_next:"Wird als Nächstes gespielt", queue_skip_tip:"Diesen Song überspringen, wenn er dran ist", ctx_edit:"Details bearbeiten", edit_track_title:"Titel bearbeiten", edit_track_desc:"Ändere Name, Künstler, Genre, Stimmung oder Sprache. Der YouTube-Link kann nicht geändert werden.", save_changes:"Änderungen speichern", toast_track_updated:"Titel aktualisiert", np_empty_title:"Noch keine Songs", np_empty_sub:"Füge einen YouTube-Link hinzu, um loszulegen.", no_results:"Keine Ergebnisse", unit_tracks:"Titel", toast_cloud_error:"Cloud-Speichern fehlgeschlagen — Verbindung oder Berechtigungen prüfen", nav_menu:"Menü", nav_search:"Suche & Filter", nav_library:"Bibliothek", nav_playlists:"Playlists", nav_settings:"Einstellungen",
+  de:{ login_title:"Willkommen zurück", login_sub:"Melde dich an, um auf deine private Audiobibliothek zuzugreifen", login_user:"Benutzername", login_pass:"Passwort", login_btn:"Anmelden", login_busy:"Anmelden…", login_error:"Benutzername oder Passwort falsch!", login_conn_error:"Anmeldedienst nicht erreichbar. Prüfe deine Internetverbindung und lade die Seite neu.", login_foot:"Deine Audiobibliothek, überall", login_show_pw:"Passwort anzeigen", set_theme_note:"Ein Song mit eigenen Farben überschreibt dieses Theme, solange er läuft.", rand_started:"Zufallsmix gestartet · {n} Titel", ctx_hide_cover:"Cover ausblenden", ctx_show_cover:"Cover anzeigen", set_hide_covers:"Alle Cover ausblenden", set_hide_covers_sub:"Zeigt überall eine neutrale Kachel statt des Covers", toast_cover_hidden:"Cover ausgeblendet", toast_cover_shown:"Cover angezeigt", vol_hint:"Nutze die Lautstärketasten deines Handys", logout:"Abmelden", np_idle_title:"Nichts wird abgespielt", np_idle_sub:"Wähle etwas aus deiner Bibliothek oder lass mich auswählen.", np_browse:"Bibliothek durchsuchen", btn_random:"Zufall", rand_title:"Zufallswiedergabe", rand_desc:"Wähle, was der Zufallsmix enthalten soll.", rand_play:"Abspielen", rand_none:"Keine passenden Songs", queue_random:"Zufallsmix", field_bg:"Hintergrund", bg_custom:"Eigene", bg_hint:"Solange dieser Song läuft, nimmt die ganze App diese Farben an.", set_theme_name:"Theme-Name", set_save_theme:"Als Theme speichern", toast_theme_saved:"Theme gespeichert", toast_theme_deleted:"Theme gelöscht", tip_delete:"Löschen", queue_title:"Als Nächstes", queue_from:"Wiedergabe aus", queue_all:"Alle Songs", queue_custom:"Eigene Warteschlange", queue_save:"Als Playlist speichern", queue_hint:"Song gedrückt halten und ziehen zum Sortieren · Auge antippen zum Überspringen", queue_empty:"Die Warteschlange ist leer", ctx_play_next:"Als Nächstes spielen", toast_play_next:"Wird als Nächstes gespielt", queue_skip_tip:"Diesen Song überspringen, wenn er dran ist", ctx_edit:"Details bearbeiten", edit_track_title:"Titel bearbeiten", edit_track_desc:"Ändere Name, Künstler, Genre, Stimmung oder Sprache. Der YouTube-Link kann nicht geändert werden.", save_changes:"Änderungen speichern", toast_track_updated:"Titel aktualisiert", np_empty_title:"Noch keine Songs", np_empty_sub:"Füge einen YouTube-Link hinzu, um loszulegen.", no_results:"Keine Ergebnisse", unit_tracks:"Titel", toast_cloud_error:"Cloud-Speichern fehlgeschlagen — Verbindung oder Berechtigungen prüfen", nav_menu:"Menü", nav_search:"Suche & Filter", nav_library:"Bibliothek", nav_playlists:"Playlists", nav_settings:"Einstellungen",
     
     
     
@@ -1419,7 +1497,7 @@ const i18n = {
     toast_track_added:"Zur Warteschlange hinzugefügt", toast_invalid_link:"Aus diesem Link konnte keine Video-ID gelesen werden", toast_meta_failed:"Hinzugefügt, aber Titel/Kanal konnten nicht abgerufen werden — bitte manuell bearbeiten",
     filter_none_all:"Keine / Alle", opt_none:"Keine", toast_added_queue:"Zur Warteschlange hinzugefügt", toast_added_playlist:"Zur Playlist hinzugefügt", toast_playlist_created:"Playlist erstellt", toast_removed_playlist:"Aus Playlist entfernt", toast_deleted:"Titel gelöscht", ctx_add_queue:"Zur Warteschlange hinzufügen", ctx_add_playlist:"Zu Playlist hinzufügen / Verschieben", ctx_new_playlist_ph:"Name der neuen Playlist...", ctx_create_short:"Erstellen", ctx_add_short:"Hinzufügen", ctx_remove_playlist:"Aus dieser Playlist entfernen", ctx_delete:"Endgültig löschen", pd_play_all:"▶ Alle abspielen", pd_rename:"✎ Umbenennen", pd_delete:"🗑 Playlist löschen", toast_playlist_renamed:"Playlist umbenannt", toast_playlist_deleted:"Playlist gelöscht", pm_favorite:"Favorit", pm_shuffle:"Zufall", pm_repeat:"Wiederholen", pm_repeat_all:"Wiederholen: Alle", pm_repeat_one:"Wiederholen: Einen", 
   },
-  ko:{ logout:"로그아웃", np_idle_title:"재생 중인 항목 없음", np_idle_sub:"보관함에서 고르거나 랜덤으로 재생해 보세요.", np_browse:"보관함 둘러보기", btn_random:"랜덤", rand_title:"랜덤 재생", rand_desc:"랜덤 재생에 포함할 항목을 선택하세요.", rand_play:"재생", rand_none:"조건에 맞는 곡이 없습니다", queue_random:"랜덤 믹스", field_bg:"배경", bg_custom:"사용자 지정", bg_hint:"재생 중 페이지에서 이 곡 뒤에 표시되는 색상입니다.", set_theme_name:"테마 이름", set_save_theme:"테마로 저장", toast_theme_saved:"테마가 저장되었습니다", toast_theme_deleted:"테마가 삭제되었습니다", tip_delete:"삭제", queue_title:"다음 곡", queue_from:"재생 출처", queue_all:"모든 곡", queue_custom:"사용자 지정 대기열", queue_save:"플레이리스트로 저장", queue_hint:"곡을 길게 눌러 드래그하여 순서 변경 · 눈 아이콘으로 건너뛰기", queue_empty:"대기열이 비어 있습니다", ctx_play_next:"다음에 재생", toast_play_next:"다음에 재생됩니다", queue_skip_tip:"차례가 되면 이 곡 건너뛰기", ctx_edit:"정보 편집", edit_track_title:"트랙 편집", edit_track_desc:"이름, 아티스트, 장르, 분위기, 언어를 변경할 수 있습니다. YouTube 링크는 변경할 수 없습니다.", save_changes:"변경 사항 저장", toast_track_updated:"트랙이 업데이트되었습니다", np_empty_title:"아직 곡이 없습니다", np_empty_sub:"YouTube 링크를 추가해 들어보세요.", no_results:"결과 없음", unit_tracks:"곡", toast_cloud_error:"클라우드에 저장하지 못했습니다 — 연결 또는 권한을 확인하세요", nav_menu:"메뉴", nav_search:"검색 및 필터", nav_library:"보관함", nav_playlists:"플레이리스트", nav_settings:"설정",
+  ko:{ login_title:"다시 오신 것을 환영합니다", login_sub:"로그인하여 나만의 오디오 보관함에 접속하세요", login_user:"사용자 이름", login_pass:"비밀번호", login_btn:"로그인", login_busy:"로그인 중…", login_error:"사용자 이름 또는 비밀번호가 올바르지 않습니다!", login_conn_error:"로그인 서비스에 연결할 수 없습니다. 인터넷 연결을 확인하고 페이지를 새로고침하세요.", login_foot:"어디서나 나의 오디오 보관함", login_show_pw:"비밀번호 표시", set_theme_note:"고유 색상이 있는 곡은 재생되는 동안 이 테마를 덮어씁니다.", rand_started:"랜덤 재생 시작 · {n}곡", ctx_hide_cover:"커버 이미지 숨기기", ctx_show_cover:"커버 이미지 표시", set_hide_covers:"모든 커버 이미지 숨기기", set_hide_covers_sub:"모든 곳에서 이미지 대신 단색 타일 표시", toast_cover_hidden:"커버를 숨겼습니다", toast_cover_shown:"커버를 표시했습니다", vol_hint:"휴대폰 볼륨 버튼을 사용하세요", logout:"로그아웃", np_idle_title:"재생 중인 항목 없음", np_idle_sub:"보관함에서 고르거나 랜덤으로 재생해 보세요.", np_browse:"보관함 둘러보기", btn_random:"랜덤", rand_title:"랜덤 재생", rand_desc:"랜덤 재생에 포함할 항목을 선택하세요.", rand_play:"재생", rand_none:"조건에 맞는 곡이 없습니다", queue_random:"랜덤 믹스", field_bg:"배경", bg_custom:"사용자 지정", bg_hint:"이 곡이 재생되는 동안 앱 전체가 이 색상으로 바뀝니다.", set_theme_name:"테마 이름", set_save_theme:"테마로 저장", toast_theme_saved:"테마가 저장되었습니다", toast_theme_deleted:"테마가 삭제되었습니다", tip_delete:"삭제", queue_title:"다음 곡", queue_from:"재생 출처", queue_all:"모든 곡", queue_custom:"사용자 지정 대기열", queue_save:"플레이리스트로 저장", queue_hint:"곡을 길게 눌러 드래그하여 순서 변경 · 눈 아이콘으로 건너뛰기", queue_empty:"대기열이 비어 있습니다", ctx_play_next:"다음에 재생", toast_play_next:"다음에 재생됩니다", queue_skip_tip:"차례가 되면 이 곡 건너뛰기", ctx_edit:"정보 편집", edit_track_title:"트랙 편집", edit_track_desc:"이름, 아티스트, 장르, 분위기, 언어를 변경할 수 있습니다. YouTube 링크는 변경할 수 없습니다.", save_changes:"변경 사항 저장", toast_track_updated:"트랙이 업데이트되었습니다", np_empty_title:"아직 곡이 없습니다", np_empty_sub:"YouTube 링크를 추가해 들어보세요.", no_results:"결과 없음", unit_tracks:"곡", toast_cloud_error:"클라우드에 저장하지 못했습니다 — 연결 또는 권한을 확인하세요", nav_menu:"메뉴", nav_search:"검색 및 필터", nav_library:"보관함", nav_playlists:"플레이리스트", nav_settings:"설정",
     
     
     
@@ -1450,7 +1528,7 @@ const i18n = {
     toast_track_added:"대기열에 추가되었습니다", toast_invalid_link:"이 링크에서 동영상 ID를 읽을 수 없습니다", toast_meta_failed:"추가되었지만 제목/채널을 가져오지 못했습니다 — 직접 수정하세요",
     filter_none_all:"없음 / 전체", opt_none:"없음", toast_added_queue:"대기열에 추가되었습니다", toast_added_playlist:"플레이리스트에 추가되었습니다", toast_playlist_created:"플레이리스트가 생성되었습니다", toast_removed_playlist:"플레이리스트에서 제거되었습니다", toast_deleted:"트랙이 삭제되었습니다", ctx_add_queue:"대기열에 추가", ctx_add_playlist:"플레이리스트에 추가 / 이동", ctx_new_playlist_ph:"새 플레이리스트 이름...", ctx_create_short:"만들기", ctx_add_short:"추가", ctx_remove_playlist:"이 플레이리스트에서 제거", ctx_delete:"완전히 삭제", pd_play_all:"▶ 전체 재생", pd_rename:"✎ 이름 변경", pd_delete:"🗑 플레이리스트 삭제", toast_playlist_renamed:"플레이리스트 이름이 변경되었습니다", toast_playlist_deleted:"플레이리스트가 삭제되었습니다", pm_favorite:"즐겨찾기", pm_shuffle:"셔플", pm_repeat:"반복", pm_repeat_all:"반복: 전체", pm_repeat_one:"반복: 한 곡", 
   },
-  ru:{ logout:"Выйти", np_idle_title:"Ничего не играет", np_idle_sub:"Выберите что-нибудь из медиатеки или доверьтесь случаю.", np_browse:"Открыть медиатеку", btn_random:"Случайно", rand_title:"Случайное воспроизведение", rand_desc:"Выберите, что включить в случайный микс.", rand_play:"Играть", rand_none:"Нет подходящих песен", queue_random:"Случайный микс", field_bg:"Фон", bg_custom:"Свой", bg_hint:"Цвета за этой песней на странице «Сейчас играет».", set_theme_name:"Название темы", set_save_theme:"Сохранить как тему", toast_theme_saved:"Тема сохранена", toast_theme_deleted:"Тема удалена", tip_delete:"Удалить", queue_title:"Далее", queue_from:"Воспроизведение из", queue_all:"Все песни", queue_custom:"Своя очередь", queue_save:"Сохранить как плейлист", queue_hint:"Удерживайте песню и перетащите, чтобы изменить порядок · нажмите на глаз, чтобы пропустить", queue_empty:"Очередь пуста", ctx_play_next:"Играть следующей", toast_play_next:"Будет играть следующей", queue_skip_tip:"Пропускать эту песню, когда подойдёт её очередь", ctx_edit:"Редактировать", edit_track_title:"Редактировать трек", edit_track_desc:"Измените название, исполнителя, жанр, настроение или язык. Ссылку на YouTube изменить нельзя.", save_changes:"Сохранить", toast_track_updated:"Трек обновлён", np_empty_title:"Пока нет песен", np_empty_sub:"Добавьте ссылку на YouTube, чтобы начать слушать.", no_results:"Нет результатов", unit_tracks:"треков", toast_cloud_error:"Не удалось сохранить в облако — проверьте соединение или права", nav_menu:"Меню", nav_search:"Поиск и фильтры", nav_library:"Медиатека", nav_playlists:"Плейлисты", nav_settings:"Настройки",
+  ru:{ login_title:"С возвращением", login_sub:"Войдите, чтобы открыть свою личную аудиотеку", login_user:"Имя пользователя", login_pass:"Пароль", login_btn:"Войти", login_busy:"Вход…", login_error:"Неверное имя пользователя или пароль!", login_conn_error:"Не удалось связаться со службой входа. Проверьте интернет и перезагрузите страницу.", login_foot:"Ваша аудиотека — везде", login_show_pw:"Показать пароль", set_theme_note:"Песня со своими цветами заменяет эту тему на время воспроизведения.", rand_started:"Случайный микс · {n} треков", ctx_hide_cover:"Скрыть обложку", ctx_show_cover:"Показать обложку", set_hide_covers:"Скрыть все обложки", set_hide_covers_sub:"Везде показывать нейтральную плитку вместо картинки", toast_cover_hidden:"Обложка скрыта", toast_cover_shown:"Обложка показана", vol_hint:"Используйте кнопки громкости телефона", logout:"Выйти", np_idle_title:"Ничего не играет", np_idle_sub:"Выберите что-нибудь из медиатеки или доверьтесь случаю.", np_browse:"Открыть медиатеку", btn_random:"Случайно", rand_title:"Случайное воспроизведение", rand_desc:"Выберите, что включить в случайный микс.", rand_play:"Играть", rand_none:"Нет подходящих песен", queue_random:"Случайный микс", field_bg:"Фон", bg_custom:"Свой", bg_hint:"Пока играет эта песня, всё приложение использует эти цвета.", set_theme_name:"Название темы", set_save_theme:"Сохранить как тему", toast_theme_saved:"Тема сохранена", toast_theme_deleted:"Тема удалена", tip_delete:"Удалить", queue_title:"Далее", queue_from:"Воспроизведение из", queue_all:"Все песни", queue_custom:"Своя очередь", queue_save:"Сохранить как плейлист", queue_hint:"Удерживайте песню и перетащите, чтобы изменить порядок · нажмите на глаз, чтобы пропустить", queue_empty:"Очередь пуста", ctx_play_next:"Играть следующей", toast_play_next:"Будет играть следующей", queue_skip_tip:"Пропускать эту песню, когда подойдёт её очередь", ctx_edit:"Редактировать", edit_track_title:"Редактировать трек", edit_track_desc:"Измените название, исполнителя, жанр, настроение или язык. Ссылку на YouTube изменить нельзя.", save_changes:"Сохранить", toast_track_updated:"Трек обновлён", np_empty_title:"Пока нет песен", np_empty_sub:"Добавьте ссылку на YouTube, чтобы начать слушать.", no_results:"Нет результатов", unit_tracks:"треков", toast_cloud_error:"Не удалось сохранить в облако — проверьте соединение или права", nav_menu:"Меню", nav_search:"Поиск и фильтры", nav_library:"Медиатека", nav_playlists:"Плейлисты", nav_settings:"Настройки",
     
     
     
@@ -1481,7 +1559,7 @@ const i18n = {
     toast_track_added:"Добавлено в очередь", toast_invalid_link:"Не удалось определить ID видео по этой ссылке", toast_meta_failed:"Добавлено, но не удалось получить название/канал — отредактируйте вручную",
     filter_none_all:"Нет / Все", opt_none:"Нет", toast_added_queue:"Добавлено в очередь", toast_added_playlist:"Добавлено в плейлист", toast_playlist_created:"Плейлист создан", toast_removed_playlist:"Удалено из плейлиста", toast_deleted:"Трек удалён", ctx_add_queue:"Добавить в очередь", ctx_add_playlist:"Добавить в плейлист / Переместить", ctx_new_playlist_ph:"Название нового плейлиста...", ctx_create_short:"Создать", ctx_add_short:"Добавить", ctx_remove_playlist:"Удалить из этого плейлиста", ctx_delete:"Удалить навсегда", pd_play_all:"▶ Воспроизвести всё", pd_rename:"✎ Переименовать", pd_delete:"🗑 Удалить плейлист", toast_playlist_renamed:"Плейлист переименован", toast_playlist_deleted:"Плейлист удалён", pm_favorite:"Избранное", pm_shuffle:"Перемешать", pm_repeat:"Повтор", pm_repeat_all:"Повтор: Все", pm_repeat_one:"Повтор: Один", 
   },
-  tr:{ logout:"Çıkış yap", np_idle_title:"Çalan bir şey yok", np_idle_sub:"Kitaplığından bir şey seç ya da ben seçeyim.", np_browse:"Kitaplığa göz at", btn_random:"Rastgele", rand_title:"Rastgele çal", rand_desc:"Rastgele karışıma nelerin dahil olacağını seç.", rand_play:"Çal", rand_none:"Eşleşen şarkı yok", queue_random:"Rastgele karışım", field_bg:"Arka plan", bg_custom:"Özel", bg_hint:"Bu şarkının arkasında “Şimdi Çalıyor” sayfasında görünen renkler.", set_theme_name:"Tema adı", set_save_theme:"Tema olarak kaydet", toast_theme_saved:"Tema kaydedildi", toast_theme_deleted:"Tema silindi", tip_delete:"Sil", queue_title:"Sıradaki", queue_from:"Çalınan kaynak", queue_all:"Tüm şarkılar", queue_custom:"Özel sıra", queue_save:"Çalma listesi olarak kaydet", queue_hint:"Bir şarkıyı basılı tutup sürükleyerek sıralayın · atlamak için göze dokunun", queue_empty:"Sıra boş", ctx_play_next:"Sıradaki olarak çal", toast_play_next:"Sıradaki olarak çalınacak", queue_skip_tip:"Sırası gelince bu şarkıyı atla", ctx_edit:"Bilgileri düzenle", edit_track_title:"Parçayı düzenle", edit_track_desc:"Adı, sanatçıyı, türü, ruh halini veya dili değiştirin. YouTube bağlantısı değiştirilemez.", save_changes:"Değişiklikleri kaydet", toast_track_updated:"Parça güncellendi", np_empty_title:"Henüz şarkı yok", np_empty_sub:"Dinlemeye başlamak için bir YouTube bağlantısı ekleyin.", no_results:"Sonuç yok", unit_tracks:"parça", toast_cloud_error:"Buluta kaydedilemedi — bağlantıyı veya izinleri kontrol edin", nav_menu:"Menü", nav_search:"Arama ve Filtreler", nav_library:"Kitaplık", nav_playlists:"Çalma Listeleri", nav_settings:"Ayarlar",
+  tr:{ login_title:"Tekrar hoş geldin", login_sub:"Özel ses kitaplığına ulaşmak için giriş yap", login_user:"Kullanıcı adı", login_pass:"Şifre", login_btn:"Giriş yap", login_busy:"Giriş yapılıyor…", login_error:"Kullanıcı adı veya şifre hatalı!", login_conn_error:"Giriş hizmetine ulaşılamadı. İnternetini kontrol edip sayfayı yenile.", login_foot:"Ses kitaplığın, her yerde", login_show_pw:"Şifreyi göster", set_theme_note:"Kendi renkleri olan bir şarkı, çalarken bu temanın yerine geçer.", rand_started:"Rastgele karışım · {n} parça", ctx_hide_cover:"Kapak görselini gizle", ctx_show_cover:"Kapak görselini göster", set_hide_covers:"Tüm kapak görsellerini gizle", set_hide_covers_sub:"Her yerde görsel yerine sade bir kutucuk göster", toast_cover_hidden:"Kapak gizlendi", toast_cover_shown:"Kapak gösterildi", vol_hint:"Telefonunun ses tuşlarını kullan", logout:"Çıkış yap", np_idle_title:"Çalan bir şey yok", np_idle_sub:"Kitaplığından bir şey seç ya da ben seçeyim.", np_browse:"Kitaplığa göz at", btn_random:"Rastgele", rand_title:"Rastgele çal", rand_desc:"Rastgele karışıma nelerin dahil olacağını seç.", rand_play:"Çal", rand_none:"Eşleşen şarkı yok", queue_random:"Rastgele karışım", field_bg:"Arka plan", bg_custom:"Özel", bg_hint:"Bu şarkı çalarken tüm uygulama bu renkleri alır.", set_theme_name:"Tema adı", set_save_theme:"Tema olarak kaydet", toast_theme_saved:"Tema kaydedildi", toast_theme_deleted:"Tema silindi", tip_delete:"Sil", queue_title:"Sıradaki", queue_from:"Çalınan kaynak", queue_all:"Tüm şarkılar", queue_custom:"Özel sıra", queue_save:"Çalma listesi olarak kaydet", queue_hint:"Bir şarkıyı basılı tutup sürükleyerek sıralayın · atlamak için göze dokunun", queue_empty:"Sıra boş", ctx_play_next:"Sıradaki olarak çal", toast_play_next:"Sıradaki olarak çalınacak", queue_skip_tip:"Sırası gelince bu şarkıyı atla", ctx_edit:"Bilgileri düzenle", edit_track_title:"Parçayı düzenle", edit_track_desc:"Adı, sanatçıyı, türü, ruh halini veya dili değiştirin. YouTube bağlantısı değiştirilemez.", save_changes:"Değişiklikleri kaydet", toast_track_updated:"Parça güncellendi", np_empty_title:"Henüz şarkı yok", np_empty_sub:"Dinlemeye başlamak için bir YouTube bağlantısı ekleyin.", no_results:"Sonuç yok", unit_tracks:"parça", toast_cloud_error:"Buluta kaydedilemedi — bağlantıyı veya izinleri kontrol edin", nav_menu:"Menü", nav_search:"Arama ve Filtreler", nav_library:"Kitaplık", nav_playlists:"Çalma Listeleri", nav_settings:"Ayarlar",
     
     
     
@@ -1527,29 +1605,27 @@ function setLang(code){
     const key = el.getAttribute('data-i18n-ph');
     if(i18n[code][key]) el.placeholder = i18n[code][key];
   });
+  document.getElementById('pwToggle').setAttribute('aria-label', i18n[code].login_show_pw);
   try{ localStorage.setItem('sawt_lang', code); }catch(e){}
-  document.getElementById('langQuickLabel').textContent = code.toUpperCase();
   renderLangUI();
   updateTopbarTitle();
   renderAll();
 }
+// The one and only language button lives on the sign-in screen.
 function renderLangUI(){
-  document.getElementById('langDropdown').innerHTML = languages.map(l=>`
-    <div class="lang-opt ${l.code===curLang?'selected':''}" onclick="setLang('${l.code}'); toggleLangDropdown()">
-      <span>${l.name}</span><span class="native">${l.native}</span>
-    </div>`).join('');
-  document.getElementById('langGrid').innerHTML = languages.map(l=>`
-    <div class="lang-card ${l.code===curLang?'selected':''}" onclick="setLang('${l.code}')">
-      <div class="lname">${l.name}</div><div class="lnative">${l.native}</div>
-    </div>`).join('');
+  const cur = languages.find(l=>l.code===curLang);
+  document.getElementById('loginLangLabel').textContent = cur.native;
+  document.getElementById('loginLangMenu').innerHTML = languages.map(l=>
+    '<button type="button" class="login-lang-opt' + (l.code===curLang ? ' selected' : '') + '" onclick="setLang(\'' + l.code + '\'); toggleLoginLang()">' +
+    '<span>' + l.native + '</span><span class="en">' + l.name + '</span></button>').join('');
 }
-function toggleLangDropdown(e){
+function toggleLoginLang(e){
   if(e) e.stopPropagation();
-  document.getElementById('langDropdown').classList.toggle('open');
+  document.getElementById('loginLangMenu').classList.toggle('open');
 }
 document.addEventListener('click', (e)=>{
-  const dd = document.getElementById('langDropdown');
-  if(dd.classList.contains('open') && !e.target.closest('.lang-quick')) dd.classList.remove('open');
+  const m = document.getElementById('loginLangMenu');
+  if(m.classList.contains('open') && !e.target.closest('.login-lang')) m.classList.remove('open');
 });
 
 /* ================= THEMES ================= */
@@ -1566,20 +1642,108 @@ const themes = [
   {id:'obsidian', name:'Obsidian Blue', accent:'#5B7FD9', accent2:'#12213F', bg:'#05070C', surface:'#0C1018', elevated:'#141A26'},
 ];
 let activeThemeId = 'gold';
-function applyTheme(t, persist){
-  const r = document.documentElement.style;
-  const e2 = t.elevated2 || shade(t.elevated, 8);
-  r.setProperty('--accent', t.accent);
-  r.setProperty('--accent2', t.accent2);
-  r.setProperty('--bg', t.bg);
-  r.setProperty('--surface', t.surface);
-  r.setProperty('--elevated', t.elevated);
-  r.setProperty('--elevated-2', e2);
-  activeThemeId = t.id || 'custom';
-  document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.toggle('selected', s.dataset.id===activeThemeId));
-  if(persist !== false){
-    try{ localStorage.setItem('sawt_theme', JSON.stringify({ id:activeThemeId, accent:t.accent, accent2:t.accent2, bg:t.bg, surface:t.surface, elevated:t.elevated, elevated2:e2 })); }catch(e){}
+let baseTheme = completePalette(themes[0]);     // the theme chosen in Settings
+let appliedThemeKey = '';      // what is painted right now: the Settings theme, or the playing song's own theme
+
+/* ---- colour helpers ---- */
+function clamp01(x){ return Math.max(0, Math.min(1, x)); }
+function hexToRgb(h){ const n = parseInt(String(h).replace('#', ''), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
+function rgbToHex(r, g, b){ return '#' + [r, g, b].map(function(v){ return Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0'); }).join(''); }
+function rgbToHsl(r, g, b){
+  r /= 255; g /= 255; b /= 255;
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b); let h = 0, s = 0; const l = (mx + mn) / 2;
+  if(mx !== mn){
+    const d = mx - mn; s = l > 0.5 ? d / (2 - mx - mn) : d / (mx + mn);
+    if(mx === r) h = (g - b) / d + (g < b ? 6 : 0); else if(mx === g) h = (b - r) / d + 2; else h = (r - g) / d + 4;
+    h /= 6;
   }
+  return [h, s, l];
+}
+function hslToHex(h, s, l){
+  let r, g, b;
+  if(s === 0){ r = g = b = l; }
+  else {
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s, p = 2 * l - q;
+    const f = function(t){ if(t < 0) t += 1; if(t > 1) t -= 1; if(t < 1/6) return p + (q - p) * 6 * t; if(t < 1/2) return q; if(t < 2/3) return p + (q - p) * (2/3 - t) * 6; return p; };
+    r = f(h + 1/3); g = f(h); b = f(h - 1/3);
+  }
+  return rgbToHex(r * 255, g * 255, b * 255);
+}
+function relLum(hex){
+  const c = hexToRgb(hex).map(function(v){ v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+}
+function contrast(a, b){ const la = relLum(a), lb = relLum(b); return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05); }
+// Nudge the accent until it is actually readable on the background (presets are hand-tuned; custom colours aren't).
+function ensureContrast(accent, bg){
+  const hsl = rgbToHsl.apply(null, hexToRgb(accent)); let l = hsl[2];
+  const lighter = relLum(bg) < 0.4;
+  for(let i = 0; i < 16 && contrast(hslToHex(hsl[0], hsl[1], l), bg) < 3; i++) l = clamp01(l + (lighter ? 0.04 : -0.04));
+  return hslToHex(hsl[0], hsl[1], l);
+}
+// Turn 3 colours into a complete palette the same way the ready-made themes are built:
+// surfaces are the background lifted a little (keeping its tint), text flips for light backgrounds, button text follows the accent.
+function buildPalette(o){
+  const hsl = rgbToHsl.apply(null, hexToRgb(o.bg)), h = hsl[0], s = hsl[1], l = hsl[2];
+  const light = relLum(o.bg) > 0.42, dir = light ? -1 : 1;
+  const tint = Math.min(0.7, s * 1.1 + 0.03);
+  const at = function(d){ return hslToHex(h, tint, clamp01(l + dir * d)); };
+  const accent = ensureContrast(o.accent, o.bg);
+  return {
+    id: o.id, name: o.name, accent: accent, accent2: o.accent2, bg: o.bg,
+    surface: at(0.04), elevated: at(0.08), elevated2: at(0.12),
+    text: light ? '#17181C' : '#F2EFEA', muted: light ? '#5E6272' : '#8B8F9C',
+    border: light ? 'rgba(20,20,30,0.12)' : 'rgba(242,239,234,0.08)',
+    onAccent: relLum(accent) > 0.45 ? '#0B0D12' : '#FFFFFF'
+  };
+}
+// Ready-made presets only define 5 colours; fill in the rest.
+function completePalette(t){
+  const light = relLum(t.bg) > 0.42;
+  return Object.assign({}, t, {
+    elevated2: t.elevated2 || shade(t.elevated, 8),
+    text: t.text || (light ? '#17181C' : '#F2EFEA'),
+    muted: t.muted || (light ? '#5E6272' : '#8B8F9C'),
+    border: t.border || (light ? 'rgba(20,20,30,0.12)' : 'rgba(242,239,234,0.08)'),
+    onAccent: t.onAccent || (relLum(t.accent) > 0.45 ? '#0B0D12' : '#FFFFFF')
+  });
+}
+function paintPalette(p){
+  const r = document.documentElement.style;
+  r.setProperty('--accent', p.accent); r.setProperty('--accent2', p.accent2); r.setProperty('--bg', p.bg);
+  r.setProperty('--surface', p.surface); r.setProperty('--elevated', p.elevated); r.setProperty('--elevated-2', p.elevated2);
+  r.setProperty('--text', p.text); r.setProperty('--text-muted', p.muted); r.setProperty('--border', p.border); r.setProperty('--on-accent', p.onAccent);
+  const meta = document.querySelector('meta[name="theme-color"]'); if(meta) meta.setAttribute('content', p.bg);
+}
+
+/* ---- the song's own theme: the WHOLE site follows the song that's loaded ---- */
+function songPalette(t){
+  const a = rgbToHsl.apply(null, hexToRgb(t.bg1)), b = rgbToHsl.apply(null, hexToRgb(t.bg2));
+  const sat = a[1] < 0.08 ? 0 : Math.max(0.18, Math.min(0.65, a[1]));   // greys stay grey
+  const bg = hslToHex(a[0], sat, 0.07);
+  return buildPalette({ id: 'song', accent: t.bg2, accent2: hslToHex(b[0], b[1], b[2] * 0.55), bg: bg });
+}
+// Painted whenever the loaded song changes. A song without colours (or nothing loaded) falls back to the Settings theme.
+function updateSongTheme(){
+  const t = currentTrack();
+  const themed = !!(t && t.bg1 && t.bg2);
+  const key = themed ? 'song:' + t.id + t.bg1 + t.bg2 : 'base:' + JSON.stringify(baseTheme);
+  if(key !== appliedThemeKey){ appliedThemeKey = key; paintPalette(themed ? songPalette(t) : baseTheme); }
+  const layer = document.getElementById('npBg');
+  if(themed) layer.style.background = 'linear-gradient(180deg, rgba(0,0,0,.2), rgba(0,0,0,.62)), linear-gradient(160deg, ' + t.bg1 + ', ' + t.bg2 + ')';
+  layer.classList.toggle('show', themed);
+}
+
+/* ---- Settings theme ---- */
+function applyTheme(t, persist){
+  baseTheme = completePalette(t);
+  activeThemeId = t.id || 'custom';
+  document.querySelectorAll('.theme-swatch').forEach(function(s){ s.classList.toggle('selected', s.dataset.id === activeThemeId); });
+  if(persist !== false){
+    try{ localStorage.setItem('sawt_theme', JSON.stringify(Object.assign({}, baseTheme, { id: activeThemeId }))); }catch(e){}
+  }
+  appliedThemeKey = '';      // force a repaint
+  updateSongTheme();
 }
 // The chosen theme (custom ones too) is remembered on this device and re-applied on every load.
 function restoreSavedTheme(){
@@ -1593,7 +1757,6 @@ function restoreSavedTheme(){
     document.getElementById('cGrad').value = saved.accent2;
   }
 }
-
 function shade(hex, amt){
   const c = hex.replace('#','');
   const num = parseInt(c,16);
@@ -1615,13 +1778,12 @@ function applyThemeById(id){
   if(t) applyTheme(t);
 }
 function customThemeFromPickers(id){
-  const bg = document.getElementById('cBg').value;
-  return {
+  return buildPalette({
     id: id,
     accent: document.getElementById('cPrimary').value,
     accent2: document.getElementById('cGrad').value,
-    bg: bg, surface: shade(bg, 10), elevated: shade(bg, 20)
-  };
+    bg: document.getElementById('cBg').value
+  });
 }
 function applyCustomTheme(){
   applyTheme(customThemeFromPickers('custom'));
@@ -1691,7 +1853,7 @@ function hydrateTrack(r){
     id: id, videoId: String(r.videoId || id),
     title: title, artist: String(r.artist || ''),
     genre: r.genre || 'None', mood: r.mood || 'None', language: r.language || 'None',
-    favorite: !!r.favorite, addedAt: Number(r.addedAt) || 0,
+    favorite: !!r.favorite, addedAt: Number(r.addedAt) || 0, noCover: !!r.noCover,
     duration: durationCache[id] || Number(r.duration) || 0,
     bg1: (validHex(r.bg1) && validHex(r.bg2)) ? r.bg1 : '', bg2: (validHex(r.bg1) && validHex(r.bg2)) ? r.bg2 : '',
     cover: ytThumb(id), coverFallback: makeFallback(title, id)
@@ -1702,7 +1864,7 @@ function serializeTrack(t){
   return {
     id: t.id, videoId: t.videoId || t.id, title: t.title, artist: t.artist || '',
     genre: t.genre || 'None', mood: t.mood || 'None', language: t.language || 'None',
-    favorite: !!t.favorite, addedAt: t.addedAt || 0, duration: Math.round(t.duration || 0),
+    favorite: !!t.favorite, addedAt: t.addedAt || 0, duration: Math.round(t.duration || 0), noCover: !!t.noCover,
     bg1: t.bg1 || '', bg2: t.bg2 || ''
   };
 }
@@ -1740,11 +1902,31 @@ function parsePlaylistSnapshot(val){
   list.sort(function(a, b){ return (b.createdAt - a.createdAt) || (a.name < b.name ? -1 : 1); });
   return { list: list, stale: stale };
 }
+/* ---- cover images: hide them per song (⋯ menu / edit) or everywhere (Settings) ---- */
+const NO_COVER = 'data:image/svg+xml;utf8,' + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='#262A35'/><path d='M40 66V36l26-6v30' fill='none' stroke='#8B8F9C' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/><circle cx='36' cy='68' r='7' fill='#8B8F9C'/><circle cx='62' cy='62' r='7' fill='#8B8F9C'/></svg>").replace(/'/g, '%27');
+let coversOff = false;
+function coverHidden(t){ return coversOff || !!t.noCover; }
+function coverUrl(t){ return coverHidden(t) ? NO_COVER : t.cover; }
+function toggleCoversSetting(el){
+  el.classList.toggle('on');
+  coversOff = el.classList.contains('on');
+  try{ localStorage.setItem('sawt_hide_covers', coversOff ? '1' : '0'); }catch(e){}
+  renderAll(); refreshOpenPlaylist();
+}
+function ctxToggleCover(){
+  const t = tracks.find(function(x){ return x.id === ctxTrackId; }); if(!t) return;
+  t.noCover = !t.noCover;
+  fbSaveTrack(t);
+  closeModal('ctx');
+  renderAll(); refreshOpenPlaylist();
+  showToast(t.noCover ? i18n[curLang].toast_cover_hidden : i18n[curLang].toast_cover_shown);
+}
+
 function currentTrack(){ return tracks.find(function(t){ return t.id === currentTrackId; }) || null; }
 function tName(t){ return t.title; }
 function aName(t){ return t.artist; }
 function coverImg(t, extraAttrs){
-  return '<img src="' + esc(t.cover) + '" onerror="this.onerror=null;this.src=\'' + t.coverFallback + '\'" ' + (extraAttrs || '') + '>';
+  return '<img src="' + esc(coverUrl(t)) + '" onerror="this.onerror=null;this.src=\'' + t.coverFallback + '\'" ' + (extraAttrs || '') + '>';
 }
 
 const filterGenres = ["Songs","AI","Podcast","Quran","Nasheed","Lecture","Audiobook","Pop","Dark Pop","Metal","Rock","Synthwave","Old","Hip-Hop","Indie","Classical","Sheilat","Folk","poem","Cartoon","Acoustic"];
@@ -1813,7 +1995,7 @@ function fbFail(err){
 function setLoginBusy(busy){
   const btn = document.getElementById('login-btn');
   btn.disabled = busy;
-  btn.textContent = busy ? 'جارٍ الدخول…' : 'دخول';
+  btn.textContent = busy ? i18n[curLang].login_busy : i18n[curLang].login_btn;
 }
 function togglePw(){
   const input = document.getElementById('password');
@@ -1842,7 +2024,7 @@ if(firebaseEnabled){
     firebase.auth().signInWithEmailAndPassword(fakeEmail, password).catch(function(){
       setLoginBusy(false);
       errorMsg.style.display = 'block';
-      errorMsg.innerText = "اسم المستخدم أو كلمة المرور غير صحيحة!";
+      errorMsg.innerText = i18n[curLang].login_error;
       errorMsg.classList.remove('shake'); void errorMsg.offsetWidth; errorMsg.classList.add('shake');
     });
   });
@@ -1850,7 +2032,7 @@ if(firebaseEnabled){
   document.getElementById('login-overlay').classList.remove('checking');
   const connErr = document.getElementById('error-msg');
   connErr.style.display = 'block';
-  connErr.innerText = 'تعذّر الاتصال بخدمة تسجيل الدخول. تحقق من الإنترنت وأعد تحميل الصفحة.';
+  connErr.innerText = i18n[curLang].login_conn_error;
 }
 
 function fbSaveTrack(t){
@@ -1949,7 +2131,7 @@ function trackRowHTML(t, queueStr, playlistId, source){
     ? '<button class="more-btn eye-btn' + (isHidden ? ' on' : '') + '" title="' + esc(i18n[curLang].queue_skip_tip) + '" onclick="togglePlaylistHidden(\'' + playlistId + '\',\'' + t.id + '\')">' + (isHidden ? EYE_OFF_SVG : EYE_SVG) + '</button>'
     : '';
   const more = '<button class="more-btn" onclick="openContextMenu(\'' + t.id + '\'' + (playlistId ? ",'" + playlistId + "'" : '') + ')">' + DOTS_SVG + '</button>';
-  return '<div class="result-row' + (isHidden ? ' is-hidden' : '') + '" data-id="' + t.id + '">' +
+  return '<div class="result-row' + (isHidden ? ' is-hidden' : '') + '" data-id="' + t.id + '">' + (playlistId ? '<span class="drag-grip">' + GRIP_SVG + '</span>' : '') +
     coverImg(t, 'alt="" onclick="' + play + '"') +
     '<div class="info" onclick="' + play + '"><div class="tt">' + esc(tName(t)) + '</div><div class="ta">' + esc(aName(t)) + '</div></div>' +
     tag + dur + '<div class="row-actions">' + heart + eye + more + '</div></div>';
@@ -1966,30 +2148,22 @@ function renderNowPlaying(){
     setI18n('npEmptySub', hasLib ? 'np_idle_sub' : 'np_empty_sub');
     $('npIdleBtns').style.display = hasLib ? 'flex' : 'none';
     $('npAddBtn').style.display = hasLib ? 'none' : 'inline-block';
-    updateNpBackground();
+    updateSongTheme();
     return;
   }
   const img = $('npCover');
-  if(img.getAttribute('data-id') !== t.id){
-    img.setAttribute('data-id', t.id);
-    img.src = t.cover;
+  if(img.getAttribute('data-id') !== t.id + (coverHidden(t) ? 'h' : '')){
+    img.setAttribute('data-id', t.id + (coverHidden(t) ? 'h' : ''));
+    img.src = coverUrl(t);
     img.onerror = function(){ this.onerror = null; this.src = t.coverFallback; };
   }
   img.alt = t.title;
+  $('npCoverWrap').style.display = coverHidden(t) ? 'none' : '';
   $('npTitle').textContent = tName(t);
   $('npArtist').textContent = aName(t);
   $('npCoverWrap').classList.toggle('playing', isPlaying);
-  updateNpBackground();
+  updateSongTheme();
 }
-// The colours you picked for this song fade in behind the Now Playing page.
-function updateNpBackground(){
-  const layer = $('npBg');
-  const t = currentTrack();
-  const on = currentView === 'home' && !!t && !!t.bg1 && !!t.bg2;
-  if(on) layer.style.background = 'linear-gradient(180deg, rgba(0,0,0,.12), rgba(0,0,0,.5)), linear-gradient(160deg, ' + t.bg1 + ', ' + t.bg2 + ')';
-  layer.classList.toggle('show', on);
-}
-
 function renderSearchResults(){
   const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
   const list = tracks.filter(function(t){
@@ -2117,7 +2291,7 @@ function goView(name){
   content.classList.toggle('np-mode', name === 'home');
   updateTopbarTitle();
   applyPlayerVisibility();
-  updateNpBackground();
+  updateSongTheme();
   content.scrollTop = 0;
   closeDrawer();
 }
@@ -2217,6 +2391,7 @@ function handleTrackEnd(){
   if(repeatMode === 2){ ytPlayer.seekTo(0, true); ytPlayer.playVideo(); return; }
   const n = findNext();
   if(n){ playTrackById(n); return; }
+  if(continueRandom()) return;            // a random mix never just stops: it reshuffles and goes on
   isPlaying = false; ytPlayer.pauseVideo(); updatePlayerUI();
 }
 
@@ -2254,7 +2429,7 @@ function togglePlay(){
   if(!ytReady) return;
   if(isPlaying) ytPlayer.pauseVideo(); else ytPlayer.playVideo();
 }
-function nextTrack(){ const n = findNext(); if(n) playTrackById(n); }
+function nextTrack(){ const n = findNext(); if(n) playTrackById(n); else continueRandom(); }
 function prevTrack(){
   const p = findPrev();
   if(p){ playTrackById(p); return; }
@@ -2330,7 +2505,7 @@ function updatePlayerUI(){
   const t = currentTrack();
   if(!t){ updateDynIsland(); return; }
   const pImg = $('pImg');
-  pImg.src = t.cover; pImg.onerror = function(){ this.onerror = null; this.src = t.coverFallback; };
+  pImg.src = coverUrl(t); pImg.onerror = function(){ this.onerror = null; this.src = t.coverFallback; };
   $('pTitle').textContent = tName(t);
   $('pArtist').textContent = aName(t);
   ['pHeart', 'npHeart'].forEach(function(id){ $(id).classList.toggle('active', !!t.favorite); });
@@ -2347,7 +2522,7 @@ function updateDynIsland(){
   const t = currentTrack();
   if(!islandEnabled || !playerVisible || !t || !isPlaying){ island.classList.remove('show'); return; }
   const img = $('diImg');
-  img.src = t.cover; img.onerror = function(){ this.onerror = null; this.src = t.coverFallback; };
+  img.src = coverUrl(t); img.onerror = function(){ this.onerror = null; this.src = t.coverFallback; };
   $('diText').textContent = tName(t) + ' · ' + aName(t);
   island.classList.add('show');
 }
@@ -2361,7 +2536,7 @@ function toggleIslandSetting(el){
 function openPlayerMore(){
   const t = currentTrack(); if(!t) return;
   const img = $('pmoreImg');
-  img.src = t.cover; img.onerror = function(){ this.onerror = null; this.src = t.coverFallback; };
+  img.src = coverUrl(t); img.onerror = function(){ this.onerror = null; this.src = t.coverFallback; };
   $('pmoreTitle').textContent = tName(t);
   $('pmoreArtist').textContent = aName(t);
   refreshPlayerMore();
@@ -2389,7 +2564,7 @@ function updateMediaSession(){
   try{
     navigator.mediaSession.metadata = new MediaMetadata({
       title: tName(t), artist: aName(t), album: 'Sawt',
-      artwork: [{ src: t.cover, sizes: '480x480', type: 'image/jpeg' }]
+      artwork: coverHidden(t) ? [] : [{ src: t.cover, sizes: '480x480', type: 'image/jpeg' }]
     });
     navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
     navigator.mediaSession.setActionHandler('play', function(){ if(!isPlaying) togglePlay(); });
@@ -2460,6 +2635,7 @@ function highlightQueue(){
 function openQueue(){
   if(!currentTrack()) return;
   queueOpen = true;
+  $('queueSheet').style.setProperty('--qh', queueHalfHeight() + 'px');
   renderQueue();
   $('queueBackdrop').classList.add('show');
   $('queueSheet').classList.add('show');
@@ -2504,11 +2680,12 @@ function saveQueueAsPlaylist(){
 
 /* Hold & drag to reorder (SortableJS). Touch needs a short press-and-hold so normal scrolling still works. */
 function sortableOpts(extra){
-  return Object.assign({
-    animation: 160, delay: 220, delayOnTouchOnly: true, touchStartThreshold: 6,
-    filter: 'button', preventOnFilter: false, ghostClass: 'drag-ghost', chosenClass: 'drag-chosen',
-    onChoose: function(){ if(navigator.vibrate) navigator.vibrate(12); }
-  }, extra);
+  const coarse = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+  const o = { animation: 160, filter: 'button', preventOnFilter: false, ghostClass: 'drag-ghost', chosenClass: 'drag-chosen',
+    onChoose: function(){ if(navigator.vibrate) navigator.vibrate(12); } };
+  if(coarse){ o.handle = '.drag-grip'; o.delay = 0; o.touchStartThreshold = 0; }          // phones: grab the ≡ handle and it moves at once
+  else { o.delay = 220; o.delayOnTouchOnly = true; o.touchStartThreshold = 6; }          // mouse: drag the row itself
+  return Object.assign(o, extra);
 }
 function initQueueSortable(){
   if(queueSortable || typeof Sortable === 'undefined') return;
@@ -2546,16 +2723,34 @@ function initQueueSortable(){
     if(dy < -70 && Math.abs(dx) < Math.abs(dy) * 0.6 && atEdge) openQueue();
   }, { passive: true });
 })();
-// Swipe down on the sheet's header → close it.
+// Drag the little handle at the top of the sheet: up = taller (full page), down = shorter, all the way down = close. Tap it to flip half ↔ full.
+function queueHalfHeight(){ return Math.round(window.innerHeight * 0.55); }
+function queueFullHeight(){ return Math.round(window.innerHeight * 0.94); }
 (function(){
-  const head = document.getElementById('queueHead');
-  let sy = 0, tracking = false;
-  head.addEventListener('touchstart', function(e){ sy = e.touches[0].clientY; tracking = true; }, { passive: true });
-  head.addEventListener('touchend', function(e){
-    if(!tracking) return;
-    tracking = false;
-    if(e.changedTouches[0].clientY - sy > 70) closeQueue();
-  }, { passive: true });
+  const sheet = document.getElementById('queueSheet'), head = document.getElementById('queueHead');
+  let startY = 0, startH = 0, moved = false, active = false;
+  head.addEventListener('pointerdown', function(e){
+    if(e.target.closest && e.target.closest('button')) return;
+    active = true; moved = false; startY = e.clientY; startH = sheet.getBoundingClientRect().height;
+    sheet.classList.add('dragging');
+    try{ head.setPointerCapture(e.pointerId); }catch(err){}
+  });
+  head.addEventListener('pointermove', function(e){
+    if(!active) return;
+    const dy = startY - e.clientY;
+    if(Math.abs(dy) > 4) moved = true;
+    sheet.style.setProperty('--qh', Math.max(80, Math.min(queueFullHeight(), startH + dy)) + 'px');
+  });
+  function end(){
+    if(!active) return;
+    active = false; sheet.classList.remove('dragging');
+    const h = sheet.getBoundingClientRect().height, half = queueHalfHeight(), full = queueFullHeight();
+    if(!moved){ sheet.style.setProperty('--qh', (h > half + 40 ? half : full) + 'px'); return; }
+    if(h < window.innerHeight * 0.3){ closeQueue(); return; }
+    sheet.style.setProperty('--qh', (Math.abs(h - half) < Math.abs(h - full) ? half : full) + 'px');
+  }
+  head.addEventListener('pointerup', end);
+  head.addEventListener('pointercancel', end);
 })();
 
 /* ================= CONTEXT MENU (⋮) ================= */
@@ -2566,9 +2761,10 @@ function openContextMenu(id, playlistId){
   ctxTrackId = id;
   ctxPlaylistId = playlistId || null;
   const img = document.getElementById('ctxImg');
-  img.src = t.cover; img.onerror = function(){ this.onerror = null; this.src = t.coverFallback; };
+  img.src = coverUrl(t); img.onerror = function(){ this.onerror = null; this.src = t.coverFallback; };
   document.getElementById('ctxTitle').textContent = tName(t);
   document.getElementById('ctxArtist').textContent = aName(t);
+  document.getElementById('ctxCoverLabel').textContent = t.noCover ? i18n[curLang].ctx_show_cover : i18n[curLang].ctx_hide_cover;
   document.getElementById('ctxRemoveFromPlaylistBtn').style.display = ctxPlaylistId ? 'flex' : 'none';
   document.getElementById('ctxPlaylistSubmenu').classList.remove('open');
   renderCtxPlaylistPicker();
@@ -2683,7 +2879,7 @@ function openPlaylistDetail(playlistId){
   document.getElementById('pdTitle').textContent = p.name;
   document.getElementById('pdCount').textContent = items.length + ' ' + i18n[curLang].unit_tracks;
   const img = document.getElementById('pdImg');
-  if(items[0]){ img.src = items[0].cover; img.onerror = function(){ this.onerror = null; this.src = items[0].coverFallback; }; }
+  if(items[0]){ img.src = coverUrl(items[0]); img.onerror = function(){ this.onerror = null; this.src = items[0].coverFallback; }; }
   else { img.src = svgCover('♪', idHash(p.id)); }
   const queueStr = items.map(function(t){ return t.id; }).join(',');
   document.getElementById('pdTrackList').innerHTML = items.length
@@ -2874,6 +3070,7 @@ function openAddModal(editId){
   }
   setBgFor(t);
   renderBgPicker();
+  document.getElementById('addNoCover').classList.toggle('on', !!(t && t.noCover));
   openModal('add');
 }
 let addPreviewTimer;
@@ -2904,6 +3101,7 @@ function saveEditedTrack(){
   t.mood = document.getElementById('addMoodSelect').value;
   t.language = document.getElementById('addLangSelect').value;
   const bg = currentBgFields(); t.bg1 = bg.bg1; t.bg2 = bg.bg2;
+  t.noCover = document.getElementById('addNoCover').classList.contains('on');
   t.coverFallback = makeFallback(t.title, t.id);
   fbSaveTrack(t);
   closeModal('add');
@@ -2932,6 +3130,7 @@ async function submitAddTrack(){
       mood: document.getElementById('addMoodSelect').value,
       language: document.getElementById('addLangSelect').value,
       bg1: bg.bg1, bg2: bg.bg2,
+      noCover: document.getElementById('addNoCover').classList.contains('on'),
       favorite: false, addedAt: Date.now()
     });
     tracks.unshift(track);      // newest first
@@ -2945,8 +3144,10 @@ async function submitAddTrack(){
 }
 
 /* ================= RANDOM PLAY ================= */
-// Press Random → pick which languages / kinds of content (songs, podcast, Quran…) the mix may include.
+// Press Random → choose the languages / kinds of content (songs, podcast, Quran…) and a COMPLETE shuffled playlist
+// of everything that matches is queued (nothing chosen = everything). When the mix runs out it reshuffles and keeps going.
 let randDraft = { langs: new Set(), genres: new Set() };
+let randActive = null;   // the filters of the mix that is playing
 function shuffleArr(a){
   const r = a.slice();
   for(let i = r.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); const x = r[i]; r[i] = r[j]; r[j] = x; }
@@ -2958,11 +3159,19 @@ function loadRandPrefs(){
     if(p) randDraft = { langs: new Set(p.langs || []), genres: new Set(p.genres || []) };
   }catch(e){}
 }
-function randMatches(){
+function randPool(sets){
   return tracks.filter(function(t){
-    return (randDraft.langs.size === 0 || randDraft.langs.has(t.language)) &&
-           (randDraft.genres.size === 0 || randDraft.genres.has(t.genre));
+    return (sets.langs.size === 0 || sets.langs.has(t.language)) &&
+           (sets.genres.size === 0 || sets.genres.has(t.genre));
   });
+}
+function randMatches(){ return randPool(randDraft); }
+function buildRandomMix(sets, avoidFirstId){
+  const ids = shuffleArr(randPool(sets).map(function(t){ return t.id; }));
+  if(ids.length > 1 && ids[0] === avoidFirstId){
+    const j = 1 + Math.floor(Math.random() * (ids.length - 1)); const x = ids[0]; ids[0] = ids[j]; ids[j] = x;
+  }
+  return ids;
 }
 function openRandomModal(){
   if(!tracks.length){ showToast(i18n[curLang].np_empty_title); return; }
@@ -2991,12 +3200,21 @@ function clearRand(type){
   renderRandomModal();
 }
 function startRandom(){
-  const pool = randMatches();
-  if(!pool.length){ showToast(i18n[curLang].rand_none); return; }
+  if(!randMatches().length){ showToast(i18n[curLang].rand_none); return; }
   try{ localStorage.setItem('sawt_rand', JSON.stringify({ langs: Array.from(randDraft.langs), genres: Array.from(randDraft.genres) })); }catch(e){}
-  const ids = shuffleArr(pool.map(function(t){ return t.id; }));
+  randActive = { langs: new Set(randDraft.langs), genres: new Set(randDraft.genres) };
+  const ids = buildRandomMix(randActive, null);
   closeModal('rand');
+  playTrackById(ids[0], ids, 'random');                       // the whole shuffled list becomes the queue
+  showToast(i18n[curLang].rand_started.replace('{n}', ids.length));
+}
+// The mix reached its end (or "next" was pressed on its last song): reshuffle the same selection and carry on.
+function continueRandom(){
+  if(queueSource.type !== 'random' || !randActive) return false;
+  const ids = buildRandomMix(randActive, currentTrackId);
+  if(!ids.length) return false;
   playTrackById(ids[0], ids, 'random');
+  return true;
 }
 
 /* ================= MODAL HELPERS ================= */
@@ -3026,7 +3244,13 @@ function showToast(msg){
 loadSavedThemes();
 restoreSavedTheme();
 let startLang = 'en';
-try{ const savedLang = localStorage.getItem('sawt_lang'); if(savedLang && i18n[savedLang]) startLang = savedLang; }catch(e){}
+try{
+  const savedLang = localStorage.getItem('sawt_lang');
+  if(savedLang && i18n[savedLang]) startLang = savedLang;
+  else { const nav = String(navigator.language || '').slice(0, 2).toLowerCase(); if(i18n[nav]) startLang = nav; }
+}catch(e){}
+try{ coversOff = localStorage.getItem('sawt_hide_covers') === '1'; }catch(e){}
+$('coversSwitch').classList.toggle('on', coversOff);
 renderLangUI();
 setLang(startLang);
 
