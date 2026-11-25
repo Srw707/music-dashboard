@@ -634,6 +634,29 @@ html, body{ max-width:100%; overflow-x:hidden; }
 .toggle-row-inline{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .toggle-row-inline label{ text-transform:none; letter-spacing:0; font-size:13px; color:var(--text); }
 
+/* ---- smooth colour changes: the whole palette melts into the next song's colours ---- */
+@property --accent{ syntax:'<color>'; inherits:true; initial-value:#D4A853; }
+@property --accent2{ syntax:'<color>'; inherits:true; initial-value:#8B5E34; }
+@property --bg{ syntax:'<color>'; inherits:true; initial-value:#0B0D12; }
+@property --surface{ syntax:'<color>'; inherits:true; initial-value:#14171F; }
+@property --elevated{ syntax:'<color>'; inherits:true; initial-value:#1C2029; }
+@property --elevated-2{ syntax:'<color>'; inherits:true; initial-value:#242833; }
+@property --text{ syntax:'<color>'; inherits:true; initial-value:#F2EFEA; }
+@property --text-muted{ syntax:'<color>'; inherits:true; initial-value:#8B8F9C; }
+@property --border{ syntax:'<color>'; inherits:true; initial-value:rgba(242,239,234,0.08); }
+@property --on-accent{ syntax:'<color>'; inherits:true; initial-value:#0B0D12; }
+html{ transition:--accent 1.1s ease, --accent2 1.1s ease, --bg 1.1s ease, --surface 1.1s ease, --elevated 1.1s ease, --elevated-2 1.1s ease, --text 1.1s ease, --text-muted 1.1s ease, --border 1.1s ease, --on-accent 1.1s ease; }
+/* two stacked gradient layers cross-fade, and the gradient slowly drifts so the background feels alive */
+.np-bg{ transition:opacity 1.2s ease; background-size:100% 100%, 190% 190%; background-position:0 0, 0% 10%; animation:bgdrift 26s ease-in-out infinite alternate; }
+@keyframes bgdrift{ 0%{ background-position:0 0, 0% 10%; } 100%{ background-position:0 0, 100% 90%; } }
+@media (prefers-reduced-motion: reduce){ .np-bg{ animation:none; } html{ transition:none; } }
+
+/* ---- long titles scroll (in from the right, out on the left) ---- */
+.marq{ overflow:hidden; white-space:nowrap; }
+.marq-text{ display:inline-block; will-change:transform; }
+.marq.marq-on{ direction:ltr; text-overflow:clip; -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%); mask-image:linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%); }
+.player-track .info{ flex:1; }
+
 /* ============ RESPONSIVE ============ */
 @media (max-width:900px){
   .content{ padding:18px 16px 150px; }
@@ -707,6 +730,7 @@ try{
 </div>
 
 <div class="np-bg" id="npBg"></div>
+<div class="np-bg" id="npBg2"></div>
 <div class="lattice-bg"></div>
 <div class="grain-fade"></div>
 <!-- Hidden YouTube IFrame Player (audio engine). Kept tiny + off-canvas rather than display:none so playback isn't throttled by the browser. -->
@@ -717,7 +741,7 @@ try{
 <!-- Dynamic Island -->
 <div class="dyn-island" id="dynIsland">
   <img id="diImg" src="" alt="">
-  <div class="txt" id="diText">—</div>
+  <div class="txt marq" id="diText">—</div>
   <div class="eq"><span></span><span></span><span></span></div>
 </div>
 
@@ -781,7 +805,7 @@ try{
         <div class="np-wrap" id="npWrap" style="display:none;">
           <button class="np-close" onclick="clearCurrent()" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
           <div class="np-cover-wrap" id="npCoverWrap"><img id="npCover" src="" alt=""></div>
-          <div class="np-title" id="npTitle">—</div>
+          <div class="np-title marq" id="npTitle">—</div>
           <div class="np-artist" id="npArtist">—</div>
 
           <div class="np-controls">
@@ -942,7 +966,7 @@ try{
   <div class="player-track">
     <img id="pImg" src="" alt="">
     <div class="info">
-      <div class="tt" id="pTitle">—</div>
+      <div class="tt marq" id="pTitle">—</div>
       <div class="ta" id="pArtist">—</div>
     </div>
     <button class="heart-btn desktop-only" id="pHeart" onclick="toggleFavorite(currentTrackId)">
@@ -1280,7 +1304,7 @@ const languages = [
 
 /* ================= I18N ================= */
 const i18n = {
-  en:{ login_title:"Welcome back", login_sub:"Sign in to reach your private audio library", login_user:"Username", login_pass:"Password", login_btn:"Sign in", login_busy:"Signing in…", login_error:"Wrong username or password!", login_conn_error:"Couldn't reach the sign-in service. Check your internet and reload the page.", login_foot:"Your audio library, anywhere", login_show_pw:"Show password", set_theme_note:"A song with its own colors overrides this theme while it plays.", rand_started:"Random mix started · {n} tracks", ctx_hide_cover:"Hide cover image", ctx_show_cover:"Show cover image", set_hide_covers:"Hide all cover images", set_hide_covers_sub:"Show a plain tile instead of artwork everywhere", toast_cover_hidden:"Cover hidden", toast_cover_shown:"Cover shown", vol_hint:"Use your phone's volume buttons", logout:"Log out", np_idle_title:"Nothing playing", np_idle_sub:"Pick something from your library, or let me choose.", np_browse:"Browse library", btn_random:"Random", rand_title:"Random play", rand_desc:"Choose what the random mix should include.", rand_play:"Play random", rand_none:"No songs match these choices", queue_random:"Random mix", field_bg:"Background", bg_custom:"Custom", bg_hint:"While this song plays, the whole app takes these colors.", set_theme_name:"Theme name", set_save_theme:"Save as theme", toast_theme_saved:"Theme saved", toast_theme_deleted:"Theme deleted", tip_delete:"Delete", queue_title:"Up next", queue_from:"Playing from", queue_all:"All songs", queue_custom:"Custom queue", queue_save:"Save as playlist", queue_hint:"Hold a song and drag to reorder · tap the eye to skip it", queue_empty:"The queue is empty", ctx_play_next:"Play next", toast_play_next:"Will play next", queue_skip_tip:"Skip this song when its turn comes", ctx_edit:"Edit details", edit_track_title:"Edit track", edit_track_desc:"Change the name, artist, genre, mood, or language. The YouTube link can't be changed.", save_changes:"Save changes", toast_track_updated:"Track updated", np_empty_title:"No songs yet", np_empty_sub:"Add a YouTube link to start listening.", no_results:"No results", unit_tracks:"tracks", toast_cloud_error:"Couldn't save to the cloud — check your connection or permissions", nav_menu:"Menu", nav_search:"Search & Filters", nav_library:"Library", nav_playlists:"Playlists", nav_settings:"Settings",
+  en:{ toast_link_changed:"Link updated — everything else was kept", toast_link_exists:"That link is already in your library", login_title:"Welcome back", login_sub:"Sign in to reach your private audio library", login_user:"Username", login_pass:"Password", login_btn:"Sign in", login_busy:"Signing in…", login_error:"Wrong username or password!", login_conn_error:"Couldn't reach the sign-in service. Check your internet and reload the page.", login_foot:"Your audio library, anywhere", login_show_pw:"Show password", set_theme_note:"A song with its own colors overrides this theme while it plays.", rand_started:"Random mix started · {n} tracks", ctx_hide_cover:"Hide cover image", ctx_show_cover:"Show cover image", set_hide_covers:"Hide all cover images", set_hide_covers_sub:"Show a plain tile instead of artwork everywhere", toast_cover_hidden:"Cover hidden", toast_cover_shown:"Cover shown", vol_hint:"Use your phone's volume buttons", logout:"Log out", np_idle_title:"Nothing playing", np_idle_sub:"Pick something from your library, or let me choose.", np_browse:"Browse library", btn_random:"Random", rand_title:"Random play", rand_desc:"Choose what the random mix should include.", rand_play:"Play random", rand_none:"No songs match these choices", queue_random:"Random mix", field_bg:"Background", bg_custom:"Custom", bg_hint:"While this song plays, the whole app takes these colors.", set_theme_name:"Theme name", set_save_theme:"Save as theme", toast_theme_saved:"Theme saved", toast_theme_deleted:"Theme deleted", tip_delete:"Delete", queue_title:"Up next", queue_from:"Playing from", queue_all:"All songs", queue_custom:"Custom queue", queue_save:"Save as playlist", queue_hint:"Hold a song and drag to reorder · tap the eye to skip it", queue_empty:"The queue is empty", ctx_play_next:"Play next", toast_play_next:"Will play next", queue_skip_tip:"Skip this song when its turn comes", ctx_edit:"Edit details", edit_track_title:"Edit track", edit_track_desc:"Change the name, artist, genre, mood, language, background — or swap the YouTube link (handy if the video was removed).", save_changes:"Save changes", toast_track_updated:"Track updated", np_empty_title:"No songs yet", np_empty_sub:"Add a YouTube link to start listening.", no_results:"No results", unit_tracks:"tracks", toast_cloud_error:"Couldn't save to the cloud — check your connection or permissions", nav_menu:"Menu", nav_search:"Search & Filters", nav_library:"Library", nav_playlists:"Playlists", nav_settings:"Settings",
     
     
     
@@ -1311,7 +1335,7 @@ const i18n = {
     toast_track_added:"Added to your queue", toast_invalid_link:"Couldn't read a video ID from that link", toast_meta_failed:"Added, but couldn't fetch title/channel — edit them manually",
     filter_none_all:"None / All", opt_none:"None", toast_added_queue:"Added to queue", toast_added_playlist:"Added to playlist", toast_playlist_created:"Playlist created", toast_removed_playlist:"Removed from playlist", toast_deleted:"Track deleted", ctx_add_queue:"Add to queue", ctx_add_playlist:"Add to playlist / Move", ctx_new_playlist_ph:"New playlist name...", ctx_create_short:"Create", ctx_add_short:"Add", ctx_remove_playlist:"Remove from this playlist", ctx_delete:"Delete entirely", pd_play_all:"▶ Play All", pd_rename:"✎ Rename", pd_delete:"🗑 Delete Playlist", toast_playlist_renamed:"Playlist renamed", toast_playlist_deleted:"Playlist deleted", pm_favorite:"Favorite", pm_shuffle:"Shuffle", pm_repeat:"Repeat", pm_repeat_all:"Repeat: All", pm_repeat_one:"Repeat: One", 
   },
-  ar:{ login_title:"أهلاً بعودتك", login_sub:"سجّل دخولك للوصول إلى مكتبتك الصوتية الخاصة", login_user:"اسم المستخدم", login_pass:"كلمة المرور", login_btn:"دخول", login_busy:"جارٍ الدخول…", login_error:"اسم المستخدم أو كلمة المرور غير صحيحة!", login_conn_error:"تعذّر الاتصال بخدمة تسجيل الدخول. تحقق من الإنترنت وأعد تحميل الصفحة.", login_foot:"مكتبتك الصوتية, في أي مكان", login_show_pw:"إظهار كلمة المرور", set_theme_note:"الأغنية التي لها ألوان خاصة تتجاوز هذا الثيم أثناء تشغيلها.", rand_started:"بدأ التشغيل العشوائي · {n} أغنية", ctx_hide_cover:"إخفاء صورة الغلاف", ctx_show_cover:"إظهار صورة الغلاف", set_hide_covers:"إخفاء كل صور الأغلفة", set_hide_covers_sub:"عرض مربع بسيط بدل الصور في كل مكان", toast_cover_hidden:"تم إخفاء الصورة", toast_cover_shown:"تم إظهار الصورة", vol_hint:"استخدم أزرار الصوت في جوالك", logout:"تسجيل الخروج", np_idle_title:"لا شيء قيد التشغيل", np_idle_sub:"اختر شيئاً من مكتبتك، أو دعني أختار لك.", np_browse:"تصفّح المكتبة", btn_random:"عشوائي", rand_title:"تشغيل عشوائي", rand_desc:"اختر ما تريد أن يشمله التشغيل العشوائي.", rand_play:"ابدأ التشغيل", rand_none:"لا توجد أغانٍ تطابق هذه الخيارات", queue_random:"مزيج عشوائي", field_bg:"الخلفية", bg_custom:"مخصص", bg_hint:"عند تشغيل هذه الأغنية يتحول الموقع كله إلى هذه الألوان.", set_theme_name:"اسم الثيم", set_save_theme:"حفظ كثيم", toast_theme_saved:"تم حفظ الثيم", toast_theme_deleted:"تم حذف الثيم", tip_delete:"حذف", queue_title:"قائمة التشغيل", queue_from:"التشغيل من", queue_all:"كل الأغاني", queue_custom:"قائمة مخصصة", queue_save:"حفظ كقائمة", queue_hint:"اضغط مطولاً على الأغنية واسحبها لتغيير الترتيب · اضغط على العين لتخطيها", queue_empty:"قائمة التشغيل فارغة", ctx_play_next:"الأغنية التالية", toast_play_next:"ستُشغَّل بعد الأغنية الحالية", queue_skip_tip:"تخطّي هذه الأغنية عند حلول دورها", ctx_edit:"تعديل البيانات", edit_track_title:"تعديل الأغنية", edit_track_desc:"عدّل الاسم أو الفنان أو النوع أو المزاج أو اللغة. رابط يوتيوب لا يمكن تغييره.", save_changes:"حفظ التعديلات", toast_track_updated:"تم تحديث الأغنية", np_empty_title:"لا توجد أغاني بعد", np_empty_sub:"أضف رابط يوتيوب لتبدأ الاستماع.", no_results:"لا توجد نتائج", unit_tracks:"أغنية", toast_cloud_error:"تعذّر الحفظ في السحابة — تحقق من الاتصال أو الصلاحيات", nav_menu:"القائمة", nav_search:"البحث والتصفية", nav_library:"مكتبتي", nav_playlists:"قوائم التشغيل", nav_settings:"الإعدادات",
+  ar:{ toast_link_changed:"تم تغيير الرابط — وبقي كل شيء آخر", toast_link_exists:"هذا الرابط موجود بالفعل في مكتبتك", login_title:"أهلاً بعودتك", login_sub:"سجّل دخولك للوصول إلى مكتبتك الصوتية الخاصة", login_user:"اسم المستخدم", login_pass:"كلمة المرور", login_btn:"دخول", login_busy:"جارٍ الدخول…", login_error:"اسم المستخدم أو كلمة المرور غير صحيحة!", login_conn_error:"تعذّر الاتصال بخدمة تسجيل الدخول. تحقق من الإنترنت وأعد تحميل الصفحة.", login_foot:"مكتبتك الصوتية, في أي مكان", login_show_pw:"إظهار كلمة المرور", set_theme_note:"الأغنية التي لها ألوان خاصة تتجاوز هذا الثيم أثناء تشغيلها.", rand_started:"بدأ التشغيل العشوائي · {n} أغنية", ctx_hide_cover:"إخفاء صورة الغلاف", ctx_show_cover:"إظهار صورة الغلاف", set_hide_covers:"إخفاء كل صور الأغلفة", set_hide_covers_sub:"عرض مربع بسيط بدل الصور في كل مكان", toast_cover_hidden:"تم إخفاء الصورة", toast_cover_shown:"تم إظهار الصورة", vol_hint:"استخدم أزرار الصوت في جوالك", logout:"تسجيل الخروج", np_idle_title:"لا شيء قيد التشغيل", np_idle_sub:"اختر شيئاً من مكتبتك، أو دعني أختار لك.", np_browse:"تصفّح المكتبة", btn_random:"عشوائي", rand_title:"تشغيل عشوائي", rand_desc:"اختر ما تريد أن يشمله التشغيل العشوائي.", rand_play:"ابدأ التشغيل", rand_none:"لا توجد أغانٍ تطابق هذه الخيارات", queue_random:"مزيج عشوائي", field_bg:"الخلفية", bg_custom:"مخصص", bg_hint:"عند تشغيل هذه الأغنية يتحول الموقع كله إلى هذه الألوان.", set_theme_name:"اسم الثيم", set_save_theme:"حفظ كثيم", toast_theme_saved:"تم حفظ الثيم", toast_theme_deleted:"تم حذف الثيم", tip_delete:"حذف", queue_title:"قائمة التشغيل", queue_from:"التشغيل من", queue_all:"كل الأغاني", queue_custom:"قائمة مخصصة", queue_save:"حفظ كقائمة", queue_hint:"اضغط مطولاً على الأغنية واسحبها لتغيير الترتيب · اضغط على العين لتخطيها", queue_empty:"قائمة التشغيل فارغة", ctx_play_next:"الأغنية التالية", toast_play_next:"ستُشغَّل بعد الأغنية الحالية", queue_skip_tip:"تخطّي هذه الأغنية عند حلول دورها", ctx_edit:"تعديل البيانات", edit_track_title:"تعديل الأغنية", edit_track_desc:"عدّل الاسم أو الفنان أو النوع أو المزاج أو اللغة أو الخلفية — أو بدّل رابط يوتيوب (مفيد إذا حُذف المقطع).", save_changes:"حفظ التعديلات", toast_track_updated:"تم تحديث الأغنية", np_empty_title:"لا توجد أغاني بعد", np_empty_sub:"أضف رابط يوتيوب لتبدأ الاستماع.", no_results:"لا توجد نتائج", unit_tracks:"أغنية", toast_cloud_error:"تعذّر الحفظ في السحابة — تحقق من الاتصال أو الصلاحيات", nav_menu:"القائمة", nav_search:"البحث والتصفية", nav_library:"مكتبتي", nav_playlists:"قوائم التشغيل", nav_settings:"الإعدادات",
     
     
     
@@ -1342,7 +1366,7 @@ const i18n = {
     toast_track_added:"أُضيفت إلى قائمتك", toast_invalid_link:"تعذّر استخراج معرّف الفيديو من هذا الرابط", toast_meta_failed:"تمت الإضافة، لكن تعذّر جلب العنوان/القناة — عدّلهما يدوياً",
     filter_none_all:"بدون / الكل", opt_none:"بدون", toast_added_queue:"أُضيفت إلى طابور التشغيل", toast_added_playlist:"أُضيفت إلى القائمة", toast_playlist_created:"تم إنشاء القائمة", toast_removed_playlist:"أُزيلت من القائمة", toast_deleted:"تم حذف الأغنية", ctx_add_queue:"إضافة إلى طابور التشغيل", ctx_add_playlist:"إضافة إلى قائمة / نقل", ctx_new_playlist_ph:"اسم القائمة الجديدة...", ctx_create_short:"إنشاء", ctx_add_short:"إضافة", ctx_remove_playlist:"حذف من هذه القائمة", ctx_delete:"حذف نهائي", pd_play_all:"▶ تشغيل الكل", pd_rename:"✎ إعادة تسمية", pd_delete:"🗑 حذف القائمة", toast_playlist_renamed:"تمت إعادة تسمية القائمة", toast_playlist_deleted:"تم حذف القائمة", pm_favorite:"مفضلة", pm_shuffle:"عشوائي", pm_repeat:"تكرار", pm_repeat_all:"تكرار: الكل", pm_repeat_one:"تكرار: أغنية واحدة", 
   },
-  ja:{ login_title:"おかえりなさい", login_sub:"サインインしてプライベートなオーディオライブラリにアクセス", login_user:"ユーザー名", login_pass:"パスワード", login_btn:"ログイン", login_busy:"ログイン中…", login_error:"ユーザー名またはパスワードが違います！", login_conn_error:"サインインサービスに接続できません。インターネット接続を確認してページを再読み込みしてください。", login_foot:"どこでも、あなたのオーディオライブラリ", login_show_pw:"パスワードを表示", set_theme_note:"専用の色を持つ曲は、再生中このテーマより優先されます。", rand_started:"ランダム再生を開始 · {n}曲", ctx_hide_cover:"カバー画像を隠す", ctx_show_cover:"カバー画像を表示", set_hide_covers:"すべてのカバー画像を隠す", set_hide_covers_sub:"あらゆる場所でアートワークの代わりに無地のタイルを表示", toast_cover_hidden:"カバーを隠しました", toast_cover_shown:"カバーを表示しました", vol_hint:"音量は本体のボタンで調整してください", logout:"ログアウト", np_idle_title:"再生中の曲はありません", np_idle_sub:"ライブラリから選ぶか、おまかせで再生しましょう。", np_browse:"ライブラリを見る", btn_random:"ランダム", rand_title:"ランダム再生", rand_desc:"ランダム再生に含める内容を選んでください。", rand_play:"再生する", rand_none:"条件に合う曲がありません", queue_random:"ランダムミックス", field_bg:"背景", bg_custom:"カスタム", bg_hint:"この曲の再生中は、アプリ全体がこの色になります。", set_theme_name:"テーマ名", set_save_theme:"テーマとして保存", toast_theme_saved:"テーマを保存しました", toast_theme_deleted:"テーマを削除しました", tip_delete:"削除", queue_title:"次に再生", queue_from:"再生元", queue_all:"すべての曲", queue_custom:"カスタムキュー", queue_save:"プレイリストとして保存", queue_hint:"曲を長押ししてドラッグで並べ替え · 目のアイコンでスキップ", queue_empty:"キューは空です", ctx_play_next:"次に再生", toast_play_next:"次に再生されます", queue_skip_tip:"順番が来たらこの曲をスキップ", ctx_edit:"情報を編集", edit_track_title:"曲を編集", edit_track_desc:"名前、アーティスト、ジャンル、ムード、言語を変更できます。YouTubeのリンクは変更できません。", save_changes:"変更を保存", toast_track_updated:"曲を更新しました", np_empty_title:"まだ曲がありません", np_empty_sub:"YouTubeのリンクを追加して聴き始めましょう。", no_results:"結果がありません", unit_tracks:"曲", toast_cloud_error:"クラウドに保存できませんでした — 接続または権限を確認してください", nav_menu:"メニュー", nav_search:"検索とフィルター", nav_library:"ライブラリ", nav_playlists:"プレイリスト", nav_settings:"設定",
+  ja:{ toast_link_changed:"リンクを更新しました（他の情報はそのまま）", toast_link_exists:"そのリンクはすでにライブラリにあります", login_title:"おかえりなさい", login_sub:"サインインしてプライベートなオーディオライブラリにアクセス", login_user:"ユーザー名", login_pass:"パスワード", login_btn:"ログイン", login_busy:"ログイン中…", login_error:"ユーザー名またはパスワードが違います！", login_conn_error:"サインインサービスに接続できません。インターネット接続を確認してページを再読み込みしてください。", login_foot:"どこでも、あなたのオーディオライブラリ", login_show_pw:"パスワードを表示", set_theme_note:"専用の色を持つ曲は、再生中このテーマより優先されます。", rand_started:"ランダム再生を開始 · {n}曲", ctx_hide_cover:"カバー画像を隠す", ctx_show_cover:"カバー画像を表示", set_hide_covers:"すべてのカバー画像を隠す", set_hide_covers_sub:"あらゆる場所でアートワークの代わりに無地のタイルを表示", toast_cover_hidden:"カバーを隠しました", toast_cover_shown:"カバーを表示しました", vol_hint:"音量は本体のボタンで調整してください", logout:"ログアウト", np_idle_title:"再生中の曲はありません", np_idle_sub:"ライブラリから選ぶか、おまかせで再生しましょう。", np_browse:"ライブラリを見る", btn_random:"ランダム", rand_title:"ランダム再生", rand_desc:"ランダム再生に含める内容を選んでください。", rand_play:"再生する", rand_none:"条件に合う曲がありません", queue_random:"ランダムミックス", field_bg:"背景", bg_custom:"カスタム", bg_hint:"この曲の再生中は、アプリ全体がこの色になります。", set_theme_name:"テーマ名", set_save_theme:"テーマとして保存", toast_theme_saved:"テーマを保存しました", toast_theme_deleted:"テーマを削除しました", tip_delete:"削除", queue_title:"次に再生", queue_from:"再生元", queue_all:"すべての曲", queue_custom:"カスタムキュー", queue_save:"プレイリストとして保存", queue_hint:"曲を長押ししてドラッグで並べ替え · 目のアイコンでスキップ", queue_empty:"キューは空です", ctx_play_next:"次に再生", toast_play_next:"次に再生されます", queue_skip_tip:"順番が来たらこの曲をスキップ", ctx_edit:"情報を編集", edit_track_title:"曲を編集", edit_track_desc:"名前、アーティスト、ジャンル、ムード、言語、背景を変更できます。YouTubeのリンクも差し替え可能です（動画が削除された場合に便利）。", save_changes:"変更を保存", toast_track_updated:"曲を更新しました", np_empty_title:"まだ曲がありません", np_empty_sub:"YouTubeのリンクを追加して聴き始めましょう。", no_results:"結果がありません", unit_tracks:"曲", toast_cloud_error:"クラウドに保存できませんでした — 接続または権限を確認してください", nav_menu:"メニュー", nav_search:"検索とフィルター", nav_library:"ライブラリ", nav_playlists:"プレイリスト", nav_settings:"設定",
     
     
     
@@ -1373,7 +1397,7 @@ const i18n = {
     toast_track_added:"キューに追加しました", toast_invalid_link:"このリンクから動画IDを読み取れませんでした", toast_meta_failed:"追加しましたが、タイトル/チャンネルを取得できませんでした — 手動で編集してください",
     filter_none_all:"なし / すべて", opt_none:"なし", toast_added_queue:"キューに追加しました", toast_added_playlist:"プレイリストに追加しました", toast_playlist_created:"プレイリストを作成しました", toast_removed_playlist:"プレイリストから削除しました", toast_deleted:"曲を削除しました", ctx_add_queue:"キューに追加", ctx_add_playlist:"プレイリストに追加 / 移動", ctx_new_playlist_ph:"新しいプレイリスト名...", ctx_create_short:"作成", ctx_add_short:"追加", ctx_remove_playlist:"このプレイリストから削除", ctx_delete:"完全に削除", pd_play_all:"▶ すべて再生", pd_rename:"✎ 名前を変更", pd_delete:"🗑 プレイリストを削除", toast_playlist_renamed:"プレイリスト名を変更しました", toast_playlist_deleted:"プレイリストを削除しました", pm_favorite:"お気に入り", pm_shuffle:"シャッフル", pm_repeat:"リピート", pm_repeat_all:"リピート: すべて", pm_repeat_one:"リピート: 1曲", 
   },
-  zh:{ login_title:"欢迎回来", login_sub:"登录以访问你的私人音频库", login_user:"用户名", login_pass:"密码", login_btn:"登录", login_busy:"登录中…", login_error:"用户名或密码错误！", login_conn_error:"无法连接登录服务。请检查网络并刷新页面。", login_foot:"你的音频库，随时随地", login_show_pw:"显示密码", set_theme_note:"设置了专属颜色的歌曲在播放时会覆盖此主题。", rand_started:"已开始随机播放 · {n} 首", ctx_hide_cover:"隐藏封面图片", ctx_show_cover:"显示封面图片", set_hide_covers:"隐藏所有封面图片", set_hide_covers_sub:"在所有位置用纯色方块代替封面", toast_cover_hidden:"封面已隐藏", toast_cover_shown:"封面已显示", vol_hint:"请使用手机的音量键调节", logout:"退出登录", np_idle_title:"当前没有播放内容", np_idle_sub:"从你的音乐库中选择，或者让我随机挑选。", np_browse:"浏览音乐库", btn_random:"随机播放", rand_title:"随机播放", rand_desc:"选择随机播放要包含的内容。", rand_play:"开始播放", rand_none:"没有符合条件的歌曲", queue_random:"随机混合", field_bg:"背景", bg_custom:"自定义", bg_hint:"播放这首歌时，整个应用都会采用这些颜色。", set_theme_name:"主题名称", set_save_theme:"保存为主题", toast_theme_saved:"主题已保存", toast_theme_deleted:"主题已删除", tip_delete:"删除", queue_title:"播放队列", queue_from:"播放来源", queue_all:"所有歌曲", queue_custom:"自定义队列", queue_save:"保存为播放列表", queue_hint:"长按歌曲并拖动即可重新排序 · 点击眼睛图标可跳过", queue_empty:"队列为空", ctx_play_next:"下一首播放", toast_play_next:"将在下一首播放", queue_skip_tip:"轮到时跳过这首歌", ctx_edit:"编辑信息", edit_track_title:"编辑曲目", edit_track_desc:"可修改名称、艺术家、流派、心情或语言。YouTube 链接无法更改。", save_changes:"保存更改", toast_track_updated:"曲目已更新", np_empty_title:"还没有歌曲", np_empty_sub:"添加 YouTube 链接开始收听。", no_results:"没有结果", unit_tracks:"首", toast_cloud_error:"无法保存到云端 —— 请检查网络或权限", nav_menu:"菜单", nav_search:"搜索与筛选", nav_library:"音乐库", nav_playlists:"播放列表", nav_settings:"设置",
+  zh:{ toast_link_changed:"链接已更新，其他信息均已保留", toast_link_exists:"该链接已在你的音乐库中", login_title:"欢迎回来", login_sub:"登录以访问你的私人音频库", login_user:"用户名", login_pass:"密码", login_btn:"登录", login_busy:"登录中…", login_error:"用户名或密码错误！", login_conn_error:"无法连接登录服务。请检查网络并刷新页面。", login_foot:"你的音频库，随时随地", login_show_pw:"显示密码", set_theme_note:"设置了专属颜色的歌曲在播放时会覆盖此主题。", rand_started:"已开始随机播放 · {n} 首", ctx_hide_cover:"隐藏封面图片", ctx_show_cover:"显示封面图片", set_hide_covers:"隐藏所有封面图片", set_hide_covers_sub:"在所有位置用纯色方块代替封面", toast_cover_hidden:"封面已隐藏", toast_cover_shown:"封面已显示", vol_hint:"请使用手机的音量键调节", logout:"退出登录", np_idle_title:"当前没有播放内容", np_idle_sub:"从你的音乐库中选择，或者让我随机挑选。", np_browse:"浏览音乐库", btn_random:"随机播放", rand_title:"随机播放", rand_desc:"选择随机播放要包含的内容。", rand_play:"开始播放", rand_none:"没有符合条件的歌曲", queue_random:"随机混合", field_bg:"背景", bg_custom:"自定义", bg_hint:"播放这首歌时，整个应用都会采用这些颜色。", set_theme_name:"主题名称", set_save_theme:"保存为主题", toast_theme_saved:"主题已保存", toast_theme_deleted:"主题已删除", tip_delete:"删除", queue_title:"播放队列", queue_from:"播放来源", queue_all:"所有歌曲", queue_custom:"自定义队列", queue_save:"保存为播放列表", queue_hint:"长按歌曲并拖动即可重新排序 · 点击眼睛图标可跳过", queue_empty:"队列为空", ctx_play_next:"下一首播放", toast_play_next:"将在下一首播放", queue_skip_tip:"轮到时跳过这首歌", ctx_edit:"编辑信息", edit_track_title:"编辑曲目", edit_track_desc:"可修改名称、艺术家、流派、心情、语言、背景，也可以更换 YouTube 链接（视频被删除时很有用）。", save_changes:"保存更改", toast_track_updated:"曲目已更新", np_empty_title:"还没有歌曲", np_empty_sub:"添加 YouTube 链接开始收听。", no_results:"没有结果", unit_tracks:"首", toast_cloud_error:"无法保存到云端 —— 请检查网络或权限", nav_menu:"菜单", nav_search:"搜索与筛选", nav_library:"音乐库", nav_playlists:"播放列表", nav_settings:"设置",
     
     
     
@@ -1404,7 +1428,7 @@ const i18n = {
     toast_track_added:"已添加到你的队列", toast_invalid_link:"无法从该链接读取视频 ID", toast_meta_failed:"已添加，但无法获取标题/频道 —— 请手动编辑",
     filter_none_all:"无 / 全部", opt_none:"无", toast_added_queue:"已添加到队列", toast_added_playlist:"已添加到播放列表", toast_playlist_created:"播放列表已创建", toast_removed_playlist:"已从播放列表移除", toast_deleted:"歌曲已删除", ctx_add_queue:"添加到队列", ctx_add_playlist:"添加到播放列表 / 移动", ctx_new_playlist_ph:"新播放列表名称...", ctx_create_short:"创建", ctx_add_short:"添加", ctx_remove_playlist:"从此播放列表中移除", ctx_delete:"彻底删除", pd_play_all:"▶ 播放全部", pd_rename:"✎ 重命名", pd_delete:"🗑 删除播放列表", toast_playlist_renamed:"播放列表已重命名", toast_playlist_deleted:"播放列表已删除", pm_favorite:"收藏", pm_shuffle:"随机播放", pm_repeat:"循环", pm_repeat_all:"循环：全部", pm_repeat_one:"循环：单曲", 
   },
-  es:{ login_title:"Bienvenido de nuevo", login_sub:"Inicia sesión para acceder a tu biblioteca de audio privada", login_user:"Usuario", login_pass:"Contraseña", login_btn:"Entrar", login_busy:"Entrando…", login_error:"¡Usuario o contraseña incorrectos!", login_conn_error:"No se pudo conectar con el servicio de inicio de sesión. Revisa tu internet y recarga la página.", login_foot:"Tu biblioteca de audio, en cualquier lugar", login_show_pw:"Mostrar contraseña", set_theme_note:"Una canción con colores propios sustituye este tema mientras suena.", rand_started:"Mezcla aleatoria · {n} pistas", ctx_hide_cover:"Ocultar la portada", ctx_show_cover:"Mostrar la portada", set_hide_covers:"Ocultar todas las portadas", set_hide_covers_sub:"Muestra un recuadro neutro en lugar de la imagen en todas partes", toast_cover_hidden:"Portada oculta", toast_cover_shown:"Portada visible", vol_hint:"Usa los botones de volumen del teléfono", logout:"Cerrar sesión", np_idle_title:"Nada en reproducción", np_idle_sub:"Elige algo de tu biblioteca o deja que yo elija.", np_browse:"Explorar biblioteca", btn_random:"Aleatorio", rand_title:"Reproducción aleatoria", rand_desc:"Elige qué debe incluir la mezcla aleatoria.", rand_play:"Reproducir", rand_none:"Ninguna canción coincide", queue_random:"Mezcla aleatoria", field_bg:"Fondo", bg_custom:"Personalizado", bg_hint:"Mientras suena esta canción, toda la app adopta estos colores.", set_theme_name:"Nombre del tema", set_save_theme:"Guardar como tema", toast_theme_saved:"Tema guardado", toast_theme_deleted:"Tema eliminado", tip_delete:"Eliminar", queue_title:"A continuación", queue_from:"Reproduciendo desde", queue_all:"Todas las canciones", queue_custom:"Cola personalizada", queue_save:"Guardar como lista", queue_hint:"Mantén pulsada una canción y arrastra para reordenar · toca el ojo para omitirla", queue_empty:"La cola está vacía", ctx_play_next:"Reproducir a continuación", toast_play_next:"Sonará a continuación", queue_skip_tip:"Omitir esta canción cuando le toque", ctx_edit:"Editar datos", edit_track_title:"Editar pista", edit_track_desc:"Cambia el nombre, artista, género, estado de ánimo o idioma. El enlace de YouTube no se puede cambiar.", save_changes:"Guardar cambios", toast_track_updated:"Pista actualizada", np_empty_title:"Aún no hay canciones", np_empty_sub:"Añade un enlace de YouTube para empezar a escuchar.", no_results:"Sin resultados", unit_tracks:"pistas", toast_cloud_error:"No se pudo guardar en la nube — revisa tu conexión o permisos", nav_menu:"Menú", nav_search:"Buscar y filtrar", nav_library:"Biblioteca", nav_playlists:"Listas", nav_settings:"Ajustes",
+  es:{ toast_link_changed:"Enlace actualizado; se conserva todo lo demás", toast_link_exists:"Ese enlace ya está en tu biblioteca", login_title:"Bienvenido de nuevo", login_sub:"Inicia sesión para acceder a tu biblioteca de audio privada", login_user:"Usuario", login_pass:"Contraseña", login_btn:"Entrar", login_busy:"Entrando…", login_error:"¡Usuario o contraseña incorrectos!", login_conn_error:"No se pudo conectar con el servicio de inicio de sesión. Revisa tu internet y recarga la página.", login_foot:"Tu biblioteca de audio, en cualquier lugar", login_show_pw:"Mostrar contraseña", set_theme_note:"Una canción con colores propios sustituye este tema mientras suena.", rand_started:"Mezcla aleatoria · {n} pistas", ctx_hide_cover:"Ocultar la portada", ctx_show_cover:"Mostrar la portada", set_hide_covers:"Ocultar todas las portadas", set_hide_covers_sub:"Muestra un recuadro neutro en lugar de la imagen en todas partes", toast_cover_hidden:"Portada oculta", toast_cover_shown:"Portada visible", vol_hint:"Usa los botones de volumen del teléfono", logout:"Cerrar sesión", np_idle_title:"Nada en reproducción", np_idle_sub:"Elige algo de tu biblioteca o deja que yo elija.", np_browse:"Explorar biblioteca", btn_random:"Aleatorio", rand_title:"Reproducción aleatoria", rand_desc:"Elige qué debe incluir la mezcla aleatoria.", rand_play:"Reproducir", rand_none:"Ninguna canción coincide", queue_random:"Mezcla aleatoria", field_bg:"Fondo", bg_custom:"Personalizado", bg_hint:"Mientras suena esta canción, toda la app adopta estos colores.", set_theme_name:"Nombre del tema", set_save_theme:"Guardar como tema", toast_theme_saved:"Tema guardado", toast_theme_deleted:"Tema eliminado", tip_delete:"Eliminar", queue_title:"A continuación", queue_from:"Reproduciendo desde", queue_all:"Todas las canciones", queue_custom:"Cola personalizada", queue_save:"Guardar como lista", queue_hint:"Mantén pulsada una canción y arrastra para reordenar · toca el ojo para omitirla", queue_empty:"La cola está vacía", ctx_play_next:"Reproducir a continuación", toast_play_next:"Sonará a continuación", queue_skip_tip:"Omitir esta canción cuando le toque", ctx_edit:"Editar datos", edit_track_title:"Editar pista", edit_track_desc:"Cambia el nombre, artista, género, estado de ánimo, idioma o fondo — o cambia el enlace de YouTube (útil si el video fue eliminado).", save_changes:"Guardar cambios", toast_track_updated:"Pista actualizada", np_empty_title:"Aún no hay canciones", np_empty_sub:"Añade un enlace de YouTube para empezar a escuchar.", no_results:"Sin resultados", unit_tracks:"pistas", toast_cloud_error:"No se pudo guardar en la nube — revisa tu conexión o permisos", nav_menu:"Menú", nav_search:"Buscar y filtrar", nav_library:"Biblioteca", nav_playlists:"Listas", nav_settings:"Ajustes",
     
     
     
@@ -1435,7 +1459,7 @@ const i18n = {
     toast_track_added:"Añadida a tu cola", toast_invalid_link:"No se pudo leer un ID de video de ese enlace", toast_meta_failed:"Añadida, pero no se pudo obtener título/canal — edítalos manualmente",
     filter_none_all:"Ninguno / Todos", opt_none:"Ninguno", toast_added_queue:"Añadida a la cola", toast_added_playlist:"Añadida a la lista", toast_playlist_created:"Lista creada", toast_removed_playlist:"Quitada de la lista", toast_deleted:"Pista eliminada", ctx_add_queue:"Añadir a la cola", ctx_add_playlist:"Añadir a lista / Mover", ctx_new_playlist_ph:"Nombre de la nueva lista...", ctx_create_short:"Crear", ctx_add_short:"Añadir", ctx_remove_playlist:"Quitar de esta lista", ctx_delete:"Eliminar definitivamente", pd_play_all:"▶ Reproducir todo", pd_rename:"✎ Renombrar", pd_delete:"🗑 Eliminar lista", toast_playlist_renamed:"Lista renombrada", toast_playlist_deleted:"Lista eliminada", pm_favorite:"Favorito", pm_shuffle:"Aleatorio", pm_repeat:"Repetir", pm_repeat_all:"Repetir: Todo", pm_repeat_one:"Repetir: Una", 
   },
-  fr:{ login_title:"Bon retour", login_sub:"Connectez-vous pour accéder à votre bibliothèque audio privée", login_user:"Nom d'utilisateur", login_pass:"Mot de passe", login_btn:"Se connecter", login_busy:"Connexion…", login_error:"Nom d'utilisateur ou mot de passe incorrect !", login_conn_error:"Impossible de joindre le service de connexion. Vérifiez votre connexion et rechargez la page.", login_foot:"Votre bibliothèque audio, partout", login_show_pw:"Afficher le mot de passe", set_theme_note:"Un titre avec ses propres couleurs remplace ce thème pendant la lecture.", rand_started:"Mix aléatoire · {n} titres", ctx_hide_cover:"Masquer la pochette", ctx_show_cover:"Afficher la pochette", set_hide_covers:"Masquer toutes les pochettes", set_hide_covers_sub:"Affiche une vignette neutre à la place des visuels, partout", toast_cover_hidden:"Pochette masquée", toast_cover_shown:"Pochette affichée", vol_hint:"Utilisez les boutons de volume du téléphone", logout:"Se déconnecter", np_idle_title:"Rien en lecture", np_idle_sub:"Choisissez dans votre bibliothèque, ou laissez-moi choisir.", np_browse:"Parcourir la bibliothèque", btn_random:"Aléatoire", rand_title:"Lecture aléatoire", rand_desc:"Choisissez ce que le mix aléatoire doit inclure.", rand_play:"Lancer", rand_none:"Aucun titre ne correspond", queue_random:"Mix aléatoire", field_bg:"Arrière-plan", bg_custom:"Personnalisé", bg_hint:"Pendant la lecture de ce titre, toute l'appli adopte ces couleurs.", set_theme_name:"Nom du thème", set_save_theme:"Enregistrer comme thème", toast_theme_saved:"Thème enregistré", toast_theme_deleted:"Thème supprimé", tip_delete:"Supprimer", queue_title:"À suivre", queue_from:"Lecture depuis", queue_all:"Tous les titres", queue_custom:"File personnalisée", queue_save:"Enregistrer comme playlist", queue_hint:"Maintenez un titre et glissez pour réorganiser · touchez l'œil pour l'ignorer", queue_empty:"La file est vide", ctx_play_next:"Lire ensuite", toast_play_next:"Sera lu ensuite", queue_skip_tip:"Ignorer ce titre quand son tour vient", ctx_edit:"Modifier les infos", edit_track_title:"Modifier le titre", edit_track_desc:"Modifiez le nom, l'artiste, le genre, l'ambiance ou la langue. Le lien YouTube ne peut pas être modifié.", save_changes:"Enregistrer", toast_track_updated:"Titre mis à jour", np_empty_title:"Aucun titre pour l'instant", np_empty_sub:"Ajoutez un lien YouTube pour commencer à écouter.", no_results:"Aucun résultat", unit_tracks:"titres", toast_cloud_error:"Impossible d'enregistrer dans le cloud — vérifiez la connexion ou les autorisations", nav_menu:"Menu", nav_search:"Recherche et filtres", nav_library:"Bibliothèque", nav_playlists:"Playlists", nav_settings:"Paramètres",
+  fr:{ toast_link_changed:"Lien mis à jour — le reste est conservé", toast_link_exists:"Ce lien est déjà dans votre bibliothèque", login_title:"Bon retour", login_sub:"Connectez-vous pour accéder à votre bibliothèque audio privée", login_user:"Nom d'utilisateur", login_pass:"Mot de passe", login_btn:"Se connecter", login_busy:"Connexion…", login_error:"Nom d'utilisateur ou mot de passe incorrect !", login_conn_error:"Impossible de joindre le service de connexion. Vérifiez votre connexion et rechargez la page.", login_foot:"Votre bibliothèque audio, partout", login_show_pw:"Afficher le mot de passe", set_theme_note:"Un titre avec ses propres couleurs remplace ce thème pendant la lecture.", rand_started:"Mix aléatoire · {n} titres", ctx_hide_cover:"Masquer la pochette", ctx_show_cover:"Afficher la pochette", set_hide_covers:"Masquer toutes les pochettes", set_hide_covers_sub:"Affiche une vignette neutre à la place des visuels, partout", toast_cover_hidden:"Pochette masquée", toast_cover_shown:"Pochette affichée", vol_hint:"Utilisez les boutons de volume du téléphone", logout:"Se déconnecter", np_idle_title:"Rien en lecture", np_idle_sub:"Choisissez dans votre bibliothèque, ou laissez-moi choisir.", np_browse:"Parcourir la bibliothèque", btn_random:"Aléatoire", rand_title:"Lecture aléatoire", rand_desc:"Choisissez ce que le mix aléatoire doit inclure.", rand_play:"Lancer", rand_none:"Aucun titre ne correspond", queue_random:"Mix aléatoire", field_bg:"Arrière-plan", bg_custom:"Personnalisé", bg_hint:"Pendant la lecture de ce titre, toute l'appli adopte ces couleurs.", set_theme_name:"Nom du thème", set_save_theme:"Enregistrer comme thème", toast_theme_saved:"Thème enregistré", toast_theme_deleted:"Thème supprimé", tip_delete:"Supprimer", queue_title:"À suivre", queue_from:"Lecture depuis", queue_all:"Tous les titres", queue_custom:"File personnalisée", queue_save:"Enregistrer comme playlist", queue_hint:"Maintenez un titre et glissez pour réorganiser · touchez l'œil pour l'ignorer", queue_empty:"La file est vide", ctx_play_next:"Lire ensuite", toast_play_next:"Sera lu ensuite", queue_skip_tip:"Ignorer ce titre quand son tour vient", ctx_edit:"Modifier les infos", edit_track_title:"Modifier le titre", edit_track_desc:"Modifiez le nom, l'artiste, le genre, l'ambiance, la langue, l'arrière-plan — ou remplacez le lien YouTube (utile si la vidéo a été supprimée).", save_changes:"Enregistrer", toast_track_updated:"Titre mis à jour", np_empty_title:"Aucun titre pour l'instant", np_empty_sub:"Ajoutez un lien YouTube pour commencer à écouter.", no_results:"Aucun résultat", unit_tracks:"titres", toast_cloud_error:"Impossible d'enregistrer dans le cloud — vérifiez la connexion ou les autorisations", nav_menu:"Menu", nav_search:"Recherche et filtres", nav_library:"Bibliothèque", nav_playlists:"Playlists", nav_settings:"Paramètres",
     
     
     
@@ -1466,7 +1490,7 @@ const i18n = {
     toast_track_added:"Ajouté à votre file d'attente", toast_invalid_link:"Impossible de lire un ID de vidéo depuis ce lien", toast_meta_failed:"Ajouté, mais impossible de récupérer le titre/la chaîne — modifiez-les manuellement",
     filter_none_all:"Aucun / Tous", opt_none:"Aucun", toast_added_queue:"Ajouté à la file d'attente", toast_added_playlist:"Ajouté à la playlist", toast_playlist_created:"Playlist créée", toast_removed_playlist:"Retiré de la playlist", toast_deleted:"Titre supprimé", ctx_add_queue:"Ajouter à la file d'attente", ctx_add_playlist:"Ajouter à une playlist / Déplacer", ctx_new_playlist_ph:"Nom de la nouvelle playlist...", ctx_create_short:"Créer", ctx_add_short:"Ajouter", ctx_remove_playlist:"Retirer de cette playlist", ctx_delete:"Supprimer définitivement", pd_play_all:"▶ Tout lire", pd_rename:"✎ Renommer", pd_delete:"🗑 Supprimer la playlist", toast_playlist_renamed:"Playlist renommée", toast_playlist_deleted:"Playlist supprimée", pm_favorite:"Favori", pm_shuffle:"Aléatoire", pm_repeat:"Répéter", pm_repeat_all:"Répéter : Tout", pm_repeat_one:"Répéter : Un titre", 
   },
-  de:{ login_title:"Willkommen zurück", login_sub:"Melde dich an, um auf deine private Audiobibliothek zuzugreifen", login_user:"Benutzername", login_pass:"Passwort", login_btn:"Anmelden", login_busy:"Anmelden…", login_error:"Benutzername oder Passwort falsch!", login_conn_error:"Anmeldedienst nicht erreichbar. Prüfe deine Internetverbindung und lade die Seite neu.", login_foot:"Deine Audiobibliothek, überall", login_show_pw:"Passwort anzeigen", set_theme_note:"Ein Song mit eigenen Farben überschreibt dieses Theme, solange er läuft.", rand_started:"Zufallsmix gestartet · {n} Titel", ctx_hide_cover:"Cover ausblenden", ctx_show_cover:"Cover anzeigen", set_hide_covers:"Alle Cover ausblenden", set_hide_covers_sub:"Zeigt überall eine neutrale Kachel statt des Covers", toast_cover_hidden:"Cover ausgeblendet", toast_cover_shown:"Cover angezeigt", vol_hint:"Nutze die Lautstärketasten deines Handys", logout:"Abmelden", np_idle_title:"Nichts wird abgespielt", np_idle_sub:"Wähle etwas aus deiner Bibliothek oder lass mich auswählen.", np_browse:"Bibliothek durchsuchen", btn_random:"Zufall", rand_title:"Zufallswiedergabe", rand_desc:"Wähle, was der Zufallsmix enthalten soll.", rand_play:"Abspielen", rand_none:"Keine passenden Songs", queue_random:"Zufallsmix", field_bg:"Hintergrund", bg_custom:"Eigene", bg_hint:"Solange dieser Song läuft, nimmt die ganze App diese Farben an.", set_theme_name:"Theme-Name", set_save_theme:"Als Theme speichern", toast_theme_saved:"Theme gespeichert", toast_theme_deleted:"Theme gelöscht", tip_delete:"Löschen", queue_title:"Als Nächstes", queue_from:"Wiedergabe aus", queue_all:"Alle Songs", queue_custom:"Eigene Warteschlange", queue_save:"Als Playlist speichern", queue_hint:"Song gedrückt halten und ziehen zum Sortieren · Auge antippen zum Überspringen", queue_empty:"Die Warteschlange ist leer", ctx_play_next:"Als Nächstes spielen", toast_play_next:"Wird als Nächstes gespielt", queue_skip_tip:"Diesen Song überspringen, wenn er dran ist", ctx_edit:"Details bearbeiten", edit_track_title:"Titel bearbeiten", edit_track_desc:"Ändere Name, Künstler, Genre, Stimmung oder Sprache. Der YouTube-Link kann nicht geändert werden.", save_changes:"Änderungen speichern", toast_track_updated:"Titel aktualisiert", np_empty_title:"Noch keine Songs", np_empty_sub:"Füge einen YouTube-Link hinzu, um loszulegen.", no_results:"Keine Ergebnisse", unit_tracks:"Titel", toast_cloud_error:"Cloud-Speichern fehlgeschlagen — Verbindung oder Berechtigungen prüfen", nav_menu:"Menü", nav_search:"Suche & Filter", nav_library:"Bibliothek", nav_playlists:"Playlists", nav_settings:"Einstellungen",
+  de:{ toast_link_changed:"Link aktualisiert — alles andere bleibt erhalten", toast_link_exists:"Dieser Link ist schon in deiner Bibliothek", login_title:"Willkommen zurück", login_sub:"Melde dich an, um auf deine private Audiobibliothek zuzugreifen", login_user:"Benutzername", login_pass:"Passwort", login_btn:"Anmelden", login_busy:"Anmelden…", login_error:"Benutzername oder Passwort falsch!", login_conn_error:"Anmeldedienst nicht erreichbar. Prüfe deine Internetverbindung und lade die Seite neu.", login_foot:"Deine Audiobibliothek, überall", login_show_pw:"Passwort anzeigen", set_theme_note:"Ein Song mit eigenen Farben überschreibt dieses Theme, solange er läuft.", rand_started:"Zufallsmix gestartet · {n} Titel", ctx_hide_cover:"Cover ausblenden", ctx_show_cover:"Cover anzeigen", set_hide_covers:"Alle Cover ausblenden", set_hide_covers_sub:"Zeigt überall eine neutrale Kachel statt des Covers", toast_cover_hidden:"Cover ausgeblendet", toast_cover_shown:"Cover angezeigt", vol_hint:"Nutze die Lautstärketasten deines Handys", logout:"Abmelden", np_idle_title:"Nichts wird abgespielt", np_idle_sub:"Wähle etwas aus deiner Bibliothek oder lass mich auswählen.", np_browse:"Bibliothek durchsuchen", btn_random:"Zufall", rand_title:"Zufallswiedergabe", rand_desc:"Wähle, was der Zufallsmix enthalten soll.", rand_play:"Abspielen", rand_none:"Keine passenden Songs", queue_random:"Zufallsmix", field_bg:"Hintergrund", bg_custom:"Eigene", bg_hint:"Solange dieser Song läuft, nimmt die ganze App diese Farben an.", set_theme_name:"Theme-Name", set_save_theme:"Als Theme speichern", toast_theme_saved:"Theme gespeichert", toast_theme_deleted:"Theme gelöscht", tip_delete:"Löschen", queue_title:"Als Nächstes", queue_from:"Wiedergabe aus", queue_all:"Alle Songs", queue_custom:"Eigene Warteschlange", queue_save:"Als Playlist speichern", queue_hint:"Song gedrückt halten und ziehen zum Sortieren · Auge antippen zum Überspringen", queue_empty:"Die Warteschlange ist leer", ctx_play_next:"Als Nächstes spielen", toast_play_next:"Wird als Nächstes gespielt", queue_skip_tip:"Diesen Song überspringen, wenn er dran ist", ctx_edit:"Details bearbeiten", edit_track_title:"Titel bearbeiten", edit_track_desc:"Ändere Name, Künstler, Genre, Stimmung, Sprache, Hintergrund — oder tausche den YouTube-Link aus (praktisch, wenn das Video entfernt wurde).", save_changes:"Änderungen speichern", toast_track_updated:"Titel aktualisiert", np_empty_title:"Noch keine Songs", np_empty_sub:"Füge einen YouTube-Link hinzu, um loszulegen.", no_results:"Keine Ergebnisse", unit_tracks:"Titel", toast_cloud_error:"Cloud-Speichern fehlgeschlagen — Verbindung oder Berechtigungen prüfen", nav_menu:"Menü", nav_search:"Suche & Filter", nav_library:"Bibliothek", nav_playlists:"Playlists", nav_settings:"Einstellungen",
     
     
     
@@ -1497,7 +1521,7 @@ const i18n = {
     toast_track_added:"Zur Warteschlange hinzugefügt", toast_invalid_link:"Aus diesem Link konnte keine Video-ID gelesen werden", toast_meta_failed:"Hinzugefügt, aber Titel/Kanal konnten nicht abgerufen werden — bitte manuell bearbeiten",
     filter_none_all:"Keine / Alle", opt_none:"Keine", toast_added_queue:"Zur Warteschlange hinzugefügt", toast_added_playlist:"Zur Playlist hinzugefügt", toast_playlist_created:"Playlist erstellt", toast_removed_playlist:"Aus Playlist entfernt", toast_deleted:"Titel gelöscht", ctx_add_queue:"Zur Warteschlange hinzufügen", ctx_add_playlist:"Zu Playlist hinzufügen / Verschieben", ctx_new_playlist_ph:"Name der neuen Playlist...", ctx_create_short:"Erstellen", ctx_add_short:"Hinzufügen", ctx_remove_playlist:"Aus dieser Playlist entfernen", ctx_delete:"Endgültig löschen", pd_play_all:"▶ Alle abspielen", pd_rename:"✎ Umbenennen", pd_delete:"🗑 Playlist löschen", toast_playlist_renamed:"Playlist umbenannt", toast_playlist_deleted:"Playlist gelöscht", pm_favorite:"Favorit", pm_shuffle:"Zufall", pm_repeat:"Wiederholen", pm_repeat_all:"Wiederholen: Alle", pm_repeat_one:"Wiederholen: Einen", 
   },
-  ko:{ login_title:"다시 오신 것을 환영합니다", login_sub:"로그인하여 나만의 오디오 보관함에 접속하세요", login_user:"사용자 이름", login_pass:"비밀번호", login_btn:"로그인", login_busy:"로그인 중…", login_error:"사용자 이름 또는 비밀번호가 올바르지 않습니다!", login_conn_error:"로그인 서비스에 연결할 수 없습니다. 인터넷 연결을 확인하고 페이지를 새로고침하세요.", login_foot:"어디서나 나의 오디오 보관함", login_show_pw:"비밀번호 표시", set_theme_note:"고유 색상이 있는 곡은 재생되는 동안 이 테마를 덮어씁니다.", rand_started:"랜덤 재생 시작 · {n}곡", ctx_hide_cover:"커버 이미지 숨기기", ctx_show_cover:"커버 이미지 표시", set_hide_covers:"모든 커버 이미지 숨기기", set_hide_covers_sub:"모든 곳에서 이미지 대신 단색 타일 표시", toast_cover_hidden:"커버를 숨겼습니다", toast_cover_shown:"커버를 표시했습니다", vol_hint:"휴대폰 볼륨 버튼을 사용하세요", logout:"로그아웃", np_idle_title:"재생 중인 항목 없음", np_idle_sub:"보관함에서 고르거나 랜덤으로 재생해 보세요.", np_browse:"보관함 둘러보기", btn_random:"랜덤", rand_title:"랜덤 재생", rand_desc:"랜덤 재생에 포함할 항목을 선택하세요.", rand_play:"재생", rand_none:"조건에 맞는 곡이 없습니다", queue_random:"랜덤 믹스", field_bg:"배경", bg_custom:"사용자 지정", bg_hint:"이 곡이 재생되는 동안 앱 전체가 이 색상으로 바뀝니다.", set_theme_name:"테마 이름", set_save_theme:"테마로 저장", toast_theme_saved:"테마가 저장되었습니다", toast_theme_deleted:"테마가 삭제되었습니다", tip_delete:"삭제", queue_title:"다음 곡", queue_from:"재생 출처", queue_all:"모든 곡", queue_custom:"사용자 지정 대기열", queue_save:"플레이리스트로 저장", queue_hint:"곡을 길게 눌러 드래그하여 순서 변경 · 눈 아이콘으로 건너뛰기", queue_empty:"대기열이 비어 있습니다", ctx_play_next:"다음에 재생", toast_play_next:"다음에 재생됩니다", queue_skip_tip:"차례가 되면 이 곡 건너뛰기", ctx_edit:"정보 편집", edit_track_title:"트랙 편집", edit_track_desc:"이름, 아티스트, 장르, 분위기, 언어를 변경할 수 있습니다. YouTube 링크는 변경할 수 없습니다.", save_changes:"변경 사항 저장", toast_track_updated:"트랙이 업데이트되었습니다", np_empty_title:"아직 곡이 없습니다", np_empty_sub:"YouTube 링크를 추가해 들어보세요.", no_results:"결과 없음", unit_tracks:"곡", toast_cloud_error:"클라우드에 저장하지 못했습니다 — 연결 또는 권한을 확인하세요", nav_menu:"메뉴", nav_search:"검색 및 필터", nav_library:"보관함", nav_playlists:"플레이리스트", nav_settings:"설정",
+  ko:{ toast_link_changed:"링크가 변경되었습니다. 나머지는 그대로 유지됩니다", toast_link_exists:"이미 보관함에 있는 링크입니다", login_title:"다시 오신 것을 환영합니다", login_sub:"로그인하여 나만의 오디오 보관함에 접속하세요", login_user:"사용자 이름", login_pass:"비밀번호", login_btn:"로그인", login_busy:"로그인 중…", login_error:"사용자 이름 또는 비밀번호가 올바르지 않습니다!", login_conn_error:"로그인 서비스에 연결할 수 없습니다. 인터넷 연결을 확인하고 페이지를 새로고침하세요.", login_foot:"어디서나 나의 오디오 보관함", login_show_pw:"비밀번호 표시", set_theme_note:"고유 색상이 있는 곡은 재생되는 동안 이 테마를 덮어씁니다.", rand_started:"랜덤 재생 시작 · {n}곡", ctx_hide_cover:"커버 이미지 숨기기", ctx_show_cover:"커버 이미지 표시", set_hide_covers:"모든 커버 이미지 숨기기", set_hide_covers_sub:"모든 곳에서 이미지 대신 단색 타일 표시", toast_cover_hidden:"커버를 숨겼습니다", toast_cover_shown:"커버를 표시했습니다", vol_hint:"휴대폰 볼륨 버튼을 사용하세요", logout:"로그아웃", np_idle_title:"재생 중인 항목 없음", np_idle_sub:"보관함에서 고르거나 랜덤으로 재생해 보세요.", np_browse:"보관함 둘러보기", btn_random:"랜덤", rand_title:"랜덤 재생", rand_desc:"랜덤 재생에 포함할 항목을 선택하세요.", rand_play:"재생", rand_none:"조건에 맞는 곡이 없습니다", queue_random:"랜덤 믹스", field_bg:"배경", bg_custom:"사용자 지정", bg_hint:"이 곡이 재생되는 동안 앱 전체가 이 색상으로 바뀝니다.", set_theme_name:"테마 이름", set_save_theme:"테마로 저장", toast_theme_saved:"테마가 저장되었습니다", toast_theme_deleted:"테마가 삭제되었습니다", tip_delete:"삭제", queue_title:"다음 곡", queue_from:"재생 출처", queue_all:"모든 곡", queue_custom:"사용자 지정 대기열", queue_save:"플레이리스트로 저장", queue_hint:"곡을 길게 눌러 드래그하여 순서 변경 · 눈 아이콘으로 건너뛰기", queue_empty:"대기열이 비어 있습니다", ctx_play_next:"다음에 재생", toast_play_next:"다음에 재생됩니다", queue_skip_tip:"차례가 되면 이 곡 건너뛰기", ctx_edit:"정보 편집", edit_track_title:"트랙 편집", edit_track_desc:"이름, 아티스트, 장르, 분위기, 언어, 배경을 변경하거나 YouTube 링크를 교체할 수 있습니다 (영상이 삭제된 경우 유용).", save_changes:"변경 사항 저장", toast_track_updated:"트랙이 업데이트되었습니다", np_empty_title:"아직 곡이 없습니다", np_empty_sub:"YouTube 링크를 추가해 들어보세요.", no_results:"결과 없음", unit_tracks:"곡", toast_cloud_error:"클라우드에 저장하지 못했습니다 — 연결 또는 권한을 확인하세요", nav_menu:"메뉴", nav_search:"검색 및 필터", nav_library:"보관함", nav_playlists:"플레이리스트", nav_settings:"설정",
     
     
     
@@ -1528,7 +1552,7 @@ const i18n = {
     toast_track_added:"대기열에 추가되었습니다", toast_invalid_link:"이 링크에서 동영상 ID를 읽을 수 없습니다", toast_meta_failed:"추가되었지만 제목/채널을 가져오지 못했습니다 — 직접 수정하세요",
     filter_none_all:"없음 / 전체", opt_none:"없음", toast_added_queue:"대기열에 추가되었습니다", toast_added_playlist:"플레이리스트에 추가되었습니다", toast_playlist_created:"플레이리스트가 생성되었습니다", toast_removed_playlist:"플레이리스트에서 제거되었습니다", toast_deleted:"트랙이 삭제되었습니다", ctx_add_queue:"대기열에 추가", ctx_add_playlist:"플레이리스트에 추가 / 이동", ctx_new_playlist_ph:"새 플레이리스트 이름...", ctx_create_short:"만들기", ctx_add_short:"추가", ctx_remove_playlist:"이 플레이리스트에서 제거", ctx_delete:"완전히 삭제", pd_play_all:"▶ 전체 재생", pd_rename:"✎ 이름 변경", pd_delete:"🗑 플레이리스트 삭제", toast_playlist_renamed:"플레이리스트 이름이 변경되었습니다", toast_playlist_deleted:"플레이리스트가 삭제되었습니다", pm_favorite:"즐겨찾기", pm_shuffle:"셔플", pm_repeat:"반복", pm_repeat_all:"반복: 전체", pm_repeat_one:"반복: 한 곡", 
   },
-  ru:{ login_title:"С возвращением", login_sub:"Войдите, чтобы открыть свою личную аудиотеку", login_user:"Имя пользователя", login_pass:"Пароль", login_btn:"Войти", login_busy:"Вход…", login_error:"Неверное имя пользователя или пароль!", login_conn_error:"Не удалось связаться со службой входа. Проверьте интернет и перезагрузите страницу.", login_foot:"Ваша аудиотека — везде", login_show_pw:"Показать пароль", set_theme_note:"Песня со своими цветами заменяет эту тему на время воспроизведения.", rand_started:"Случайный микс · {n} треков", ctx_hide_cover:"Скрыть обложку", ctx_show_cover:"Показать обложку", set_hide_covers:"Скрыть все обложки", set_hide_covers_sub:"Везде показывать нейтральную плитку вместо картинки", toast_cover_hidden:"Обложка скрыта", toast_cover_shown:"Обложка показана", vol_hint:"Используйте кнопки громкости телефона", logout:"Выйти", np_idle_title:"Ничего не играет", np_idle_sub:"Выберите что-нибудь из медиатеки или доверьтесь случаю.", np_browse:"Открыть медиатеку", btn_random:"Случайно", rand_title:"Случайное воспроизведение", rand_desc:"Выберите, что включить в случайный микс.", rand_play:"Играть", rand_none:"Нет подходящих песен", queue_random:"Случайный микс", field_bg:"Фон", bg_custom:"Свой", bg_hint:"Пока играет эта песня, всё приложение использует эти цвета.", set_theme_name:"Название темы", set_save_theme:"Сохранить как тему", toast_theme_saved:"Тема сохранена", toast_theme_deleted:"Тема удалена", tip_delete:"Удалить", queue_title:"Далее", queue_from:"Воспроизведение из", queue_all:"Все песни", queue_custom:"Своя очередь", queue_save:"Сохранить как плейлист", queue_hint:"Удерживайте песню и перетащите, чтобы изменить порядок · нажмите на глаз, чтобы пропустить", queue_empty:"Очередь пуста", ctx_play_next:"Играть следующей", toast_play_next:"Будет играть следующей", queue_skip_tip:"Пропускать эту песню, когда подойдёт её очередь", ctx_edit:"Редактировать", edit_track_title:"Редактировать трек", edit_track_desc:"Измените название, исполнителя, жанр, настроение или язык. Ссылку на YouTube изменить нельзя.", save_changes:"Сохранить", toast_track_updated:"Трек обновлён", np_empty_title:"Пока нет песен", np_empty_sub:"Добавьте ссылку на YouTube, чтобы начать слушать.", no_results:"Нет результатов", unit_tracks:"треков", toast_cloud_error:"Не удалось сохранить в облако — проверьте соединение или права", nav_menu:"Меню", nav_search:"Поиск и фильтры", nav_library:"Медиатека", nav_playlists:"Плейлисты", nav_settings:"Настройки",
+  ru:{ toast_link_changed:"Ссылка обновлена — всё остальное сохранено", toast_link_exists:"Эта ссылка уже есть в вашей медиатеке", login_title:"С возвращением", login_sub:"Войдите, чтобы открыть свою личную аудиотеку", login_user:"Имя пользователя", login_pass:"Пароль", login_btn:"Войти", login_busy:"Вход…", login_error:"Неверное имя пользователя или пароль!", login_conn_error:"Не удалось связаться со службой входа. Проверьте интернет и перезагрузите страницу.", login_foot:"Ваша аудиотека — везде", login_show_pw:"Показать пароль", set_theme_note:"Песня со своими цветами заменяет эту тему на время воспроизведения.", rand_started:"Случайный микс · {n} треков", ctx_hide_cover:"Скрыть обложку", ctx_show_cover:"Показать обложку", set_hide_covers:"Скрыть все обложки", set_hide_covers_sub:"Везде показывать нейтральную плитку вместо картинки", toast_cover_hidden:"Обложка скрыта", toast_cover_shown:"Обложка показана", vol_hint:"Используйте кнопки громкости телефона", logout:"Выйти", np_idle_title:"Ничего не играет", np_idle_sub:"Выберите что-нибудь из медиатеки или доверьтесь случаю.", np_browse:"Открыть медиатеку", btn_random:"Случайно", rand_title:"Случайное воспроизведение", rand_desc:"Выберите, что включить в случайный микс.", rand_play:"Играть", rand_none:"Нет подходящих песен", queue_random:"Случайный микс", field_bg:"Фон", bg_custom:"Свой", bg_hint:"Пока играет эта песня, всё приложение использует эти цвета.", set_theme_name:"Название темы", set_save_theme:"Сохранить как тему", toast_theme_saved:"Тема сохранена", toast_theme_deleted:"Тема удалена", tip_delete:"Удалить", queue_title:"Далее", queue_from:"Воспроизведение из", queue_all:"Все песни", queue_custom:"Своя очередь", queue_save:"Сохранить как плейлист", queue_hint:"Удерживайте песню и перетащите, чтобы изменить порядок · нажмите на глаз, чтобы пропустить", queue_empty:"Очередь пуста", ctx_play_next:"Играть следующей", toast_play_next:"Будет играть следующей", queue_skip_tip:"Пропускать эту песню, когда подойдёт её очередь", ctx_edit:"Редактировать", edit_track_title:"Редактировать трек", edit_track_desc:"Измените название, исполнителя, жанр, настроение, язык, фон — или замените ссылку на YouTube (удобно, если видео удалили).", save_changes:"Сохранить", toast_track_updated:"Трек обновлён", np_empty_title:"Пока нет песен", np_empty_sub:"Добавьте ссылку на YouTube, чтобы начать слушать.", no_results:"Нет результатов", unit_tracks:"треков", toast_cloud_error:"Не удалось сохранить в облако — проверьте соединение или права", nav_menu:"Меню", nav_search:"Поиск и фильтры", nav_library:"Медиатека", nav_playlists:"Плейлисты", nav_settings:"Настройки",
     
     
     
@@ -1559,7 +1583,7 @@ const i18n = {
     toast_track_added:"Добавлено в очередь", toast_invalid_link:"Не удалось определить ID видео по этой ссылке", toast_meta_failed:"Добавлено, но не удалось получить название/канал — отредактируйте вручную",
     filter_none_all:"Нет / Все", opt_none:"Нет", toast_added_queue:"Добавлено в очередь", toast_added_playlist:"Добавлено в плейлист", toast_playlist_created:"Плейлист создан", toast_removed_playlist:"Удалено из плейлиста", toast_deleted:"Трек удалён", ctx_add_queue:"Добавить в очередь", ctx_add_playlist:"Добавить в плейлист / Переместить", ctx_new_playlist_ph:"Название нового плейлиста...", ctx_create_short:"Создать", ctx_add_short:"Добавить", ctx_remove_playlist:"Удалить из этого плейлиста", ctx_delete:"Удалить навсегда", pd_play_all:"▶ Воспроизвести всё", pd_rename:"✎ Переименовать", pd_delete:"🗑 Удалить плейлист", toast_playlist_renamed:"Плейлист переименован", toast_playlist_deleted:"Плейлист удалён", pm_favorite:"Избранное", pm_shuffle:"Перемешать", pm_repeat:"Повтор", pm_repeat_all:"Повтор: Все", pm_repeat_one:"Повтор: Один", 
   },
-  tr:{ login_title:"Tekrar hoş geldin", login_sub:"Özel ses kitaplığına ulaşmak için giriş yap", login_user:"Kullanıcı adı", login_pass:"Şifre", login_btn:"Giriş yap", login_busy:"Giriş yapılıyor…", login_error:"Kullanıcı adı veya şifre hatalı!", login_conn_error:"Giriş hizmetine ulaşılamadı. İnternetini kontrol edip sayfayı yenile.", login_foot:"Ses kitaplığın, her yerde", login_show_pw:"Şifreyi göster", set_theme_note:"Kendi renkleri olan bir şarkı, çalarken bu temanın yerine geçer.", rand_started:"Rastgele karışım · {n} parça", ctx_hide_cover:"Kapak görselini gizle", ctx_show_cover:"Kapak görselini göster", set_hide_covers:"Tüm kapak görsellerini gizle", set_hide_covers_sub:"Her yerde görsel yerine sade bir kutucuk göster", toast_cover_hidden:"Kapak gizlendi", toast_cover_shown:"Kapak gösterildi", vol_hint:"Telefonunun ses tuşlarını kullan", logout:"Çıkış yap", np_idle_title:"Çalan bir şey yok", np_idle_sub:"Kitaplığından bir şey seç ya da ben seçeyim.", np_browse:"Kitaplığa göz at", btn_random:"Rastgele", rand_title:"Rastgele çal", rand_desc:"Rastgele karışıma nelerin dahil olacağını seç.", rand_play:"Çal", rand_none:"Eşleşen şarkı yok", queue_random:"Rastgele karışım", field_bg:"Arka plan", bg_custom:"Özel", bg_hint:"Bu şarkı çalarken tüm uygulama bu renkleri alır.", set_theme_name:"Tema adı", set_save_theme:"Tema olarak kaydet", toast_theme_saved:"Tema kaydedildi", toast_theme_deleted:"Tema silindi", tip_delete:"Sil", queue_title:"Sıradaki", queue_from:"Çalınan kaynak", queue_all:"Tüm şarkılar", queue_custom:"Özel sıra", queue_save:"Çalma listesi olarak kaydet", queue_hint:"Bir şarkıyı basılı tutup sürükleyerek sıralayın · atlamak için göze dokunun", queue_empty:"Sıra boş", ctx_play_next:"Sıradaki olarak çal", toast_play_next:"Sıradaki olarak çalınacak", queue_skip_tip:"Sırası gelince bu şarkıyı atla", ctx_edit:"Bilgileri düzenle", edit_track_title:"Parçayı düzenle", edit_track_desc:"Adı, sanatçıyı, türü, ruh halini veya dili değiştirin. YouTube bağlantısı değiştirilemez.", save_changes:"Değişiklikleri kaydet", toast_track_updated:"Parça güncellendi", np_empty_title:"Henüz şarkı yok", np_empty_sub:"Dinlemeye başlamak için bir YouTube bağlantısı ekleyin.", no_results:"Sonuç yok", unit_tracks:"parça", toast_cloud_error:"Buluta kaydedilemedi — bağlantıyı veya izinleri kontrol edin", nav_menu:"Menü", nav_search:"Arama ve Filtreler", nav_library:"Kitaplık", nav_playlists:"Çalma Listeleri", nav_settings:"Ayarlar",
+  tr:{ toast_link_changed:"Bağlantı güncellendi — geri kalan her şey korundu", toast_link_exists:"Bu bağlantı zaten kitaplığında", login_title:"Tekrar hoş geldin", login_sub:"Özel ses kitaplığına ulaşmak için giriş yap", login_user:"Kullanıcı adı", login_pass:"Şifre", login_btn:"Giriş yap", login_busy:"Giriş yapılıyor…", login_error:"Kullanıcı adı veya şifre hatalı!", login_conn_error:"Giriş hizmetine ulaşılamadı. İnternetini kontrol edip sayfayı yenile.", login_foot:"Ses kitaplığın, her yerde", login_show_pw:"Şifreyi göster", set_theme_note:"Kendi renkleri olan bir şarkı, çalarken bu temanın yerine geçer.", rand_started:"Rastgele karışım · {n} parça", ctx_hide_cover:"Kapak görselini gizle", ctx_show_cover:"Kapak görselini göster", set_hide_covers:"Tüm kapak görsellerini gizle", set_hide_covers_sub:"Her yerde görsel yerine sade bir kutucuk göster", toast_cover_hidden:"Kapak gizlendi", toast_cover_shown:"Kapak gösterildi", vol_hint:"Telefonunun ses tuşlarını kullan", logout:"Çıkış yap", np_idle_title:"Çalan bir şey yok", np_idle_sub:"Kitaplığından bir şey seç ya da ben seçeyim.", np_browse:"Kitaplığa göz at", btn_random:"Rastgele", rand_title:"Rastgele çal", rand_desc:"Rastgele karışıma nelerin dahil olacağını seç.", rand_play:"Çal", rand_none:"Eşleşen şarkı yok", queue_random:"Rastgele karışım", field_bg:"Arka plan", bg_custom:"Özel", bg_hint:"Bu şarkı çalarken tüm uygulama bu renkleri alır.", set_theme_name:"Tema adı", set_save_theme:"Tema olarak kaydet", toast_theme_saved:"Tema kaydedildi", toast_theme_deleted:"Tema silindi", tip_delete:"Sil", queue_title:"Sıradaki", queue_from:"Çalınan kaynak", queue_all:"Tüm şarkılar", queue_custom:"Özel sıra", queue_save:"Çalma listesi olarak kaydet", queue_hint:"Bir şarkıyı basılı tutup sürükleyerek sıralayın · atlamak için göze dokunun", queue_empty:"Sıra boş", ctx_play_next:"Sıradaki olarak çal", toast_play_next:"Sıradaki olarak çalınacak", queue_skip_tip:"Sırası gelince bu şarkıyı atla", ctx_edit:"Bilgileri düzenle", edit_track_title:"Parçayı düzenle", edit_track_desc:"Adı, sanatçıyı, türü, ruh halini, dili, arka planı değiştirin — ya da YouTube bağlantısını değiştirin (video silindiyse işe yarar).", save_changes:"Değişiklikleri kaydet", toast_track_updated:"Parça güncellendi", np_empty_title:"Henüz şarkı yok", np_empty_sub:"Dinlemeye başlamak için bir YouTube bağlantısı ekleyin.", no_results:"Sonuç yok", unit_tracks:"parça", toast_cloud_error:"Buluta kaydedilemedi — bağlantıyı veya izinleri kontrol edin", nav_menu:"Menü", nav_search:"Arama ve Filtreler", nav_library:"Kitaplık", nav_playlists:"Çalma Listeleri", nav_settings:"Ayarlar",
     
     
     
@@ -1723,15 +1747,29 @@ function songPalette(t){
   const bg = hslToHex(a[0], sat, 0.07);
   return buildPalette({ id: 'song', accent: t.bg2, accent2: hslToHex(b[0], b[1], b[2] * 0.55), bg: bg });
 }
+let bgFront = null, appliedGrad = '';
 // Painted whenever the loaded song changes. A song without colours (or nothing loaded) falls back to the Settings theme.
 function updateSongTheme(){
   const t = currentTrack();
   const themed = !!(t && t.bg1 && t.bg2);
   const key = themed ? 'song:' + t.id + t.bg1 + t.bg2 : 'base:' + JSON.stringify(baseTheme);
   if(key !== appliedThemeKey){ appliedThemeKey = key; paintPalette(themed ? songPalette(t) : baseTheme); }
-  const layer = document.getElementById('npBg');
-  if(themed) layer.style.background = 'linear-gradient(180deg, rgba(0,0,0,.2), rgba(0,0,0,.62)), linear-gradient(160deg, ' + t.bg1 + ', ' + t.bg2 + ')';
-  layer.classList.toggle('show', themed);
+  // two stacked layers cross-fade, so the gradient melts into the next song's colours instead of snapping
+  const A = document.getElementById('npBg'), B = document.getElementById('npBg2');
+  if(themed){
+    const g = 'linear-gradient(180deg, rgba(0,0,0,.2), rgba(0,0,0,.62)), linear-gradient(160deg, ' + t.bg1 + ', ' + t.bg2 + ')';
+    if(g !== appliedGrad){
+      appliedGrad = g;
+      const prev = bgFront, next = (bgFront === A) ? B : A;
+      next.style.background = g;
+      next.style.zIndex = '0';
+      next.classList.remove('show'); void next.offsetWidth; next.classList.add('show');   // fade the new one in on top…
+      if(prev){ prev.style.zIndex = '-1'; setTimeout(function(){ if(bgFront !== prev) prev.classList.remove('show'); }, 1400); }   // …then drop the old one
+      bgFront = next;
+    }
+  } else if(bgFront){
+    bgFront.classList.remove('show'); bgFront = null; appliedGrad = '';
+  }
 }
 
 /* ---- Settings theme ---- */
@@ -2103,6 +2141,39 @@ function ensureCurrentTrack(){
   if(currentTrackId && !queueIds.length) queueIds = tracks.map(function(t){ return t.id; });
 }
 
+/* ---- marquee: a long title scrolls in from the right and leaves on the left, then repeats ---- */
+const marqueeEls = new Set();
+function setMarquee(el, text){
+  marqueeEls.add(el);
+  if(el._mText === text && el._mW === el.clientWidth) return;      // nothing changed → don't restart the animation
+  el._mText = text;
+  if(el._mAnim){ try{ el._mAnim.cancel(); }catch(e){} el._mAnim = null; }
+  el.classList.remove('marq-on');
+  el.textContent = '';
+  const inner = document.createElement('span');
+  inner.className = 'marq-text';
+  inner.textContent = text;
+  el.appendChild(inner);
+  const run = function(){
+    const cw = el.clientWidth, tw = inner.offsetWidth;
+    el._mW = cw;
+    const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(cw > 0 && tw > cw + 2 && inner.animate && !calm){
+      el.classList.add('marq-on');
+      el._mAnim = inner.animate(
+        [{ transform: 'translateX(' + cw + 'px)' }, { transform: 'translateX(' + (-tw) + 'px)' }],
+        { duration: Math.max(6000, (cw + tw) / 50 * 1000), iterations: Infinity, easing: 'linear' });
+    }
+  };
+  if(window.requestAnimationFrame) window.requestAnimationFrame(run); else run();
+}
+function refreshMarquees(){
+  marqueeEls.forEach(function(el){ const txt = el._mText; el._mText = null; if(txt != null) setMarquee(el, txt); });
+}
+let marqueeTimer;
+window.addEventListener('resize', function(){ clearTimeout(marqueeTimer); marqueeTimer = setTimeout(refreshMarquees, 150); });
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(refreshMarquees);   // re-measure once the web fonts are in
+
 /* ================= RENDER ================= */
 function emptyHTML(title, sub){
   return '<div class="empty-state"><div class="e-t">' + esc(title) + '</div>' + (sub ? '<div class="e-s">' + esc(sub) + '</div>' : '') + '</div>';
@@ -2159,7 +2230,7 @@ function renderNowPlaying(){
   }
   img.alt = t.title;
   $('npCoverWrap').style.display = coverHidden(t) ? 'none' : '';
-  $('npTitle').textContent = tName(t);
+  setMarquee($('npTitle'), tName(t));
   $('npArtist').textContent = aName(t);
   $('npCoverWrap').classList.toggle('playing', isPlaying);
   updateSongTheme();
@@ -2335,7 +2406,7 @@ function onPlayerStateChange(e){
   else if(e.data === YT.PlayerState.PAUSED){ isPlaying = false; updatePlayerUI(); }
   else if(e.data === YT.PlayerState.ENDED){ handleTrackEnd(); }
 }
-function onPlayerError(){ showToast(curLang === 'ar' ? 'تعذّر تشغيل هذا الفيديو' : "This video can't be played"); }
+function onPlayerError(){ showToast(curLang === 'ar' ? 'تعذّر تشغيل هذا الفيديو — غيّر رابطه من ⋯ ← تعديل' : "This video can't be played — change its link from ⋯ → Edit"); }
 function loadAndPlay(videoId){
   if(!ytReady){ pendingPlayId = videoId; return; }
   loadedVideoId = videoId;
@@ -2506,7 +2577,7 @@ function updatePlayerUI(){
   if(!t){ updateDynIsland(); return; }
   const pImg = $('pImg');
   pImg.src = coverUrl(t); pImg.onerror = function(){ this.onerror = null; this.src = t.coverFallback; };
-  $('pTitle').textContent = tName(t);
+  setMarquee($('pTitle'), tName(t));
   $('pArtist').textContent = aName(t);
   ['pHeart', 'npHeart'].forEach(function(id){ $(id).classList.toggle('active', !!t.favorite); });
   const playPath = isPlaying ? '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>' : '<path d="M8 5v14l11-7z"/>';
@@ -2523,7 +2594,7 @@ function updateDynIsland(){
   if(!islandEnabled || !playerVisible || !t || !isPlaying){ island.classList.remove('show'); return; }
   const img = $('diImg');
   img.src = coverUrl(t); img.onerror = function(){ this.onerror = null; this.src = t.coverFallback; };
-  $('diText').textContent = tName(t) + ' · ' + aName(t);
+  setMarquee($('diText'), tName(t) + ' · ' + aName(t));
   island.classList.add('show');
 }
 function toggleIslandSetting(el){
@@ -3058,7 +3129,7 @@ function openAddModal(editId){
   const artistEl = document.getElementById('addArtistInput');
   document.getElementById('addPreview').classList.remove('show');
   if(t){
-    urlEl.value = 'https://www.youtube.com/watch?v=' + t.videoId; urlEl.disabled = true;
+    urlEl.value = 'https://www.youtube.com/watch?v=' + t.videoId; urlEl.disabled = false;
     titleEl.value = t.title; artistEl.value = t.artist;
     ensureOption(document.getElementById('addGenreSelect'), t.genre || 'None');
     ensureOption(document.getElementById('addMoodSelect'), t.mood || 'None');
@@ -3090,27 +3161,72 @@ function previewAddTrack(){
     prev.classList.add('show');
   }, 550);
 }
-function saveEditedTrack(){
+// The song's video got deleted? Swap in a new link and keep EVERYTHING else:
+// name, artist, genre, favourite, background, its place in every playlist, history and the queue.
+function migrateTrackId(t, newId){
+  const oldId = t.id;
+  t.id = newId; t.videoId = newId; t.cover = ytThumb(newId);
+  t.coverFallback = makeFallback(t.title, newId);
+  t.duration = durationCache[newId] || 0;
+  const swap = function(x){ return x === oldId ? newId : x; };
+  const touched = [];
+  playlists.forEach(function(p){
+    if(p.trackIds.indexOf(oldId) !== -1 || (p.hiddenIds || []).indexOf(oldId) !== -1){
+      p.trackIds = p.trackIds.map(swap);
+      p.hiddenIds = (p.hiddenIds || []).map(swap);
+      touched.push(p);
+    }
+  });
+  history = history.map(swap);
+  queueIds = queueIds.map(swap);
+  if(skippedIds.has(oldId)){ skippedIds.delete(oldId); skippedIds.add(newId); }
+  let wasLast = false;
+  try{ wasLast = localStorage.getItem('sawt_last') === oldId; }catch(e){}
+  const wasCurrent = currentTrackId === oldId;
+  if(wasCurrent) currentTrackId = newId;
+  if(wasLast) saveLast(newId);
+  if(loadedVideoId === oldId) loadedVideoId = null;
+  if(pendingPlayId === oldId) pendingPlayId = newId;
+  // ONE atomic write: remove the old record, create the new one, fix the playlists
+  if(isAuthed()){
+    const updates = {};
+    updates['sawt/tracks/' + oldId] = null;
+    updates['sawt/tracks/' + newId] = serializeTrack(t);
+    touched.forEach(function(p){ updates['sawt/playlists/' + p.id] = serializePlaylist(p); });
+    fbDb.ref().update(updates).catch(fbFail);
+  }
+  return { wasCurrent: wasCurrent };
+}
+async function saveEditedTrack(){
   const t = tracks.find(function(x){ return x.id === editTrackId; });
   if(!t){ closeModal('add'); return; }
-  const title = document.getElementById('addTitleInput').value.trim();
-  const artist = document.getElementById('addArtistInput').value.trim();
-  t.title = title || t.title;
-  t.artist = artist;
+  const newId = parseYouTubeId(document.getElementById('addUrlInput').value);
+  if(!newId){ showToast(i18n[curLang].toast_invalid_link); return; }
+  const linkChanged = newId !== t.id;
+  if(linkChanged && tracks.some(function(x){ return x.id === newId; })){ showToast(i18n[curLang].toast_link_exists); return; }
+  const titleIn = document.getElementById('addTitleInput').value.trim();
+  const artistIn = document.getElementById('addArtistInput').value.trim();
+  // new link + empty name/artist boxes → take them from the new video
+  const meta = (linkChanged && (!titleIn || !artistIn)) ? await fetchOEmbed(newId) : null;
+  t.title = titleIn || (meta ? meta.title : t.title);
+  t.artist = artistIn || (linkChanged ? (meta ? meta.author_name : t.artist) : '');
   t.genre = document.getElementById('addGenreSelect').value;
   t.mood = document.getElementById('addMoodSelect').value;
   t.language = document.getElementById('addLangSelect').value;
   const bg = currentBgFields(); t.bg1 = bg.bg1; t.bg2 = bg.bg2;
   t.noCover = document.getElementById('addNoCover').classList.contains('on');
   t.coverFallback = makeFallback(t.title, t.id);
-  fbSaveTrack(t);
+  let reload = false;
+  if(linkChanged){ reload = migrateTrackId(t, newId).wasCurrent && isPlaying; }
+  else fbSaveTrack(t);
   closeModal('add');
   renderAll();
   refreshOpenPlaylist();
-  showToast(i18n[curLang].toast_track_updated);
+  if(reload) playTrackById(newId);        // it was playing the dead video → carry on with the new one
+  showToast(linkChanged ? i18n[curLang].toast_link_changed : i18n[curLang].toast_track_updated);
 }
 async function submitAddTrack(){
-  if(editTrackId){ saveEditedTrack(); return; }
+  if(editTrackId){ if(addBusy) return; addBusy = true; try{ await saveEditedTrack(); } finally { addBusy = false; } return; }
   if(addBusy) return;
   addBusy = true;
   try{
